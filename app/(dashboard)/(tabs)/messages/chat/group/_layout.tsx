@@ -1,13 +1,8 @@
-import { Slot } from "expo-router";
+import ChatGroupLayout from "@/layouts/dashboard/tabs/messages/GroupLayout";
 import React from "react";
-import { View } from "react-native";
 
-function ChatGroupLayout() {
-  return (
-    <View className="flex-1 bg-white">
-      <Slot />
-    </View>
-  );
+function Layout() {
+  return <ChatGroupLayout />;
 }
 
-export default ChatGroupLayout;
+export default Layout;

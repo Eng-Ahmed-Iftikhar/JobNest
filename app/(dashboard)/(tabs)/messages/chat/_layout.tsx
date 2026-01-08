@@ -1,13 +1,8 @@
-import { Slot } from "expo-router";
+import ChatLayout from "@/layouts/dashboard/tabs/messages/ChatLayout";
 import React from "react";
-import { View } from "react-native";
 
-function ChatLayout() {
-  return (
-    <View className="flex-1 bg-white">
-      <Slot />
-    </View>
-  );
+function Layout() {
+  return <ChatLayout />;
 }
 
-export default ChatLayout;
+export default Layout;

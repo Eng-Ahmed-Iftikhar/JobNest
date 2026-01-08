@@ -1,22 +1,22 @@
-import React, { useMemo, useState, useCallback } from "react";
+import { useLogoutMutation } from "@/api/services/authApi";
+import Avatar from "@/components/ui/Avatar";
+import Badge from "@/components/ui/Badge";
+import SearchInput from "@/components/ui/SearchInput";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { useSearch } from "@/hooks/useSearch";
+import NotificationsContent from "@/sections/notifications/NotificationsContent";
+import { selectUser, selectUserProfile } from "@/store/reducers/userSlice";
+import { useRouter } from "expo-router";
+import React, { useCallback, useMemo, useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
   ActivityIndicator,
   Modal,
   Pressable,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import SearchInput from "@/components/ui/SearchInput";
-import Avatar from "@/components/ui/Avatar";
-import Badge from "@/components/ui/Badge";
-import { useLogoutMutation } from "@/api/services/authApi";
-import { useRouter } from "expo-router";
-import NotificationsContent from "@/sections/notifications/NotificationsContent";
-import { useSearch } from "@/hooks/useSearch";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import { selectUser, selectUserProfile } from "@/store/reducers/userSlice";
 
 function DashboardHeader() {
   const router = useRouter();
@@ -29,8 +29,8 @@ function DashboardHeader() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const fullName = useMemo(() => {
-    const first = userProfile?.generalInfo?.firstName;
-    const last = userProfile?.generalInfo?.lastName;
+    const first = userProfile?.firstName;
+    const last = userProfile?.lastName;
     return (
       [first, last].filter(Boolean).join(" ") || user?.email.email || "User"
     );

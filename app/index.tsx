@@ -1,18 +1,34 @@
+import AppLoader from "@/components/AppLoader";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectIsLoggedIn } from "@/store/reducers/userSlice";
-
-import { Redirect } from "expo-router";
-import { useAppNotificationSetup } from "@/utils/useAppNotificationSetup";
+import { Stack } from "expo-router";
+import { Suspense } from "react";
+import { View } from "react-native";
 
 function App() {
-  useAppNotificationSetup();
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   if (isLoggedIn) {
-    return <Redirect href="/(dashboard)" />;
+    return (
+      <View className="flex-1">
+        <Suspense fallback={<AppLoader />}>
+          <Stack screenOptions={{ headerShown: false, animation: "none" }}>
+            <Stack.Screen name="(dashboard)" />
+            <Stack.Screen name="(onboarding)" />
+          </Stack>
+        </Suspense>
+      </View>
+    );
   }
-
-  return <Redirect href="/(auth)" />;
+  return (
+    <View className="flex-1">
+      <Suspense fallback={<AppLoader />}>
+        <Stack screenOptions={{ headerShown: false, animation: "none" }}>
+          <Stack.Screen name="(auth)" />
+        </Stack>
+      </Suspense>
+    </View>
+  );
 }
 
 export default App;

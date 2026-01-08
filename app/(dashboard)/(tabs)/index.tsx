@@ -1,0 +1,82 @@
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import React from "react";
+
+function TabsPage() {
+  return (
+    <Tabs
+      initialRouteName="jobs"
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#1eadff",
+        tabBarLabelStyle: { fontSize: 11, fontWeight: "bold" },
+        tabBarIconStyle: { marginTop: 4 },
+      }}
+    >
+      <Tabs.Screen
+        name="jobs"
+        options={{
+          title: "Jobs",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="briefcase" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="connections"
+        options={{
+          title: "Connections",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="people" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: "Messages",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="chatbubbles" size={20} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="search-suggestions"
+        options={{
+          title: "Search Suggestions",
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="job-detail"
+        options={{
+          title: "Job Details",
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="profile-detail"
+        options={{
+          title: "Profile Detail",
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="company-detail"
+        options={{
+          title: "Company Detail",
+          href: null,
+        }}
+      />
+    </Tabs>
+  );
+}
+
+export default TabsPage;

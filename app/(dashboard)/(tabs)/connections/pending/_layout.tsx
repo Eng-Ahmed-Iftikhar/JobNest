@@ -1,17 +1,8 @@
-import PendingConnectionsTabs from "@/sections/connections/PendingTabs";
-import { Slot } from "expo-router";
+import PendingLayout from "@/layouts/dashboard/tabs/connections/PendingLayout";
 import React from "react";
-import { View } from "react-native";
 
-function PendingLayout() {
-  return (
-    <View className="flex-1 bg-white">
-      <View>
-        <PendingConnectionsTabs />
-      </View>
-      <Slot />
-    </View>
-  );
+function Layout() {
+  return <PendingLayout />;
 }
 
-export default PendingLayout;
+export default Layout;

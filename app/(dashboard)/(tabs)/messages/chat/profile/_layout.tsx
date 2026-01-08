@@ -1,13 +1,8 @@
-import { Slot } from "expo-router";
+import UserProfileLayout from "@/layouts/dashboard/tabs/messages/UserProfileLayout";
 import React from "react";
-import { View } from "react-native";
 
-function ChatUserProfileLayout() {
-  return (
-    <View className="flex-1">
-      <Slot />
-    </View>
-  );
+function Layout() {
+  return <UserProfileLayout />;
 }
 
-export default ChatUserProfileLayout;
+export default Layout;
