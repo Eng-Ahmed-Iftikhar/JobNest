@@ -9,6 +9,7 @@ function LoginScreen() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
+      className="dark:bg-black bg-white "
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >

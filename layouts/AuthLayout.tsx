@@ -1,4 +1,4 @@
-import Logo from "@/assets/images/icon.png";
+import Logo from "@/assets/images/Logo.png";
 import AppLoader from "@/components/AppLoader";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectIsLoggedIn } from "@/store/reducers/userSlice";
@@ -15,9 +15,9 @@ function AuthLayout() {
   }
 
   return (
-    <View className="flex-1 ">
-      <View className="h-[56px] items-center justify-center ">
-        <Image source={Logo} className="h-[40px] w-[76px] " />
+    <View className="flex-1 dark:bg-black bg-white ">
+      <View className="items-center mt-4 justify-center  ">
+        <Image style={{ height: 80, width: 80 }} source={Logo} />
       </View>
       <Suspense fallback={<AppLoader />}>
         <Stack screenOptions={{ headerShown: false }} initialRouteName="index">

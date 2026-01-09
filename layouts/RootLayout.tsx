@@ -1,48 +1,74 @@
 import AppLoader from "@/components/AppLoader";
-import AuthGuard from "@/components/AuthGuard";
-import GestureRoot from "@/components/GestureRoot";
-import NotificationProvider from "@/components/NotificationProvider";
-import { ReduxPersisted, store } from "@/store";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
 import { setNativeEvent } from "@/store/reducers/uiSlice";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
-import { Slot } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import { selectIsLoggedIn } from "@/store/reducers/userSlice";
+import { Stack } from "expo-router";
 import { Suspense, useCallback } from "react";
-import { GestureResponderEvent, Pressable, useColorScheme } from "react-native";
+import {
+  GestureResponderEvent,
+  Pressable,
+  useColorScheme,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import "../global.css";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const handleOnPress = useCallback((event: GestureResponderEvent) => {
-    store.dispatch(setNativeEvent(event.nativeEvent));
-  }, []);
+  const dispatch = useAppDispatch();
+
+  const isLogin = useAppSelector(selectIsLoggedIn);
+
+  const handleOnPress = useCallback(
+    (event: GestureResponderEvent) => {
+      dispatch(setNativeEvent(event.nativeEvent));
+    },
+    [dispatch]
+  );
+
+  const AuthRoutes = () => {
+    return (
+      <View className="flex-1">
+        <Suspense fallback={<AppLoader />}>
+          <Stack
+            initialRouteName="(auth)"
+            screenOptions={{ headerShown: false, animation: "none" }}
+          >
+            <Stack.Screen name="(auth)" />
+          </Stack>
+        </Suspense>
+      </View>
+    );
+  };
+
+  const DashboardRoutes = () => {
+    return (
+      <View className="flex-1">
+        <Suspense fallback={<AppLoader />}>
+          <Stack
+            initialRouteName="(dashboard)"
+            screenOptions={{ headerShown: false, animation: "none" }}
+          >
+            <Stack.Screen name="(dashboard)" />
+            <Stack.Screen name="(onboarding)" />
+          </Stack>
+        </Suspense>
+      </View>
+    );
+  };
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <ReduxPersisted>
-        <SafeAreaView
-          className={
-            "flex-1  dark:bg-black " + (colorScheme === "dark" ? "dark" : "")
-          }
-        >
-          <Pressable className="flex-1" onPress={handleOnPress}>
-            <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-            <NotificationProvider />
-            <GestureRoot>
-              <AuthGuard>
-                <Suspense fallback={<AppLoader />}>
-                  <Slot />
-                </Suspense>
-              </AuthGuard>
-            </GestureRoot>
-          </Pressable>
-        </SafeAreaView>
-      </ReduxPersisted>
-    </ThemeProvider>
+    <SafeAreaView
+      className={
+        "flex-1  dark:bg-black bg-white " +
+        (colorScheme === "dark" ? "dark" : "")
+      }
+    >
+      <Pressable className="flex-1" onPress={handleOnPress}>
+        <Suspense fallback={<AppLoader />}>
+          {isLogin ? <DashboardRoutes /> : <AuthRoutes />}
+        </Suspense>
+      </Pressable>
+    </SafeAreaView>
   );
 }
