@@ -1,7 +1,7 @@
+import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { Image, View } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
-import AppLogo from "../assets/images/icon.png"; // Adjust the path as necessary
+import AppLogo from "../assets/images/Logo.png"; // Adjust the path as necessary
 function AppLoader() {
   return (
     <View className="flex-1  items-center justify-center ">

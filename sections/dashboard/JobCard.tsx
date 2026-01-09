@@ -1,41 +1,29 @@
+import LocationText from "@/components/LocationText";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { selectAppliedJobs } from "@/store/reducers/jobSlice";
+import { SuggestedJobResponseItem } from "@/types/api/job";
+import { jobTypeIconObj, jobTypeObj } from "@/utils/constants";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInRight } from "react-native-reanimated";
 import Icon from "react-native-vector-icons/Ionicons";
 import JobCardMenuIcon from "./jobCardMenuIcon";
-import { SuggestedJobResponseItem } from "@/api/services/jobsApi";
-import { selectAppliedJobIds } from "@/store/reducers/userSlice";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import { jobTypeIconObj, jobTypeObj } from "@/utils/constants";
-
-export type Job = {
-  id: string;
-  title: string;
-  company: string;
-  companyAddress?: string;
-  location: string;
-  distance?: string;
-  publishedAt?: string;
-  shiftInfo?: string;
-  rate?: string;
-  urgent?: boolean;
-  imageUrl?: string;
-  description?: string;
-  jobType?: string;
-};
 
 type JobCardProps = {
   job: SuggestedJobResponseItem;
   onPress?: () => void;
+  isSaved: boolean;
 };
 
-function JobCard({ job, onPress }: JobCardProps) {
+function JobCard({ job, onPress, isSaved }: JobCardProps) {
   const router = useRouter();
-  const appliedJobIds = useAppSelector(selectAppliedJobIds);
-  const isApplied = appliedJobIds.includes(String(job.id));
+  const appliedJobs = useAppSelector(selectAppliedJobs);
 
-  const handlePress = () => {
+  const appliedJob = appliedJobs.findLast((appJob) => appJob.id === job.id);
+  const isApplied = Boolean(appliedJob);
+
+  const handlePress = useCallback(() => {
     if (onPress) {
       onPress();
     } else {
@@ -44,17 +32,19 @@ function JobCard({ job, onPress }: JobCardProps) {
         params: { id: job.id },
       });
     }
-  };
+  }, [onPress, router, job]);
 
   const employer =
     job.employers && job.employers.length > 0 ? job.employers[0] : null;
   const companyProfile = employer?.employer?.companyProfiles?.[0];
   const company = companyProfile?.company;
-  const companyAddress = `${companyProfile?.address || ""}, ${companyProfile?.location?.city || ""}${companyProfile?.location?.state ? ", " + companyProfile.location.state : ""}`;
+  const companyLocation = companyProfile?.location;
 
   const workMode = job?.workMode?.toUpperCase?.();
   const isOnsite = workMode === "ONSITE";
-  const locationText = `${job?.location?.city || ""}${job?.location?.state ? ", " + job.location.state : ""}${job?.location?.country ? ", " + job.location.country : ""}`;
+  const locationText = `${job?.location?.city || ""}${
+    job?.location?.state ? ", " + job.location.state : ""
+  }${job?.location?.country ? ", " + job.location.country : ""}`;
 
   return (
     <Animated.View entering={FadeInRight.duration(400).springify()}>
@@ -73,6 +63,7 @@ function JobCard({ job, onPress }: JobCardProps) {
             </Text>
 
             <JobCardMenuIcon
+              isSaved={isSaved}
               jobId={job.id}
               jobTitle={job.name}
               jobCompany={company}
@@ -94,14 +85,7 @@ function JobCard({ job, onPress }: JobCardProps) {
             >
               {company ? company.name : "Unknown Company"}
             </Text>
-            {companyAddress && (
-              <Text
-                className="text-sm font-medium text-end text-gray-600 mb-1"
-                numberOfLines={1}
-              >
-                {companyAddress}
-              </Text>
-            )}
+            <LocationText location={companyLocation} />
           </View>
 
           {/* Work Mode / Location */}

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { router } from "expo-router";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
 import { useForgotPasswordMutation } from "@/api/services/authApi";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { router } from "expo-router";
+import { Formik } from "formik";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import * as Yup from "yup";
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string()
@@ -39,8 +39,8 @@ export default function ForgotPasswordForm() {
     <View className="flex-1">
       <Text className="text-2xl font-semibold mb-2">Forgot Password</Text>
       <Text className="text-sm font-medium text-gray-600 mb-6">
-        Enter your email address and we'll send you a verification code to reset
-        your password
+        Enter your email address and we&apos;ll send you a verification code to
+        reset your password
       </Text>
 
       <Formik
@@ -91,7 +91,7 @@ export default function ForgotPasswordForm() {
               onPress={() => handleSubmit()}
               disabled={isLoading}
               loading={isLoading}
-              icon="arrowright"
+              icon="arrow-forward"
               iconPosition="right"
             >
               Continue

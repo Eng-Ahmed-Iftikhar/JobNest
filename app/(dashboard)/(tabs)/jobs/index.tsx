@@ -39,7 +39,7 @@ export default function SuggestedJobsScreen() {
       <FlatList
         data={jobs}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <JobCard job={item} />}
+        renderItem={({ item }) => <JobCard job={item} isSaved={item.isSaved} />}
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
         refreshControl={

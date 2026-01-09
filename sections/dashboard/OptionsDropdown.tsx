@@ -3,38 +3,36 @@ import {
   useUnsaveJobMutation,
 } from "@/api/services/jobsApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { useAppSelector } from "@/hooks/useAppSelector";
+
 import {
   showErrorNotification,
   showSuccessNotification,
 } from "@/store/reducers/notificationSlice";
-import { selectSavedJobIds } from "@/store/reducers/userSlice";
-import React from "react";
+import React, { useCallback } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 type OptionsDropdownProps = {
-  visible: boolean;
   onShare: () => void;
   onSave: () => void;
   jobId: string;
+  isSaved: boolean;
 };
 
 export default function OptionsDropdown({
-  visible,
   onSave,
   onShare,
   jobId,
+  isSaved,
 }: OptionsDropdownProps) {
-  if (!visible) return null;
   const [saveJob] = useSaveJobMutation();
   const [unSaveJob] = useUnsaveJobMutation();
-  const saveJobIds = useAppSelector(selectSavedJobIds);
+
   const dispatch = useAppDispatch();
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     try {
-      if (saveJobIds.includes(jobId)) {
+      if (isSaved) {
         await unSaveJob({ jobId }).unwrap();
         dispatch(showSuccessNotification("Job removed from saved jobs!"));
       } else {
@@ -49,7 +47,7 @@ export default function OptionsDropdown({
         : e?.data?.message || "Failed to save job";
       dispatch(showErrorNotification(msg));
     }
-  };
+  }, [isSaved, unSaveJob, jobId, saveJob, dispatch, onSave]);
 
   return (
     <View
@@ -60,14 +58,14 @@ export default function OptionsDropdown({
         onPress={handleSave}
         className="flex-row items-center px-6 py-4 border-b border-gray-200"
       >
-        {saveJobIds.includes(jobId) ? (
+        {isSaved ? (
           <Icon name={"bookmark"} size={22} color="#4B5563" />
         ) : (
           <Icon name={"bookmark-outline"} size={22} color="#4B5563" />
         )}
 
         <Text className={`ml-4 text-base font-medium ${"text-gray-800"}`}>
-          {saveJobIds.includes(jobId) ? "Unsave" : "Save"}
+          {isSaved ? "Unsave" : "Save"}
         </Text>
       </TouchableOpacity>
 

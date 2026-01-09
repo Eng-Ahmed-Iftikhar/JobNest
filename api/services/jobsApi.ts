@@ -1,10 +1,10 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithReAuth } from "./baseApi";
 import API_ROUTES from "@/api/routes";
 import {
   SuggestedJobResponse,
   SuggestedJobResponseItem,
 } from "@/types/api/job";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReAuth } from "./baseApi";
 
 export const jobsApi = createApi({
   reducerPath: "jobsApi",
@@ -68,13 +68,13 @@ export const jobsApi = createApi({
         method: "GET",
       }),
     }),
-    saveJob: builder.mutation<{ message?: string }, { jobId: string }>({
+    saveJob: builder.mutation<SuggestedJobResponseItem, { jobId: string }>({
       query: ({ jobId }) => ({
         url: API_ROUTES.jobs.save.replace(":id", jobId),
         method: "POST",
       }),
     }),
-    unsaveJob: builder.mutation<{ message?: string }, { jobId: string }>({
+    unsaveJob: builder.mutation<SuggestedJobResponseItem, { jobId: string }>({
       query: ({ jobId }) => ({
         url: API_ROUTES.jobs.unsave.replace(":id", jobId),
         method: "DELETE",

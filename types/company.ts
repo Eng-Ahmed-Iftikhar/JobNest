@@ -1,4 +1,3 @@
-import { Follower } from "./follower";
 import { Location } from "./user";
 
 export interface CompanyWebsite {
@@ -8,9 +7,10 @@ export interface CompanyWebsite {
 }
 export interface CompanyProfile {
   id: string;
-  employerId?: string;
-  companyId?: string;
-  locationId?: string;
+  employerId: string;
+  companyId: string;
+  company: Company;
+  locationId: string;
   address: string;
   status: string;
   websiteId: string;
@@ -23,6 +23,4 @@ export interface CompanyProfile {
 export interface Company {
   id: string;
   name: string;
-  profile: CompanyProfile;
-  followers?: Array<Follower>;
 }

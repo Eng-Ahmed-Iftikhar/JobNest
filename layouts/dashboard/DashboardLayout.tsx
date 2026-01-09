@@ -16,7 +16,7 @@ function DashboardLayout() {
   if (!isLoggedIn) {
     return <Redirect href="/(auth)/login" />;
   } else if (user && !user.email.isVerified) {
-    return <Redirect href="/(profile)/verify-email" />;
+    return <Redirect href="/(dashboard)/verify-email" />;
   } else if (userProfile && !userProfile.isOnboarded) {
     return <Redirect href="/(onboarding)" />;
   }

@@ -1,4 +1,4 @@
-import { Company } from "../company";
+import { CompanyProfile } from "../company";
 import { Location } from "../user";
 
 export interface SuggestedJobEmployerRef {
@@ -8,7 +8,7 @@ export interface SuggestedJobEmployerRef {
   employer?: {
     id: string;
     emailId?: string;
-    companyProfiles?: Array<Company>;
+    companyProfiles?: CompanyProfile[];
   };
 }
 
@@ -30,7 +30,17 @@ export interface SuggestedJobResponseItem {
   updatedAt?: string;
   deletedAt?: string | null;
   location?: Location;
+  isSaved: boolean;
   employers?: SuggestedJobEmployerRef[];
+}
+
+export interface SavedBy {
+  id: string;
+  jobId: string;
+  employeeId: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
 }
 
 export interface SuggestedJobResponse {

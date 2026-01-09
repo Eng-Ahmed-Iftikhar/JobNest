@@ -11,6 +11,7 @@ import {
 import AppLoader from "@/components/AppLoader";
 import ApplyJobSheet from "@/components/ApplyJobSheet";
 import EmptyState from "@/components/EmptyState";
+import LocationText from "@/components/LocationText";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import RelatedJobs from "@/sections/job-detail/RelatedJobs";
@@ -76,15 +77,10 @@ export default function JobDetailContent({ jobId }: JobDetailContentProps) {
   const dispatch = useAppDispatch();
   const employer = job?.employers?.[0];
   const companyProfile = employer?.employer?.companyProfiles?.[0];
-  const company = companyProfile;
+  const company = companyProfile?.company;
   const companyName = company?.name ?? "Unknown Company";
-  const companyLocation = companyProfile?.profile.location
-    ? `${companyProfile.profile.location.city || ""}${
-        companyProfile.profile.location.state
-          ? ", " + companyProfile.profile.location.state
-          : ""
-      }${companyProfile.profile.location.country ? ", " + companyProfile.profile.location.country : ""}`
-    : undefined;
+  const companyLocation = companyProfile?.location;
+
   const locationText = `${job?.location?.city || ""}${
     job?.location?.state ? ", " + job.location.state : ""
   }${job?.location?.country ? ", " + job.location.country : ""}`;
@@ -282,9 +278,9 @@ export default function JobDetailContent({ jobId }: JobDetailContentProps) {
                 className="w-12 h-12 rounded-full items-center justify-center overflow-hidden"
                 style={{ backgroundColor: companyColor }}
               >
-                {companyProfile?.profile.pictureUrl ? (
+                {companyProfile?.pictureUrl ? (
                   <Image
-                    source={{ uri: companyProfile.profile.pictureUrl }}
+                    source={{ uri: companyProfile.pictureUrl }}
                     className="w-12 h-12 rounded-full"
                     resizeMode="cover"
                   />
@@ -299,12 +295,7 @@ export default function JobDetailContent({ jobId }: JobDetailContentProps) {
                 >
                   {companyName}
                 </Text>
-                <Text
-                  className="text-sm font-medium text-gray-600"
-                  numberOfLines={1}
-                >
-                  {companyLocation || "Location not provided"}
-                </Text>
+                <LocationText location={companyLocation} />
               </View>
             </View>
             <Pressable

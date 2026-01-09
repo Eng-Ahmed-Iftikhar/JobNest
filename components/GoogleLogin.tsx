@@ -3,7 +3,7 @@ import GoogleIcon from "@/assets/images/google.png";
 import { SocialProvider } from "@/types/user";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import Constants from "expo-constants";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -17,6 +17,7 @@ function GoogleLogin() {
 
   const googleClientId =
     Constants.expoConfig?.extra?.GOOGLE_OAUTH?.EXPO_CLIENT_ID;
+
   useEffect(() => {
     // Configure Google Sign-In
     GoogleSignin.configure({
@@ -26,7 +27,7 @@ function GoogleLogin() {
     });
   }, [googleClientId]);
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = useCallback(async () => {
     try {
       // Check if device supports Google Play
       await GoogleSignin.hasPlayServices();
@@ -71,22 +72,22 @@ function GoogleLogin() {
         );
       }
     }
-  };
+  }, [socialLogin]);
 
-  const handleGooglePress = () => {
+  const handleGooglePress = useCallback(() => {
     handleGoogleSignIn();
-  };
+  }, [handleGoogleSignIn]);
 
   return (
     <TouchableOpacity
-      className="flex-row items-center justify-center font-bold bg-gray-100 h-10 rounded-lg shadow-md"
+      className="flex-row items-center justify-center font-bold bg-gray-100 h-12 rounded-lg shadow-md"
       onPress={handleGooglePress}
       disabled={isLoading}
     >
       {isLoading ? (
         <ActivityIndicator size="small" color="#6B7280" className="mr-2" />
       ) : (
-        <Image source={GoogleIcon} className="h-4 w-4 mr-2" />
+        <Image source={GoogleIcon} className="h-6 w-6 mr-2" />
       )}
       <Text className="text-gray-700 font-semibold">
         {isLoading ? "Signing in..." : "Continue with Google"}

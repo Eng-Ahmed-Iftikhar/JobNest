@@ -1,15 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, FlatList, RefreshControl, Text } from "react-native";
-import { useRouter } from "expo-router";
-import JobCard from "@/sections/dashboard/JobCard";
-import {
-  useLazyGetAppliedJobsQuery,
-  useGetSavedJobIdsQuery,
-} from "@/api/services/jobsApi";
+import { useLazyGetAppliedJobsQuery } from "@/api/services/jobsApi";
 import AppLoader from "@/components/AppLoader";
 import EmptyState from "@/components/EmptyState";
-import { selectAppliedJobs } from "@/store/reducers/jobSlice";
 import { useAppSelector } from "@/hooks/useAppSelector";
+import JobCard from "@/sections/dashboard/JobCard";
+import { selectAppliedJobs } from "@/store/reducers/jobSlice";
+import { useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { FlatList, RefreshControl, Text, View } from "react-native";
 
 const PAGE_SIZE = 10;
 
@@ -20,7 +17,6 @@ function AppliedJobsScreen() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [trigger, { isFetching, data }] = useLazyGetAppliedJobsQuery();
-  useGetSavedJobIdsQuery();
 
   const handleRefresh = useCallback(async () => {
     if (isRefreshing) return;
@@ -50,7 +46,7 @@ function AppliedJobsScreen() {
       <FlatList
         data={appliedJobs}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <JobCard job={item} />}
+        renderItem={({ item }) => <JobCard job={item} isSaved={item.isSaved} />}
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
         refreshControl={

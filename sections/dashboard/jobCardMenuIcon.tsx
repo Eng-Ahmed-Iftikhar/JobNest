@@ -1,7 +1,8 @@
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { showSuccessNotification } from "@/store/reducers/notificationSlice";
+import { Company } from "@/types/company";
 import * as Clipboard from "expo-clipboard";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Linking,
   Pressable,
@@ -16,63 +17,72 @@ import ShareDropdown from "./ShareDropdown";
 type JobCardMenuIconProps = {
   jobId: string;
   jobTitle: string;
-  jobCompany?: {
-    id: string;
-    name: string;
-  };
+  jobCompany?: Company;
+  isSaved: boolean;
 };
 
 export default function JobCardMenuIcon({
   jobId,
   jobTitle,
   jobCompany,
+  isSaved,
 }: JobCardMenuIconProps) {
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const jobUrl = `https://shiftquest/jobs/${jobId}`;
   const dispatch = useAppDispatch();
 
-  const handleCopyLink = async () => {
+  const handleCopyLink = useCallback(async () => {
     await Clipboard.setStringAsync(jobUrl);
     setShowShareMenu(false);
     setShowOptionsMenu(false);
     dispatch(showSuccessNotification("Link copied to clipboard!"));
-  };
+  }, [jobUrl, dispatch]);
 
-  const handleSaveJob = () => {
+  const handleSaveJob = useCallback(() => {
     setShowOptionsMenu(false);
-  };
-  const handleSocialShare = (platform: string) => {
-    let url = "";
-    const text = encodeURIComponent(
-      `Check out this job: ${jobTitle} at ${jobCompany?.name}`
-    );
+  }, []);
 
-    switch (platform) {
-      case "facebook":
-        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(jobUrl)}`;
-        break;
-      case "twitter":
-        url = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(jobUrl)}`;
-        break;
-      case "email":
-        url = `mailto:?subject=${encodeURIComponent(`Job Opportunity: ${jobTitle}`)}&body=${text}%0A${encodeURIComponent(jobUrl)}`;
-        break;
-    }
+  const handleSocialShare = useCallback(
+    (platform: string) => {
+      let url = "";
+      const text = encodeURIComponent(
+        `Check out this job: ${jobTitle} at ${jobCompany?.name}`
+      );
 
-    Linking.openURL(url);
-    setShowShareMenu(false);
-    setShowOptionsMenu(false);
-  };
+      switch (platform) {
+        case "facebook":
+          url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+            jobUrl
+          )}`;
+          break;
+        case "twitter":
+          url = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(
+            jobUrl
+          )}`;
+          break;
+        case "email":
+          url = `mailto:?subject=${encodeURIComponent(
+            `Job Opportunity: ${jobTitle}`
+          )}&body=${text}%0A${encodeURIComponent(jobUrl)}`;
+          break;
+      }
 
-  const toggleOptionsMenu = () => {
+      Linking.openURL(url);
+      setShowShareMenu(false);
+      setShowOptionsMenu(false);
+    },
+    [jobUrl, jobTitle, jobCompany]
+  );
+
+  const toggleOptionsMenu = useCallback(() => {
     setShowOptionsMenu(!showOptionsMenu);
-  };
+  }, [showOptionsMenu]);
 
-  const closeAllMenus = () => {
+  const closeAllMenus = useCallback(() => {
     setShowOptionsMenu(false);
     setShowShareMenu(false);
-  };
+  }, []);
 
   const hasOpenMenu = showOptionsMenu || showShareMenu;
 
@@ -107,15 +117,17 @@ export default function JobCardMenuIcon({
         </TouchableOpacity>
 
         {/* Options Menu Dropdown */}
-        <OptionsDropdown
-          jobId={jobId}
-          onSave={handleSaveJob}
-          visible={showOptionsMenu}
-          onShare={() => {
-            setShowOptionsMenu(false);
-            setShowShareMenu(true);
-          }}
-        />
+        {showOptionsMenu && (
+          <OptionsDropdown
+            jobId={jobId}
+            isSaved={isSaved}
+            onSave={handleSaveJob}
+            onShare={() => {
+              setShowOptionsMenu(false);
+              setShowShareMenu(true);
+            }}
+          />
+        )}
 
         {/* Share Menu Dropdown */}
         <ShareDropdown
