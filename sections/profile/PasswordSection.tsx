@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import ChangePasswordModal from "./ChangePasswordModal";
 
 export default function PasswordSection() {
@@ -8,7 +8,7 @@ export default function PasswordSection() {
   return (
     <>
       <View className="mb-8">
-        <Text className="text-base font-semibold text-gray-900 mb-3">
+        <Text className="text-base font-semibold dark:bg-black mb-3">
           Password
         </Text>
         <Pressable onPress={() => setModalVisible(true)}>

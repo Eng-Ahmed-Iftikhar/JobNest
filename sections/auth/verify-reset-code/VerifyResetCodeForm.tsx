@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { router, useLocalSearchParams } from "expo-router";
-import VerificationCodeInput from "@/components/ui/VerificationCodeInput";
-import Button from "@/components/ui/Button";
-import CircularCountdown from "@/components/CircularCountdown";
 import {
-  useVerifyResetCodeMutation,
   useForgotPasswordMutation,
+  useVerifyResetCodeMutation,
 } from "@/api/services/authApi";
+import CircularCountdown from "@/components/CircularCountdown";
+import Button from "@/components/ui/Button";
+import VerificationCodeInput from "@/components/ui/VerificationCodeInput";
+import { router, useLocalSearchParams } from "expo-router";
+import { Formik } from "formik";
+import React, { useCallback, useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import * as Yup from "yup";
 
 const verifyResetCodeSchema = Yup.object().shape({
   code: Yup.string()
@@ -37,27 +37,32 @@ export default function VerifyResetCodeForm() {
     }
   }, [forgotPassword, email]);
 
-  const handleSubmitForm = async (values: { code: string }) => {
-    setServerError(null);
-    try {
-      await verifyResetCode({
-        email,
-        code: values.code,
-      }).unwrap();
-
-      router.push({
-        pathname: "/(auth)/reset-password",
-        params: { email, code: values.code },
-      });
-    } catch (err: any) {
-      setServerError(err?.data?.message || "Invalid or expired reset code");
-    }
-  };
+  const handleSubmitForm = useCallback(
+    async (values: { code: string }) => {
+      setServerError(null);
+      try {
+        await verifyResetCode({
+          email,
+          code: values.code,
+        }).unwrap();
+        setIsSendAgain(false);
+        router.push({
+          pathname: "/(auth)/reset-password",
+          params: { email, code: values.code },
+        });
+      } catch (err: any) {
+        setServerError(err?.data?.message || "Invalid or expired reset code");
+      }
+    },
+    [email, verifyResetCode]
+  );
 
   return (
     <View className="flex-1">
-      <Text className="text-2xl font-semibold mb-2">Verify Reset Code</Text>
-      <Text className="text-sm font-medium text-gray-600 mb-6">
+      <Text className="text-2xl font-semibold mb-2 text-gray-500 dark:text-white">
+        Verify Reset Code
+      </Text>
+      <Text className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6">
         We've sent a 5-digit verification code to {email}. Please enter it below
         to proceed.
       </Text>
@@ -98,7 +103,7 @@ export default function VerifyResetCodeForm() {
               onPress={() => handleSubmit()}
               disabled={isLoading}
               loading={isLoading}
-              icon="arrowright"
+              icon="arrow-forward"
               iconPosition="right"
             >
               Continue
@@ -110,17 +115,21 @@ export default function VerifyResetCodeForm() {
               onPress={handleSendCode}
             >
               <Text
-                className={`${isSendAgain || isResending ? "text-gray-400" : "text-azure-radiance-500"} text-sm font-medium font-medium`}
+                className={`${
+                  isSendAgain || isResending
+                    ? "text-gray-400"
+                    : "text-azure-radiance-500"
+                } text-sm font-medium `}
               >
                 {isResending
                   ? "Sending..."
                   : isSendAgain
-                    ? "Code is sent"
-                    : "Send code again"}
+                  ? "Code is sent"
+                  : "Send code again"}
               </Text>
               {isSendAgain && (
                 <CircularCountdown
-                  seconds={900}
+                  seconds={60}
                   size={40}
                   onComplete={() => setIsSendAgain(false)}
                 />

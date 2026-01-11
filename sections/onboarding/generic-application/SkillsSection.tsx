@@ -1,16 +1,16 @@
+import {
+  useCreateSkillMutation,
+  useGetSkillsQuery,
+} from "@/api/services/skillApi";
 import React, { useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
   ActivityIndicator,
   Alert,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import {
-  useGetSkillsQuery,
-  useCreateSkillMutation,
-} from "@/api/services/skillApi";
 
 type SkillsSectionProps = {
   values: string[]; // Array of skill IDs
@@ -79,7 +79,7 @@ function SkillsSection({ values, setFieldValue, formik }: SkillsSectionProps) {
 
   return (
     <View className="flex-1">
-      <Text className="text-xl font-bold text-black mb-4">Skills</Text>
+      <Text className="text-xl font-bold dark:bg-black mb-4">Skills</Text>
 
       <View className="gap-4">
         {/* Input to add new skill */}

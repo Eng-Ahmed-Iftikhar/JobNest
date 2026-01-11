@@ -1,7 +1,7 @@
-import React from "react";
-import { View, Text, TextInput } from "react-native";
-import { useFormikContext } from "formik";
 import TextArea from "@/components/ui/TextArea";
+import { useFormikContext } from "formik";
+import React from "react";
+import { Text, View } from "react-native";
 
 interface FormValues {
   bio: string;
@@ -11,8 +11,10 @@ interface FormValues {
 export const BioSection: React.FC = () => {
   const formik = useFormikContext<FormValues>();
   return (
-    <View className="px-4 py-6 bg-white rounded-lg mb-4">
-      <Text className="text-lg font-semibold text-gray-800 mb-4">Bio</Text>
+    <View className="px-4 py-6 bg-white dark:bg-black rounded-lg mb-4">
+      <Text className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
+        Bio
+      </Text>
 
       <TextArea
         placeholder="Tell us about yourself..."

@@ -1,51 +1,48 @@
-import React, { useMemo } from "react";
-import { View, Text, Pressable, FlatList } from "react-native";
+import { useGetCompanyJobsQuery } from "@/api/services/companyApi";
+import {} from "@/api/services/jobsApi";
+import { Company } from "@/types/company";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { SuggestedJobResponseItem } from "@/api/services/jobsApi";
-import { CompanyDetail } from "@/api/services/companyApi";
+import React, { useMemo } from "react";
+import { Pressable, Text, View } from "react-native";
 import CompanyOverviewJobItem from "./CompanyOverviewJobItem";
 
 interface CompanyOverviewTabProps {
-  company: CompanyDetail;
+  company: Company;
   onSeeAllJobs: () => void;
   onSeeAllPosts: () => void;
-  jobs: SuggestedJobResponseItem[];
-  posts: any[];
 }
 
 export default function CompanyOverviewTab({
   company,
   onSeeAllJobs,
   onSeeAllPosts,
-  jobs,
-  posts,
 }: CompanyOverviewTabProps) {
-  const router = useRouter();
   const aboutText = company?.profile?.about || "No description provided.";
-  const companyJobs = useMemo(() => jobs.slice(0, 3), [jobs]);
-  const companyPosts = useMemo(() => posts.slice(0, 2), [posts]);
 
-  const handleViewJob = (jobId: string) => {
-    router.push({
-      pathname: "/(dashboard)/(tabs)/job-detail",
-      params: { id: jobId },
-    });
-  };
+  const { data: jobs } = useGetCompanyJobsQuery(
+    { companyId: company.id as string, page: 1, pageSize: 10 },
+    { skip: !company }
+  );
+  const companyJobs = jobs?.data;
+  const companyPosts = useMemo<any[]>(() => [], []);
 
   return (
     <View className="flex-1">
       <View className="p-4">
-        <Text className="text-lg font-bold text-gray-900 mb-3">About</Text>
-        <Text className="text-sm font-medium text-gray-700 leading-6">
+        <Text className="text-lg font-bold dark:bg-black dark:text-gray-100 mb-3">
+          About
+        </Text>
+        <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 leading-6">
           {aboutText}
         </Text>
       </View>
 
       {/* Jobs Section */}
-      <View className="border-t border-gray-100 p-4">
-        <Text className="text-lg font-bold text-gray-900 mb-3">Jobs</Text>
-        {companyJobs.length ? (
+      <View className="border-t border-gray-100 dark:border-gray-700 p-4">
+        <Text className="text-lg font-bold dark:bg-black dark:text-gray-100 mb-3">
+          Jobs
+        </Text>
+        {companyJobs?.length ? (
           <>
             {companyJobs.map((job) => (
               <CompanyOverviewJobItem
@@ -55,10 +52,10 @@ export default function CompanyOverviewTab({
                 companyName={company.name}
               />
             ))}
-            {jobs.length > 3 && (
+            {companyJobs.length > 3 && (
               <Pressable
                 onPress={onSeeAllJobs}
-                className="flex-row items-center justify-between py-3"
+                className="flex-row items-center justify-between py-3 mt-3"
               >
                 <Text className="text-sm font-medium text-azure-radiance-500">
                   See all jobs
@@ -68,15 +65,17 @@ export default function CompanyOverviewTab({
             )}
           </>
         ) : (
-          <Text className="text-sm font-medium text-gray-600">
+          <Text className="text-sm font-medium text-gray-600 dark:text-gray-400">
             No jobs available for this company yet.
           </Text>
         )}
       </View>
 
       {/* Posts Section */}
-      <View className="border-t border-gray-100 p-4">
-        <Text className="text-lg font-bold text-gray-900 mb-3">Posts</Text>
+      <View className="border-t border-gray-100 dark:border-gray-700 p-4">
+        <Text className="text-lg font-bold dark:bg-black dark:text-gray-100 mb-3">
+          Posts
+        </Text>
         {companyPosts.length ? (
           <>
             {companyPosts.map((post) => (
@@ -89,10 +88,10 @@ export default function CompanyOverviewTab({
                     <Ionicons name="person" size={20} color="white" />
                   </View>
                   <View className="flex-1">
-                    <Text className="text-sm font-medium text-gray-900">
+                    <Text className="text-sm font-medium dark:bg-black dark:text-gray-100">
                       {post.authorName}
                     </Text>
-                    <Text className="text-sm font-medium text-gray-500">
+                    <Text className="text-sm font-medium text-gray-500 dark:text-gray-400">
                       {post.timestamp}
                       {post.location ? ` • ${post.location}` : ""}
                     </Text>
@@ -102,13 +101,13 @@ export default function CompanyOverviewTab({
                   </Pressable>
                 </View>
                 {post.content ? (
-                  <Text className="text-sm font-medium text-gray-700 mb-3">
+                  <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                     {post.content}
                   </Text>
                 ) : null}
               </View>
             ))}
-            {posts.length > 2 && (
+            {companyPosts.length > 2 && (
               <Pressable
                 onPress={onSeeAllPosts}
                 className="flex-row items-center justify-between py-3"
@@ -121,7 +120,7 @@ export default function CompanyOverviewTab({
             )}
           </>
         ) : (
-          <Text className="text-sm font-medium text-gray-600">
+          <Text className="text-sm font-medium text-gray-600 dark:text-gray-400">
             No posts from this company yet.
           </Text>
         )}

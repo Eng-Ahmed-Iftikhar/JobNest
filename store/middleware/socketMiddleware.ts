@@ -1,5 +1,17 @@
 /// <reference lib="es2015" />
+import { chatApi } from "@/api/services/chatApi";
+import {
+  addRequest,
+  removeRequest,
+  updateRequestCount,
+} from "@/store/reducers/connectionRequestSlice";
+import {
+  addConnection,
+  updateConnectionCount,
+} from "@/store/reducers/connectionSlice";
 import { Chat, ChatMessage } from "@/types/chat";
+import { Connection } from "@/types/connection";
+import { ConnectionRequest } from "@/types/connection-request";
 import {
   CHAT_SOCKET_EVENT,
   CHAT_SOCKET_ROOM,
@@ -8,24 +20,12 @@ import {
 import { initSocket } from "@/utils/socket";
 import { AnyAction, Middleware, ThunkDispatch } from "@reduxjs/toolkit";
 import * as Notifications from "expo-notifications";
+import { router } from "expo-router";
+import moment from "moment";
 import { Socket } from "socket.io-client";
+import { RootState } from "../reducers";
 import { addUnreadCount, upsertMessage } from "../reducers/chatSlice";
 import { socketConnected, socketDisconnected } from "../reducers/socketSlice";
-import { router } from "expo-router";
-import { RootState } from "../reducers";
-import moment from "moment";
-import { ConnectionRequest } from "@/types/connection-request";
-import {
-  addRequest,
-  removeRequest,
-  updateRequestCount,
-} from "@/store/reducers/connectionRequestSlice";
-import { Connection } from "@/types/connection";
-import {
-  addConnection,
-  updateConnectionCount,
-} from "@/store/reducers/connectionSlice";
-import { chatApi } from "@/api/services/chatApi";
 
 let socket: Socket | null = null;
 
@@ -201,21 +201,33 @@ export const socketMiddleware: Middleware<Object, RootState> =
     return next(typedAction);
   };
 
-Notifications.addNotificationResponseReceivedListener((response) => {
-  const notificationId = response.notification.request.identifier;
-  const chatNotification = newMessageNotifications.filter(
-    (n) => n.notificationId === notificationId
-  )[0];
-  if (chatNotification) {
-    // redirect to chat screen with chatId
-    router.push({
-      pathname: "/messages/chat",
-      params: { id: chatNotification.chatMessage.chatId },
+let socketNotifResponseSubscription: Notifications.Subscription | null = null;
+
+export const initSocketNotificationResponseHandler = () => {
+  if (socketNotifResponseSubscription) return;
+  socketNotifResponseSubscription =
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      const notificationId = response.notification.request.identifier;
+      const chatNotification = newMessageNotifications.filter(
+        (n) => n.notificationId === notificationId
+      )[0];
+      if (chatNotification) {
+        try {
+          router.push({
+            pathname: "/messages/chat",
+            params: { id: chatNotification.chatMessage.chatId },
+          });
+        } finally {
+          Notifications.dismissNotificationAsync(notificationId);
+          newMessageNotifications = newMessageNotifications.filter(
+            (n) => n.notificationId !== notificationId
+          );
+        }
+      }
     });
-    Notifications.dismissNotificationAsync(notificationId);
-    // Optionally, remove the notificationId from the map
-    newMessageNotifications = newMessageNotifications.filter(
-      (n) => n.notificationId !== notificationId
-    );
-  }
-});
+};
+
+export const disposeSocketNotificationResponseHandler = () => {
+  socketNotifResponseSubscription?.remove();
+  socketNotifResponseSubscription = null;
+};

@@ -22,11 +22,14 @@ export default function SuggestedJobsScreen() {
       setPage(1);
     }
   }, [page, isRefreshing]);
+  const dataPage = data?.page || 1;
+  const dataPageSize = data?.pageSize || PAGE_SIZE;
+  const dataTotal = data?.total || 0;
 
   const handleEndReached = useCallback(() => {
-    if (!data?.data?.length) return;
+    if (dataPage * dataPageSize >= dataTotal) return;
     setPage((prevPage) => prevPage + 1);
-  }, [data]);
+  }, [dataPage, dataPageSize, dataTotal]);
 
   useEffect(() => {
     trigger({ page, pageSize: PAGE_SIZE }).finally(() => {
@@ -35,7 +38,7 @@ export default function SuggestedJobsScreen() {
   }, [page, trigger]);
 
   return (
-    <View className="flex-1 bg-gray-50 px-4 pt-4">
+    <View className="flex-1 bg-gray-50 dark:bg-black px-4 pt-4">
       <FlatList
         data={jobs}
         keyExtractor={(item) => item.id}
@@ -50,7 +53,9 @@ export default function SuggestedJobsScreen() {
         ListFooterComponent={
           isFetching && page > 1 ? (
             <View className="py-4 items-center">
-              <Text className="text-gray-500">Loading more jobs…</Text>
+              <Text className="text-gray-500 dark:text-gray-300">
+                Loading more jobs…
+              </Text>
             </View>
           ) : null
         }

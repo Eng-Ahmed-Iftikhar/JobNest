@@ -9,7 +9,7 @@ import {
   showSuccessNotification,
 } from "@/store/reducers/notificationSlice";
 import React, { useCallback } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 type OptionsDropdownProps = {
@@ -27,7 +27,7 @@ export default function OptionsDropdown({
 }: OptionsDropdownProps) {
   const [saveJob] = useSaveJobMutation();
   const [unSaveJob] = useUnsaveJobMutation();
-
+  const colorScheme = useColorScheme();
   const dispatch = useAppDispatch();
 
   const handleSave = useCallback(async () => {
@@ -52,19 +52,29 @@ export default function OptionsDropdown({
   return (
     <View
       style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", zIndex: 999 }}
-      className="absolute top-4 -left-44 bg-white rounded-xl overflow-hidden shadow-xl border border-gray-200  z-50 w-44"
+      className="absolute top-4 -left-44 bg-white dark:bg-black rounded-xl overflow-hidden shadow-xl border border-gray-200 dark:border-gray-700  z-50 w-44"
     >
       <TouchableOpacity
         onPress={handleSave}
-        className="flex-row items-center px-6 py-4 border-b border-gray-200"
+        className="flex-row items-center px-6 py-4 border-b border-gray-200 dark:border-gray-700"
       >
         {isSaved ? (
-          <Icon name={"bookmark"} size={22} color="#4B5563" />
+          <Icon
+            name={"bookmark"}
+            size={22}
+            color={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
+          />
         ) : (
-          <Icon name={"bookmark-outline"} size={22} color="#4B5563" />
+          <Icon
+            name={"bookmark-outline"}
+            size={22}
+            color={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
+          />
         )}
 
-        <Text className={`ml-4 text-base font-medium ${"text-gray-800"}`}>
+        <Text
+          className={`ml-4 text-base font-medium  text-gray-800 dark:text-gray-200`}
+        >
           {isSaved ? "Unsave" : "Save"}
         </Text>
       </TouchableOpacity>
@@ -73,8 +83,14 @@ export default function OptionsDropdown({
         onPress={onShare}
         className="flex-row items-center px-6 py-4"
       >
-        <Icon name="share-social-outline" size={22} color="#4B5563" />
-        <Text className="ml-4 text-base text-gray-800 font-medium">Share</Text>
+        <Icon
+          name="share-social-outline"
+          size={22}
+          color={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
+        />
+        <Text className="ml-4 text-base text-gray-800 dark:text-gray-200 font-medium">
+          Share
+        </Text>
       </TouchableOpacity>
     </View>
   );

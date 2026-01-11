@@ -13,7 +13,7 @@ function RegisterScreen() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <ScrollView
-        className="flex-1 bg-white px-4"
+        className="flex-1 bg-white dark:bg-black px-4"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}

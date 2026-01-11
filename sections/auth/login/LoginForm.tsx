@@ -1,7 +1,7 @@
 import { useSignInMutation } from "@/api/services/authApi";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import Checkbox from "expo-checkbox";
+import { Checkbox } from "expo-checkbox";
 import { Link } from "expo-router";
 import { Formik } from "formik";
 import React, { useCallback } from "react";
@@ -132,6 +132,7 @@ function LoginForm() {
               </View>
               <Button
                 loading={isSubmitting}
+                disabled={isSubmitting}
                 onPress={(e) => handleSubmit(e as any)}
                 className="mt-6"
               >

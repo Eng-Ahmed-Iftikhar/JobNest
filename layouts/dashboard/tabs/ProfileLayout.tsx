@@ -10,10 +10,10 @@ export default function ProfileLayout() {
   const activeTab = isSettings ? "settings" : "edit-profile";
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       {/* Tab Navigation */}
       <Tabs
-        className="border-b border-gray-200 px-4"
+        className="border-b border-gray-200 dark:border-gray-700 px-4"
         activeKey={activeTab}
         items={[
           {
@@ -26,8 +26,8 @@ export default function ProfileLayout() {
       />
 
       {/* Page Title */}
-      <View className="px-4 py-4 border-b border-gray-100">
-        <Text className="text-xl font-bold text-gray-900">
+      <View className="px-4 py-4 border-b  border-gray-100 dark:border-gray-700">
+        <Text className="text-xl font-bold text-gray-900 dark:text-gray-100">
           {activeTab === "edit-profile" ? "Edit profile" : "Settings"}
         </Text>
       </View>

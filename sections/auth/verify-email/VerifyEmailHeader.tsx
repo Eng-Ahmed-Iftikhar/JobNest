@@ -8,8 +8,10 @@ function VerifyEmailHeader() {
 
   return (
     <View className="flex items-center w-3/4 mx-auto">
-      <Text className=" text-2xl font-semibold ">Confirm your email</Text>
-      <Text className="text-sm font-medium text-gray-400 text-center  mt-2">
+      <Text className=" text-2xl font-semibold text-black dark:text-white">
+        Confirm your email
+      </Text>
+      <Text className="text-sm font-medium text-gray-400 dark:text-gray-400 text-center  mt-2">
         Please enter the code we've sent to {user?.email.email || "your email"}
       </Text>
     </View>

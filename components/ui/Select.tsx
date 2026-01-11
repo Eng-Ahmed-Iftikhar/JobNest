@@ -1,14 +1,15 @@
-import React, { useState, useMemo } from "react";
-import {
-  Text,
-  View,
-  TextInput,
-  Modal,
-  ScrollView,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useCallback, useMemo, useState } from "react";
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 
 export interface SelectItem {
   label: string;
@@ -39,7 +40,7 @@ function Select({
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-
+  const colorScheme = useColorScheme();
   const selectedItem = items.find((item) => item.value === value);
 
   // Filter items based on search text
@@ -49,39 +50,45 @@ function Select({
     return items.filter((item) => item.label.toLowerCase().includes(search));
   }, [items, searchText]);
 
-  const handleSelect = (itemValue: any) => {
-    onValueChange?.(itemValue);
-    setSearchText("");
-    setIsOpen(false);
-  };
-
-  const handleOpen = () => {
+  const handleSelect = useCallback(
+    (itemValue: any) => {
+      onValueChange?.(itemValue);
+      setSearchText("");
+      setIsOpen(false);
+    },
+    [onValueChange]
+  );
+  const handleOpen = useCallback(() => {
     if (!disabled) {
       setSearchText("");
       setIsOpen(true);
     }
-  };
+  }, [disabled]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSearchText("");
     setIsOpen(false);
-  };
+  }, []);
 
   return (
     <View className="flex-1">
       {label && (
-        <Text className="text-sm font-medium text-gray-600 mb-1">{label}</Text>
+        <Text className="text-sm font-medium text-gray-600 dark:text-gray-200 mb-1">
+          {label}
+        </Text>
       )}
       <TouchableOpacity
         onPress={handleOpen}
         disabled={disabled}
-        className={`border h-12 border-gray-300 rounded-lg px-3 flex-row items-center justify-between ${
-          disabled ? "bg-gray-100" : "bg-white"
+        className={`border h-12 border-gray-300 dark:border-gray-600 rounded-lg px-3 flex-row items-center justify-between ${
+          disabled ? "bg-gray-100 dark:bg-gray-800" : "bg-white dark:bg-black"
         }`}
       >
         <Text
           className={`text-sm font-medium ${
-            selectedItem ? "text-gray-900" : "text-gray-400"
+            selectedItem
+              ? "text-gray-800 dark:text-gray-200"
+              : "text-gray-400 dark:text-gray-500"
           }`}
         >
           {selectedItem ? selectedItem.label : placeholder}
@@ -89,7 +96,9 @@ function Select({
         <Ionicons
           name="chevron-down"
           size={20}
-          color={disabled ? "#9CA3AF" : "#6B7280"}
+          color={
+            disabled ? "#9CA3AF" : colorScheme === "dark" ? "white" : "#6B7280"
+          }
         />
       </TouchableOpacity>
       {isError && (
@@ -103,25 +112,25 @@ function Select({
         onRequestClose={handleClose}
       >
         <Pressable
-          className="flex-1 bg-black/50 justify-center items-center"
+          className="flex-1 bg-black/50   justify-center items-center"
           onPress={handleClose}
         >
           <Pressable
-            className="bg-white rounded-2xl w-11/12 max-h-96"
+            className="bg-white dark:bg-black border border-gray-500 dark:border-gray-700 overflow-hidden rounded-2xl w-11/12 max-h-96"
             onPress={(e) => e.stopPropagation()}
           >
-            <View className="p-4 border-b border-gray-200">
-              <Text className="text-lg font-semibold text-gray-900 mb-3">
+            <View className="p-4 border-b border-gray-200 dark:border-gray-700">
+              <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
                 {label}
               </Text>
-              <View className="flex-row items-center border border-gray-300 rounded-lg px-3 bg-gray-50">
+              <View className="flex-row items-center border border-gray-300 rounded-lg px-3 bg-gray-50 dark:bg-gray-800 h-12">
                 <Ionicons name="search" size={18} color="#6B7280" />
                 <TextInput
                   value={searchText}
                   onChangeText={setSearchText}
                   placeholder="Search..."
                   placeholderTextColor="#9CA3AF"
-                  className="flex-1 ml-2 text-sm font-medium text-gray-900"
+                  className="flex-1 ml-2 text-sm font-medium text-gray-800 dark:text-gray-200"
                   autoFocus
                 />
                 {searchText.length > 0 && (
@@ -131,7 +140,7 @@ function Select({
                 )}
               </View>
             </View>
-            <ScrollView className="max-h-80">
+            <ScrollView className="max-h-80 ">
               {filteredItems.length > 0 ? (
                 filteredItems.map((item, index) => (
                   <TouchableOpacity
@@ -141,7 +150,7 @@ function Select({
                         : `${item.value}-${index}`
                     }
                     onPress={() => handleSelect(item.value)}
-                    className={`p-4 border-b border-gray-100 flex-row items-center justify-between ${
+                    className={`p-4 border-b border-gray-100  dark:border-gray-700 flex-row items-center justify-between ${
                       item.value === value ? "bg-azure-radiance-50" : ""
                     }`}
                   >
@@ -149,7 +158,7 @@ function Select({
                       className={`text-base ${
                         item.value === value
                           ? "text-azure-radiance-600 font-semibold"
-                          : "text-gray-900"
+                          : "text-gray-800 dark:text-gray-200"
                       }`}
                     >
                       {item.label}
@@ -169,7 +178,7 @@ function Select({
             </ScrollView>
             <TouchableOpacity
               onPress={handleClose}
-              className="p-4 border-t border-gray-200"
+              className="p-4 border-t border-gray-200 dark:border-gray-700"
             >
               <Text className="text-center text-azure-radiance-600 font-semibold">
                 Cancel

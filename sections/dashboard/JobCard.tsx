@@ -51,12 +51,12 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
       <TouchableOpacity
         onPress={handlePress}
         activeOpacity={0.9}
-        className="bg-white border  border-gray-200 rounded-xl mb-4 overflow-visible"
+        className="bg-white dark:bg-black border  border-gray-200 dark:border-gray-700 rounded-xl mb-4 overflow-visible"
       >
         <View className="p-4">
           <View className="flex-row items-center justify-between mb-1">
             <Text
-              className="text-lg font-semibold text-gray-900"
+              className="text-lg font-semibold dark:bg-black dark:text-gray-100"
               numberOfLines={2}
             >
               {job.name}
@@ -70,7 +70,7 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
             />
           </View>
           {job.publishAt && (
-            <Text className="text-sm font-medium text-gray-500 mb-2">
+            <Text className="text-sm font-medium text-gray-500 dark:text-gray-200 mb-2">
               Published{" "}
               {new Date(job.publishAt).toLocaleDateString("en-US", {
                 month: "short",
@@ -80,7 +80,7 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
           )}
           <View className="mb-2 flex-row items-center gap-1">
             <Text
-              className="text-sm font-medium text-gray-700 mb-1"
+              className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
               numberOfLines={1}
             >
               {company ? company.name : "Unknown Company"}
@@ -97,7 +97,7 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
                 color="#4B5563"
               />
               <Text
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-gray-700 dark:text-gray-200"
                 numberOfLines={1}
               >
                 {isOnsite ? locationText || "Onsite" : "Remote"}
@@ -113,7 +113,7 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
                 color="#4B5563"
               />
               <Text
-                className="text-sm font-medium  text-gray-700"
+                className="text-sm font-medium  text-gray-700 dark:text-gray-200"
                 numberOfLines={1}
               >
                 {jobTypeObj[job.jobType]}
@@ -125,7 +125,7 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
             <View className="flex-row items-center gap-2 mb-1">
               <Icon name="cash-outline" size={14} color="#4B5563" />
               <Text
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-gray-700 dark:text-gray-200"
                 numberOfLines={1}
               >
                 {job.currency} {job.wage}
@@ -136,7 +136,7 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
 
           {job.description && (
             <Text
-              className="text-sm font-medium text-gray-700 mt-2"
+              className="text-sm font-medium text-gray-700 dark:text-gray-200 mt-2"
               numberOfLines={3}
             >
               {job.description}
@@ -145,14 +145,14 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
 
           <View className="flex-row items-center justify-between mt-3">
             {isApplied ? (
-              <View className="px-3 py-2 rounded-lg bg-green-50">
-                <Text className="text-green-600 text-sm font-semibold flex-row items-center gap-1">
+              <View className="px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900">
+                <Text className="text-green-600 dark:text-green-400 text-sm font-semibold flex-row items-center gap-1">
                   ✓ Applied
                 </Text>
               </View>
             ) : (
               <TouchableOpacity
-                className="px-3 py-2 rounded-lg bg-azure-radiance-50"
+                className="px-3 py-2 rounded-lg bg-azure-radiance-50 dark:bg-azure-radiance-500"
                 onPress={() =>
                   router.push({
                     pathname: "/(dashboard)/(tabs)/job-detail",
@@ -160,7 +160,7 @@ function JobCard({ job, onPress, isSaved }: JobCardProps) {
                   })
                 }
               >
-                <Text className="text-azure-radiance-500 text-sm font-medium ">
+                <Text className="text-azure-radiance-500 dark:text-white text-sm font-medium ">
                   Learn more
                 </Text>
               </TouchableOpacity>

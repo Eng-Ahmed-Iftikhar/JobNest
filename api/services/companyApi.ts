@@ -1,19 +1,19 @@
 import API_ROUTES from "@/api/routes";
-import { Company } from "@/types/company";
-import { SuggestedCompaniesResponse } from "@/types/search/suggestedCompanies";
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithReAuth } from "./baseApi";
-import { SuggestedJobResponse } from "@/types/api/job";
 import {
   CompanyFollowersRequest,
   CompanyFollowersResponse,
 } from "@/types/api/company";
+import { SuggestedJobResponse } from "@/types/api/job";
+import { Company } from "@/types/company";
+import { SuggestedCompaniesResponse } from "@/types/search/suggestedCompanies";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReAuth } from "./baseApi";
 
 export const companyApi = createApi({
   reducerPath: "companyApi",
   baseQuery: baseQueryWithReAuth,
   endpoints: (builder) => ({
-    getCompanyFollowers: builder.query<
+    getFollowedCompanies: builder.query<
       CompanyFollowersResponse,
       CompanyFollowersRequest
     >({
@@ -71,12 +71,13 @@ export const companyApi = createApi({
 });
 
 export const {
-  useGetCompanyFollowersQuery,
+  useGetFollowedCompaniesQuery,
+  useLazyGetFollowedCompaniesQuery,
   useLazyGetCompanyByIdQuery,
-  useLazyGetCompanyFollowersQuery,
   useGetCompanyByIdQuery,
   useGetCompanyJobsQuery,
   useFollowCompanyMutation,
   useUnfollowCompanyMutation,
   useGetSuggestedCompaniesQuery,
+  useLazyGetSuggestedCompaniesQuery,
 } = companyApi;

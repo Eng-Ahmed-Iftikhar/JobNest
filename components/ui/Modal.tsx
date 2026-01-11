@@ -1,12 +1,13 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   Animated,
   Dimensions,
   Modal as RNModal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  useColorScheme,
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 
@@ -31,109 +32,105 @@ function Modal({
   closeOnBackdropPress = true,
   animationDuration = 200,
 }: ModalProps) {
+  const colorScheme = useColorScheme();
+  const [shouldRender, setShouldRender] = useState(visible);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(screenHeight)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
 
-  useEffect(() => {
-    if (visible) {
-      // Fade in backdrop
+  const openModal = useCallback(() => {
+    setShouldRender(true);
+    Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
         duration: animationDuration,
         useNativeDriver: true,
-      }).start();
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: animationDuration,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [animationDuration, fadeAnim, scaleAnim, slideAnim]);
 
-      // Slide up and scale in modal
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: animationDuration,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          tension: 100,
-          friction: 8,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      // Fade out backdrop
+  const animateClose = useCallback(() => {
+    Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 0,
         duration: animationDuration,
         useNativeDriver: true,
-      }).start();
+      }),
+      Animated.timing(slideAnim, {
+        toValue: screenHeight,
+        duration: animationDuration,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 0.8,
+        duration: animationDuration,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setShouldRender(false);
+    });
+  }, [animationDuration, fadeAnim, scaleAnim, slideAnim]);
 
-      // Slide down and scale out modal
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: screenHeight,
-          duration: animationDuration,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnim, {
-          toValue: 0.8,
-          duration: animationDuration,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [visible, fadeAnim, slideAnim, scaleAnim, animationDuration]);
+  useEffect(() => {
+    if (visible) openModal();
+    else animateClose();
+  }, [visible, openModal, animateClose]);
 
-  const handleBackdropPress = () => {
-    if (closeOnBackdropPress) {
-      onClose();
-    }
-  };
+  const requestClose = useCallback(() => {
+    onClose(); // parent controls `visible`
+  }, [onClose]);
 
-  if (!visible) return null;
+  const handleBackdropPress = useCallback(() => {
+    if (closeOnBackdropPress) requestClose();
+  }, [closeOnBackdropPress, requestClose]);
+
+  if (!shouldRender) return null;
 
   return (
-    <RNModal
-      transparent
-      visible={visible}
-      animationType="none"
-      onRequestClose={onClose}
-    >
-      <View className="flex-1 justify-center items-center bg-black/50">
+    <RNModal transparent visible animationType="none">
+      <View className="flex-1 justify-center items-center">
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
           <Animated.View
             className="absolute inset-0 bg-black/50"
-            style={{
-              opacity: fadeAnim,
-            }}
+            style={{ opacity: fadeAnim }}
           />
         </TouchableWithoutFeedback>
 
         <Animated.View
-          className="bg-white rounded-2xl mx-4 max-w-sm w-full shadow-2xl"
+          className="bg-white dark:bg-black border border-gray-700  rounded-2xl mx-4 max-w-sm w-full shadow-2xl"
           style={{
             transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
           }}
         >
-          {/* Header */}
           {(title || showCloseButton) && (
-            <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
+            <View className="flex-row justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
               {title && (
-                <Text className="text-lg font-semibold text-gray-900 flex-1">
+                <Text className="text-lg font-semibold text-gray-800 dark:text-gray-100">
                   {title}
                 </Text>
               )}
               {showCloseButton && (
-                <TouchableOpacity
-                  onPress={onClose}
-                  className="w-8 h-8 items-center justify-center rounded-full bg-gray-100"
-                >
-                  <Icon name="close" size={16} color="#6B7280" />
+                <TouchableOpacity onPress={requestClose}>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color={colorScheme === "dark" ? "#D1D5DB" : "#6B7280"}
+                  />
                 </TouchableOpacity>
               )}
             </View>
           )}
-
-          {/* Content */}
-          <View className="p-4">{children}</View>
+          <View>{children}</View>
         </Animated.View>
       </View>
     </RNModal>

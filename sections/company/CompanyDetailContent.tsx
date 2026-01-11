@@ -1,7 +1,6 @@
 import {
   useFollowCompanyMutation,
   useGetCompanyByIdQuery,
-  useGetCompanyJobsQuery,
   useUnfollowCompanyMutation,
 } from "@/api/services/companyApi";
 import AppLoader from "@/components/AppLoader";
@@ -9,22 +8,31 @@ import EmptyState from "@/components/EmptyState";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 
+import { selectCompanyFollowers } from "@/store/reducers/companySlice";
+import { selectConnections } from "@/store/reducers/connectionSlice";
 import { showSuccessNotification } from "@/store/reducers/notificationSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useRef, useState } from "react";
-import { Animated, Image, Pressable, Text, View } from "react-native";
-import CompanyOverviewTab from "./CompanyOverviewTab";
+import {
+  Animated,
+  Image,
+  Pressable,
+  Text,
+  useColorScheme,
+  View,
+} from "react-native";
 import CompanyJobsTab from "./CompanyJobsTab";
+import CompanyOverviewTab from "./CompanyOverviewTab";
 import CompanyPostsTab from "./CompanyPostsTab";
-import { selectCompanyFollowers } from "@/store/reducers/companySlice";
-import { selectConnections } from "@/store/reducers/connectionSlice";
+import StickyTabBar from "./StickyTabBar";
 
 type TabKey = "overview" | "jobs" | "posts";
 
 export default function CompanyDetailContent() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
+  const colorScheme = useColorScheme();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const scrollY = useRef(new Animated.Value(0)).current;
   const [isTabsSticky, setIsTabsSticky] = useState(false);
@@ -35,11 +43,6 @@ export default function CompanyDetailContent() {
     isFetching: isCompanyFetching,
     isError,
   } = useGetCompanyByIdQuery({ companyId: id as string }, { skip: !id });
-
-  const { data: jobsData } = useGetCompanyJobsQuery(
-    { companyId: id as string, page: 1, pageSize: 10 },
-    { skip: !id }
-  );
 
   const followedCompanies = useAppSelector(selectCompanyFollowers);
   const connections = useAppSelector(selectConnections);
@@ -98,78 +101,6 @@ export default function CompanyDetailContent() {
     }
   );
 
-  const tabOpacity = scrollY.interpolate({
-    inputRange: [250, 280],
-    outputRange: [0, 1],
-    extrapolate: "clamp",
-  });
-
-  const tabTranslateY = scrollY.interpolate({
-    inputRange: [250, 280],
-    outputRange: [-10, 0],
-    extrapolate: "clamp",
-  });
-
-  const renderTabBar = (isSticky: boolean = false) => (
-    <View
-      className={`flex-row bg-white ${
-        isSticky
-          ? "border-b border-gray-200 shadow-sm"
-          : "border-t border-gray-200"
-      }`}
-    >
-      <Pressable
-        onPress={() => setActiveTab("overview")}
-        className="flex-1 py-3 items-center"
-      >
-        <Text
-          className={`text-sm font-medium  ${
-            activeTab === "overview"
-              ? "text-azure-radiance-500"
-              : "text-gray-500"
-          }`}
-        >
-          Overview
-        </Text>
-        {activeTab === "overview" && (
-          <View className="absolute bottom-0 left-0 right-0 h-0.5 bg-azure-radiance-500" />
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={() => setActiveTab("jobs")}
-        className="flex-1 py-3 items-center"
-      >
-        <Text
-          className={`text-sm font-medium  ${
-            activeTab === "jobs" ? "text-azure-radiance-500" : "text-gray-500"
-          }`}
-        >
-          Jobs
-        </Text>
-        {activeTab === "jobs" && (
-          <View className="absolute bottom-0 left-0 right-0 h-0.5 bg-azure-radiance-500" />
-        )}
-      </Pressable>
-
-      <Pressable
-        onPress={() => setActiveTab("posts")}
-        className="flex-1 py-3 items-center"
-      >
-        <Text
-          className={`text-sm font-medium  ${
-            activeTab === "posts" ? "text-azure-radiance-500" : "text-gray-500"
-          }`}
-        >
-          Posts
-        </Text>
-        {activeTab === "posts" && (
-          <View className="absolute bottom-0 left-0 right-0 h-0.5 bg-azure-radiance-500" />
-        )}
-      </Pressable>
-    </View>
-  );
-
   if (isCompanyFetching) {
     return <AppLoader />;
   }
@@ -188,18 +119,14 @@ export default function CompanyDetailContent() {
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       {/* Sticky Tab Bar - Appears when scrolling */}
       {isTabsSticky && (
-        <Animated.View
-          style={{
-            opacity: tabOpacity,
-            transform: [{ translateY: tabTranslateY }],
-          }}
-          className="absolute top-0 left-0 right-0 z-10 bg-white"
-        >
-          {renderTabBar(true)}
-        </Animated.View>
+        <StickyTabBar
+          isSticky={isTabsSticky}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
       )}
 
       <Animated.ScrollView
@@ -209,90 +136,96 @@ export default function CompanyDetailContent() {
         scrollEventThrottle={16}
       >
         {/* Header Section */}
-        <View className="bg-white border-b border-gray-100">
-          <View className="p-4">
-            <Pressable
-              className="flex-row items-center gap-1 mb-4"
-              onPress={() => router.back()}
-            >
-              <Ionicons name="arrow-back" size={20} color="#1eadff" />
-              <Text className="text-sm font-medium text-azure-radiance-500">
-                Back
-              </Text>
-            </Pressable>
-            {/* Company Logo */}
-            <View className="w-16 h-16 rounded-full bg-azure-radiance-500 items-center justify-center mb-3 overflow-hidden">
-              {companyProfile?.pictureUrl ? (
-                <Image
-                  source={{ uri: companyProfile.pictureUrl }}
-                  className="w-16 h-16 rounded-full"
-                  resizeMode="cover"
-                />
-              ) : (
-                <Ionicons name="storefront" size={32} color="white" />
-              )}
-            </View>
-
-            {/* Company Name and Location */}
-            <Text className="text-xl font-bold text-gray-900 mb-1">
-              {company.name}
+        <View className="bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700 p-4">
+          <Pressable
+            className="flex-row items-center gap-1 mb-4"
+            onPress={() => router.back()}
+          >
+            <Ionicons name="arrow-back" size={20} color="#1eadff" />
+            <Text className="text-sm font-medium text-azure-radiance-500">
+              Back
             </Text>
-            {locationText ? (
-              <Text className="text-sm font-medium text-gray-600 mb-2">
-                {locationText}
-              </Text>
-            ) : null}
-
-            {/* Followers count */}
-            <Text className="text-sm font-medium text-gray-700 mb-2">
-              {followersCount} follower{followersCount === 1 ? "" : "s"}
-              {connectionFollowersCount > 0 && (
-                <Text className="text-green-600">
-                  {" "}
-                  • {connectionFollowersCount} of your connection
-                  {connectionFollowersCount === 1 ? "" : "s"} follow
-                </Text>
-              )}
-            </Text>
-
-            {/* Website Link */}
-            {websiteText ? (
-              <View className="flex-row items-center gap-2 mb-4">
-                <Ionicons name="link-outline" size={16} color="#1eadff" />
-                <Text className="text-sm font-medium text-azure-radiance-500">
-                  {websiteText}
-                </Text>
-              </View>
-            ) : null}
-
-            {/* Follow Button */}
-            <Pressable
-              onPress={handleFollowToggle}
-              className={`flex-row items-center justify-center gap-2 py-2.5 rounded-lg ${
-                isFollowed
-                  ? "bg-gray-100 border border-gray-300"
-                  : "bg-azure-radiance-500"
-              }`}
-              disabled={isFollowing || isUnfollowing}
-            >
-              <Ionicons
-                name={isFollowed ? "checkmark" : "add"}
-                size={18}
-                color={isFollowed ? "#374151" : "white"}
+          </Pressable>
+          {/* Company Logo */}
+          <View className="w-16 h-16 rounded-full bg-azure-radiance-500 items-center justify-center mb-3 overflow-hidden">
+            {companyProfile?.pictureUrl ? (
+              <Image
+                source={{ uri: companyProfile.pictureUrl }}
+                className="w-16 h-16 rounded-full"
+                resizeMode="cover"
               />
-              <Text
-                className={`text-sm font-medium ${
-                  isFollowed ? "text-gray-900" : "text-white"
-                }`}
-              >
-                {isFollowed ? "Following" : "Follow"}
-              </Text>
-            </Pressable>
+            ) : (
+              <Ionicons
+                name="storefront"
+                size={32}
+                color={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
+              />
+            )}
           </View>
 
-          {/* Tab Navigation - Static */}
-          {renderTabBar(false)}
+          {/* Company Name and Location */}
+          <Text className="text-xl font-bold dark:bg-black dark:text-gray-100 mb-1">
+            {company.name}
+          </Text>
+          {locationText ? (
+            <Text className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
+              {locationText}
+            </Text>
+          ) : null}
+
+          {/* Followers count */}
+          <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            {followersCount} follower{followersCount === 1 ? "" : "s"}
+            {connectionFollowersCount > 0 && (
+              <Text className="text-green-600 dark:text-green-400">
+                {" "}
+                • {connectionFollowersCount} of your connection
+                {connectionFollowersCount === 1 ? "" : "s"} follow
+              </Text>
+            )}
+          </Text>
+
+          {/* Website Link */}
+          {websiteText ? (
+            <View className="flex-row items-center gap-2 mb-4">
+              <Ionicons name="link-outline" size={16} color="#1eadff" />
+              <Text className="text-sm font-medium text-azure-radiance-500">
+                {websiteText}
+              </Text>
+            </View>
+          ) : null}
+
+          {/* Follow Button */}
+          <Pressable
+            onPress={handleFollowToggle}
+            className={`flex-row items-center justify-center gap-2 py-2.5 rounded-lg ${
+              isFollowed
+                ? "bg-gray-100 border border-gray-300"
+                : "bg-azure-radiance-500"
+            }`}
+            disabled={isFollowing || isUnfollowing}
+          >
+            <Ionicons
+              name={isFollowed ? "checkmark" : "add"}
+              size={18}
+              color={isFollowed ? "#374151" : "white"}
+            />
+            <Text
+              className={`text-sm font-medium ${
+                isFollowed ? "dark:bg-black" : "text-white"
+              }`}
+            >
+              {isFollowed ? "Following" : "Follow"}
+            </Text>
+          </Pressable>
         </View>
+        {/* Sticky Tab Bar */}
+
+        <StickyTabBar
+          isSticky={isTabsSticky}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
 
         {/* Tab Content */}
         {activeTab === "overview" && (
@@ -300,8 +233,6 @@ export default function CompanyDetailContent() {
             company={company}
             onSeeAllJobs={() => setActiveTab("jobs")}
             onSeeAllPosts={() => setActiveTab("posts")}
-            jobs={jobsData?.data || []}
-            posts={companyPosts}
           />
         )}
         {activeTab === "jobs" && id && (

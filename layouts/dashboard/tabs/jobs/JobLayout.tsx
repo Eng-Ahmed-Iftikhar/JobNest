@@ -36,7 +36,7 @@ export default function JobLayout() {
       <Tabs
         items={items}
         activeKey={activeKey}
-        className="px-4  bg-white border-b border-gray-200 "
+        className="px-4  bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700"
       />
 
       <Suspense fallback={<AppLoader />}>

@@ -1,29 +1,29 @@
-import React, { useState, useCallback } from "react";
-import { View, Text, Pressable, Alert, ActivityIndicator } from "react-native";
-import Select from "@/components/ui/Select";
-import TextArea from "@/components/ui/TextArea";
-import { Country, State, City } from "country-state-city";
-import { useFormikContext } from "formik";
-import Input from "@/components/ui/Input";
-import Modal from "@/components/ui/Modal";
-import Button from "@/components/ui/Button";
-import CircularCountdown from "@/components/CircularCountdown";
-import { OtpInput } from "react-native-otp-entry";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import { useAppDispatch } from "@/hooks/useAppDispatch";
 import {
+  useLazyMeQuery,
   useSendEmailVerificationMutation,
   useVerifyEmailCodeMutation,
 } from "@/api/services/authApi";
-import { useLazyMeQuery } from "@/api/services/authApi";
-import { PhoneVerificationModal } from "./PhoneVerificationModal";
+import CircularCountdown from "@/components/CircularCountdown";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import Modal from "@/components/ui/Modal";
+import Select from "@/components/ui/Select";
+import TextArea from "@/components/ui/TextArea";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { City, Country, State } from "country-state-city";
+import { useFormikContext } from "formik";
+import React, { useCallback, useState } from "react";
+import { Alert, Pressable, Text, View } from "react-native";
+import { OtpInput } from "react-native-otp-entry";
+
 import {
   selectUser,
   selectUserProfile,
-  setUser,
   updateProfile,
 } from "@/store/reducers/userSlice";
-import { UserPhoneNumber } from "@/types/api/auth";
+
+import { PhoneVerificationModal } from "./PhoneVerificationModal";
 
 interface PersonalInfoSectionProps {
   onChangeEmail: () => void;
@@ -182,11 +182,11 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     setIsPhoneVerifyModalVisible(true);
   };
 
-  const phoneForVerification = userProfile?.phoneNumber;
+  const phoneForVerification = userProfile?.userPhoneNumbers[0].phoneNumber;
 
   return (
-    <View className="px-4 py-6 bg-white rounded-lg mb-4">
-      <Text className="text-lg font-semibold text-gray-800 mb-4">
+    <View className="px-4 py-6 gap-2 border border-gray-100 dark:bg-black dark:border-gray-600 rounded-lg mb-4">
+      <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
         Personal Information
       </Text>
 
@@ -275,8 +275,10 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       />
 
       <View className="mb-4">
-        <View className="flex-row items-center justify-between mb-1">
-          <Text className="text-gray-700 font-medium">Email</Text>
+        <View className="flex-row items-center  justify-between mb-1">
+          <Text className="text-gray-700 dark:text-gray-300 font-medium">
+            Email
+          </Text>
           <View className="flex-row gap-2">
             {!user?.email.isVerified && (
               <Pressable onPress={handleOpenModal}>
@@ -284,24 +286,28 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               </Pressable>
             )}
             <Pressable onPress={onChangeEmail}>
-              <Text className="text-azure-radiance font-semibold">Change</Text>
+              <Text className=" text-gray-700 dark:text-gray-300 font-semibold">
+                Change
+              </Text>
             </Pressable>
           </View>
         </View>
-        <View className="bg-gray-100 p-3 rounded-lg">
+        <View className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
           <View className="flex-row items-center justify-between">
-            <Text className="text-gray-800">{formik.values.email}</Text>
-            {user?.email.email == formik.values.email && (
+            <Text className="text-gray-800 dark:text-gray-200">
+              {formik.values.email}
+            </Text>
+            {user?.email.email === formik.values.email && (
               <View>
                 {!user?.email.isVerified ? (
                   <View className="bg-amber-100 px-2 py-1 rounded">
-                    <Text className="text-amber-700 text-sm font-medium font-medium">
+                    <Text className="text-amber-700 text-sm font-medium ">
                       Not Verified
                     </Text>
                   </View>
                 ) : (
                   <View className="bg-emerald-100 px-2 py-1 rounded">
-                    <Text className="text-emerald-700 text-sm font-medium font-medium">
+                    <Text className="text-emerald-700 text-sm font-medium ">
                       Verified
                     </Text>
                   </View>
@@ -314,38 +320,42 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
       <View className="mb-4">
         <View className="flex-row items-center justify-between mb-1">
-          <Text className="text-gray-700 font-medium">Phone Number</Text>
+          <Text className="text-gray-700 dark:text-gray-300 font-medium">
+            Phone Number
+          </Text>
           <View className="flex-row gap-2">
-            {!userProfile?.phoneNumber?.isVerified && (
+            {!userProfile?.userPhoneNumbers[0].phoneNumber?.isVerified && (
               <Pressable onPress={handleOpenPhoneModal}>
                 <Text className="text-green-600 font-semibold">Verify</Text>
               </Pressable>
             )}
             <Pressable onPress={onChangePhone}>
-              <Text className="text-azure-radiance font-semibold">Change</Text>
+              <Text className="text-gray-700 dark:text-gray-300 font-semibold">
+                Change
+              </Text>
             </Pressable>
           </View>
         </View>
-        <View className="bg-gray-100 p-3 rounded-lg">
+        <View className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
           <View className="flex-row items-center justify-between">
-            <Text className="text-gray-800">
+            <Text className="text-gray-800 dark:text-gray-200">
               {formik?.values?.phoneNumber?.countryCode}{" "}
               {formik?.values?.phoneNumber?.number}
             </Text>
-            {userProfile?.phoneNumber?.countryCode ===
+            {userProfile?.userPhoneNumbers[0]?.phoneNumber?.countryCode ===
               formik?.values?.phoneNumber?.countryCode &&
-              userProfile?.phoneNumber?.number ===
+              userProfile?.userPhoneNumbers[0]?.phoneNumber?.number ===
                 formik?.values?.phoneNumber?.number && (
                 <View>
-                  {userProfile?.phoneNumber?.isVerified ? (
+                  {userProfile?.userPhoneNumbers[0]?.phoneNumber?.isVerified ? (
                     <View className="bg-emerald-100 px-2 py-1 rounded">
-                      <Text className="text-emerald-700 text-sm font-medium font-medium">
+                      <Text className="text-emerald-700 text-sm font-medium ">
                         Verified
                       </Text>
                     </View>
                   ) : (
                     <View className="bg-amber-100 px-2 py-1 rounded">
-                      <Text className="text-amber-700 text-sm font-medium font-medium">
+                      <Text className="text-amber-700 text-sm font-medium ">
                         Not Verified
                       </Text>
                     </View>
@@ -414,13 +424,13 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
                 isSendAgain || isSending
                   ? "text-gray-400"
                   : "text-azure-radiance-500"
-              } text-sm font-medium font-medium`}
+              } text-sm font-medium `}
             >
               {isSending
                 ? "Sending..."
                 : isSendAgain
-                  ? "Code is sent"
-                  : "Send code again"}
+                ? "Code is sent"
+                : "Send code again"}
             </Text>
             {isSendAgain && (
               <CircularCountdown
@@ -459,10 +469,25 @@ export const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             dispatch(
               updateProfile({
                 ...(userProfile || {}),
-                phoneNumber: {
-                  ...(userProfile?.phoneNumber as UserPhoneNumber),
-                  isVerified: true,
-                },
+                userPhoneNumbers: userProfile?.userPhoneNumbers.map(
+                  (phoneObj) => {
+                    if (
+                      phoneObj.phoneNumber.countryCode ===
+                        phoneForVerification?.countryCode &&
+                      phoneObj.phoneNumber.number ===
+                        phoneForVerification?.number
+                    ) {
+                      return {
+                        ...phoneObj,
+                        phoneNumber: {
+                          ...phoneObj.phoneNumber,
+                          isVerified: true,
+                        },
+                      };
+                    }
+                    return phoneObj;
+                  }
+                ),
               })
             );
           }

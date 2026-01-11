@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import BottomSheet from "@/components/ui/BottomSheet";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { Pressable, Text, View } from "react-native";
 
 type EmploymentType = {
   name: string;
@@ -51,25 +51,25 @@ export default function CompanyJobsFilters({
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title="Filters">
-      <View className="py-4">
+      <View>
         <View className="px-4 mb-6">
-          <Text className="text-sm font-medium text-gray-900 mb-3">
+          <Text className="text-sm font-medium text-black dark:text-gray-100 mb-3">
             Employment type
           </Text>
           {EMPLOYMENT_TYPES.map((type) => (
             <Pressable
               key={type.name}
               onPress={() => toggleFilter(type.name)}
-              className="flex-row items-center justify-between py-3 border-b border-gray-100"
+              className="flex-row items-center justify-between py-3 border-b border-gray-100 dark:border-gray-700"
             >
-              <Text className="text-sm font-medium text-gray-700">
+              <Text className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 {type.label}
               </Text>
               <View
                 className={`w-5 h-5 rounded border-2 items-center justify-center ${
                   localSelectedTypes.includes(type.name)
                     ? "bg-azure-radiance-500 border-azure-radiance-500"
-                    : "border-gray-300"
+                    : "border-gray-300 dark:border-gray-600"
                 }`}
               >
                 {localSelectedTypes.includes(type.name) && (

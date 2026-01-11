@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { View, Text } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text, View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
-
-const CIRCLE_LENGTH = 300; // Circumference = 2πr
 
 type CircularCountdownProps = {
   onComplete?: () => void;
@@ -16,16 +14,20 @@ const CircularCountdown = ({
   size = 150, // Default size of the circle
 }: CircularCountdownProps) => {
   const [secondsLeft, setSecondsLeft] = useState(seconds);
+  const ref = useRef<number | null>(null);
 
   useEffect(() => {
-    if (secondsLeft === 0) return onComplete?.();
+    if (secondsLeft === 0) {
+      clearInterval(ref.current!);
+      return onComplete?.();
+    }
 
-    const interval = setInterval(() => {
+    ref.current = setInterval(() => {
       setSecondsLeft((prev) => prev - 1);
     }, 1000);
 
-    return () => clearInterval(interval);
-  }, [secondsLeft]);
+    return () => clearInterval(ref.current!);
+  }, [onComplete, secondsLeft]);
 
   const STROKE_WIDTH = size * 0.07; // relative stroke width (7%)
   const RADIUS = (size - STROKE_WIDTH) / 2;
@@ -35,7 +37,10 @@ const CircularCountdown = ({
   const strokeDashoffset = CIRCUMFERENCE * (1 - progress);
   const displayTime =
     secondsLeft >= 60
-      ? `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(2, "0")}`
+      ? `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(
+          2,
+          "0"
+        )}`
       : `${secondsLeft}s`;
 
   return (

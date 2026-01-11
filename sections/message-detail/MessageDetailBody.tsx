@@ -4,6 +4,7 @@ import {
 } from "@/api/services/chatApi";
 import AppLoader from "@/components/AppLoader";
 import useChat from "@/hooks/useChat";
+import { ChatMessage } from "@/types/chat";
 import { useLocalSearchParams } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -15,7 +16,6 @@ import {
 } from "react-native";
 import MessageBubble from "./MessageBubble";
 import MessgesHeader from "./MessgesHeader";
-import { ChatMessage } from "@/types/chat";
 
 const PAGE_SIZE = 20;
 
@@ -88,11 +88,11 @@ const MessageDetailBody = () => {
   const messagesWithDates = chat?.messagesWithDates || [];
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       {(isMessagesLoading || isMessagesFetching) && (
         <View className="flex-row items-center justify-center py-2 gap-3">
           <ActivityIndicator />
-          <Text className="text-center text-gray-500 py-2">
+          <Text className="text-center text-gray-500 dark:text-gray-400 py-2">
             Loading new messages...
           </Text>
         </View>

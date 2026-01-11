@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
   Animated,
   Dimensions,
   Modal as RNModal,
   ScrollView,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 
@@ -105,7 +105,7 @@ function FormModal({
         </TouchableWithoutFeedback>
 
         <Animated.View
-          className="bg-white rounded-2xl mx-4 max-w-sm w-full shadow-2xl max-h-4/5"
+          className="bg-white dark:bg-black rounded-2xl mx-4 max-w-sm w-full shadow-2xl max-h-4/5"
           style={{
             transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
           }}
@@ -114,7 +114,7 @@ function FormModal({
           {(title || showCloseButton) && (
             <View className="flex-row items-center justify-between p-4 border-b border-gray-100">
               {title && (
-                <Text className="text-lg font-semibold text-gray-900 flex-1">
+                <Text className="text-lg font-semibold dark:bg-black flex-1">
                   {title}
                 </Text>
               )}

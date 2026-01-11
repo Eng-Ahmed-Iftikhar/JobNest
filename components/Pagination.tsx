@@ -1,6 +1,6 @@
-import React from "react";
-import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { Pressable, Text, View } from "react-native";
 
 interface PaginationProps {
   currentPage: number;
@@ -82,12 +82,12 @@ export default function Pagination({
                 className={`w-8 h-8 rounded-lg items-center justify-center ${
                   currentPage === page
                     ? "bg-azure-radiance-500"
-                    : "bg-white border border-gray-200"
+                    : "bg-white dark:bg-black border border-gray-200 dark:border-gray-700"
                 }`}
               >
                 <Text
                   className={`text-sm font-medium ${
-                    currentPage === page ? "text-white" : "text-gray-700"
+                    currentPage === page ? "dark:text-white " : "text-gray-700"
                   }`}
                 >
                   {page}

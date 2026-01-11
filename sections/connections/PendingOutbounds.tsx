@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { FlatList, RefreshControl, View } from "react-native";
+import { useLazyGetMeConnectionRequestsQuery } from "@/api/services/connectionRequestsApi";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectConnectionRequests } from "@/store/reducers/connectionRequestSlice";
 import { selectUser } from "@/store/reducers/userSlice";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { FlatList, RefreshControl, View } from "react-native";
 import { EmptyState } from "./EmptyState";
 import { PendingRow } from "./PendingRow";
-import { useLazyGetMeConnectionRequestsQuery } from "@/api/services/connectionRequestsApi";
 
 const PAGE_SIZE = 20;
 const STATUS = "OUTBOUND";
@@ -47,7 +47,7 @@ function PendingOutbounds() {
   }, [connectionRequests, page]);
 
   return (
-    <View className=" bg-white">
+    <View className=" bg-white dark:bg-black flex-1">
       <FlatList
         data={outboundRequests}
         keyExtractor={(item) => item.id}

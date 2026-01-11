@@ -1,3 +1,4 @@
+import { Follower } from "./follower";
 import { Location } from "./user";
 
 export interface CompanyWebsite {
@@ -23,4 +24,6 @@ export interface CompanyProfile {
 export interface Company {
   id: string;
   name: string;
+  followers?: Follower[];
+  profile?: CompanyProfile;
 }

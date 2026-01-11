@@ -42,7 +42,7 @@ function SavedJobsScreen() {
   }
 
   return (
-    <View className="flex-1 bg-gray-50 px-4 pt-4">
+    <View className="flex-1 bg-gray-50 dark:bg-black px-4 pt-4">
       <FlatList
         data={savedJobs}
         keyExtractor={(item) => item.id}

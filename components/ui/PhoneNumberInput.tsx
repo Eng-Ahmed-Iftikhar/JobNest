@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, TextInput, TouchableOpacity } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import Select, { SelectItem } from "./Select";
 
 type PhoneNumberInputProps = {
@@ -42,7 +42,7 @@ function PhoneNumberInput({
         </View>
         <View className="border flex justify-center h-12 w-[68%] border-gray-300 rounded-lg px-3">
           <TextInput
-            className="text-sm font-medium text-gray-900"
+            className="text-sm font-medium dark:bg-black"
             placeholderTextColor="#9CA3AF"
             editable={!disabled}
             {...inputNumberProps}

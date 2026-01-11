@@ -5,7 +5,7 @@ import { ScrollView, View } from "react-native";
 
 function VerifyEmailScreen() {
   return (
-    <ScrollView className="flex-1  bg-white px-4">
+    <ScrollView className="flex-1  bg-white dark:bg-black px-4">
       <View className="flex-1 mt-12">
         <VerifyEmailHeader />
         <VerifyEmailForm />

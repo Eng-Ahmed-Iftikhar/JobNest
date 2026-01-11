@@ -1,7 +1,7 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
+import React from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 
 type Education = {
   school: string;
@@ -73,7 +73,7 @@ function EducationSection({
 
   return (
     <View>
-      <Text className="text-xl font-bold text-black mb-4">Education</Text>
+      <Text className="text-xl font-bold dark:bg-black mb-4">Education</Text>
 
       {values.map((edu, index) => (
         <View key={index} className="mb-6 pb-6 border-b border-gray-200">

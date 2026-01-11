@@ -14,7 +14,7 @@ export default function ConnectionLayout() {
     router.setParams({ ...searchParams, search: text });
   };
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       <View className="px-4 pt-4">
         <ConnectionsTabs />
         <View className="mt-3 w-[65%]">

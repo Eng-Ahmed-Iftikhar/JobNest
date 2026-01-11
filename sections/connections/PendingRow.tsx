@@ -1,24 +1,23 @@
-import React, { useCallback, useMemo } from "react";
-import { Pressable, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useCallback, useMemo } from "react";
+import { Pressable, Text, View } from "react-native";
 
-import { Text } from "react-native";
-import Avatar from "@/components/ui/Avatar";
-import { ConnectionRequest } from "@/types/connection-request";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import { selectUser } from "@/store/reducers/userSlice";
-import LocationText from "@/components/LocationText";
-import { Location } from "@/types/user";
 import {
   useAcceptConnectionRequestMutation,
   useRejectConnectionRequestMutation,
 } from "@/api/services/connectionRequestsApi";
+import LocationText from "@/components/LocationText";
+import Avatar from "@/components/ui/Avatar";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { increaseConnectionsCount } from "@/store/reducers/connectionSlice";
 import {
   showErrorNotification,
   showSuccessNotification,
 } from "@/store/reducers/notificationSlice";
-import { increaseConnectionsCount } from "@/store/reducers/connectionSlice";
+import { selectUser } from "@/store/reducers/userSlice";
+import { ConnectionRequest } from "@/types/connection-request";
+import { Location } from "@/types/user";
 
 export function PendingRow({ item }: { item: ConnectionRequest }) {
   const user = useAppSelector(selectUser);
@@ -72,12 +71,12 @@ export function PendingRow({ item }: { item: ConnectionRequest }) {
   }, [rejectConnectionRequest, item.id]);
 
   return (
-    <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+    <View className="flex-row items-center justify-between px-4 py-3 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700">
       <View className="flex-row items-center gap-3 flex-1">
         <Avatar imageUrl={userImage} name={userName} />
         <View className="flex-1">
           <Text
-            className="text-base font-semibold text-gray-900"
+            className="text-base font-semibold dark:bg-black"
             numberOfLines={1}
           >
             {userName}

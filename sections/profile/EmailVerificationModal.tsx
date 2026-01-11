@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import { useReauthenticateMutation } from "@/api/services/userApi";
+import Modal from "@/components/ui/Modal";
+import { Ionicons } from "@expo/vector-icons";
+import { useFormikContext } from "formik";
+import React, { useCallback, useState } from "react";
 import {
-  View,
+  ActivityIndicator,
+  Pressable,
   Text,
   TextInput,
-  Pressable,
-  ActivityIndicator,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import Modal from "@/components/ui/Modal";
-import { useFormikContext } from "formik";
-import { useReauthenticateMutation } from "@/api/services/userApi";
 
 interface EmailVerificationModalProps {
   isVisible: boolean;
@@ -32,7 +32,7 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
   const [reauthenticate] = useReauthenticateMutation();
   const formik = useFormikContext<any>();
 
-  const handleReauthenticate = async () => {
+  const handleReauthenticate = useCallback(async () => {
     if (!password.trim()) {
       setError("Please enter your password");
       return;
@@ -48,13 +48,22 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
         setError("Authentication failed. Please try again.");
       }
     } catch (e) {
+      console.error(e);
       setError("Authentication failed. Please check your password.");
     } finally {
       setIsAuthenticating(false);
     }
-  };
+  }, [password, reauthenticate]);
 
-  const handleUpdateEmail = async () => {
+  const handleClose = useCallback(() => {
+    setPassword("");
+    setNewEmail("");
+    setError("");
+    setStep("password");
+    onClose();
+  }, [onClose]);
+
+  const handleUpdateEmail = useCallback(async () => {
     if (!newEmail) {
       setError("Please enter an email address");
       return;
@@ -76,38 +85,32 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     } finally {
       setIsUpdating(false);
     }
-  };
-
-  const handleClose = () => {
-    setPassword("");
-    setNewEmail("");
-    setError("");
-    setStep("password");
-    onClose();
-  };
+  }, [newEmail, formik, handleClose]);
 
   return (
-    <Modal visible={isVisible} onClose={handleClose}>
-      <View className="bg-white rounded-2xl p-6 w-full max-w-sm">
+    <Modal visible={isVisible} title="Email Verification" onClose={handleClose}>
+      <View className="bg-white dark:bg-black rounded-2xl p-6 w-full max-w-sm">
         {step === "password" ? (
           <>
-            <Text className="text-xl font-bold text-gray-800 mb-2">
+            <Text className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               Verify Your Identity
             </Text>
-            <Text className="text-sm font-medium text-gray-600 mb-6">
+            <Text className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-6">
               Please enter your password to change your email address
             </Text>
 
             <View className="mb-6">
-              <Text className="text-gray-700 font-medium mb-2">Password</Text>
-              <View className="flex-row items-center border border-gray-300 rounded-lg px-4 ">
+              <Text className="text-gray-700 dark:text-gray-300 font-medium mb-2">
+                Password
+              </Text>
+              <View className="flex-row items-center border border-gray-300 dark:border-gray-700 rounded-lg px-4 ">
                 <TextInput
                   placeholder="Enter your password"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
                   placeholderTextColor="#999"
-                  className="flex-1 text-gray-800"
+                  className="flex-1 text-gray-800 dark:text-gray-200"
                 />
                 <Pressable
                   onPress={() => setShowPassword(!showPassword)}
@@ -136,9 +139,9 @@ export const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
             <View className="flex-row gap-3">
               <Pressable
                 onPress={handleClose}
-                className="flex-1 border border-gray-300 rounded-lg py-3"
+                className="flex-1 border border-gray-300 dark:border-gray-700 rounded-lg py-3"
               >
-                <Text className="text-gray-800 font-semibold text-center">
+                <Text className="text-gray-800 dark:text-gray-200 font-semibold text-center">
                   Cancel
                 </Text>
               </Pressable>

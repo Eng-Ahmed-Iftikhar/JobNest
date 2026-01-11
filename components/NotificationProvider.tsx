@@ -1,19 +1,37 @@
-import React, { useEffect } from "react";
-import { View } from "react-native";
 import ErrorToast from "@/components/ErrorToast";
 import SuccessToast from "@/components/SuccessToast";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import {
+  disposeSocketNotificationResponseHandler,
+  initSocketNotificationResponseHandler,
+} from "@/store/middleware/socketMiddleware";
+import {
+  disposeUserNotificationResponseHandler,
+  initUserNotificationResponseHandler,
+} from "@/store/middleware/userNotificationMiddleware";
 import {
   NotificationType,
   removeNotification,
   selectNotifications,
 } from "@/store/reducers/notificationSlice";
-import { useAppSelector } from "@/hooks/useAppSelector";
+import React, { useEffect } from "react";
+import { View } from "react-native";
 
 export default function NotificationProvider() {
   const notifications = useAppSelector(selectNotifications);
   const dispatch = useAppDispatch();
   console.log("Notifications:", notifications);
+
+  // Register notification response listeners once
+  useEffect(() => {
+    initUserNotificationResponseHandler();
+    initSocketNotificationResponseHandler();
+    return () => {
+      disposeUserNotificationResponseHandler();
+      disposeSocketNotificationResponseHandler();
+    };
+  }, []);
 
   // Auto-remove notifications after their duration
   useEffect(() => {
@@ -29,6 +47,7 @@ export default function NotificationProvider() {
     });
 
     return () => {
+      // Cleanup timers when notifications change or unmount
       timers.forEach((timer) => {
         if (timer) clearTimeout(timer);
       });

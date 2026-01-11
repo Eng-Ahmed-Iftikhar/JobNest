@@ -78,7 +78,7 @@ function PhoneVerificationScreen() {
   };
 
   return (
-    <View className="flex-1 bg-white px-4 pt-6">
+    <View className="flex-1 bg-white dark:bg-black px-4 pt-6">
       <View className="flex-1 justify-start">
         <View className="mb-6 flex-col gap-6 w-[80%]  mx-auto">
           <OtpInput

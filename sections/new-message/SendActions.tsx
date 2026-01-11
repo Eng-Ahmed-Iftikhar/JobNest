@@ -90,7 +90,7 @@ function SendActions({
   };
 
   return (
-    <View className="px-4 py-3 bg-white border-t border-gray-200">
+    <View className="px-4 py-3 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700">
       <View className="flex-row items-center gap-2 mb-2">
         <Pressable onPress={handleFileAttach} className="p-2">
           <Ionicons name="attach" size={20} color="#6B7280" />
@@ -102,7 +102,7 @@ function SendActions({
       <View className="flex-row items-center gap-2">
         <TextArea
           numberOfLines={2}
-          className="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-base text-gray-900 border border-gray-200"
+          className="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-base dark:bg-black border border-gray-200"
           placeholder="Type a message"
           placeholderTextColor="#9CA3AF"
           onChangeText={handleTextChange}

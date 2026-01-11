@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 type ShareDropdownProps = {
@@ -24,7 +24,7 @@ export default function ShareDropdown({
   return (
     <View
       style={{ boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}
-      className="absolute top-0 right-0 bg-white rounded-xl overflow-visible shadow-xl border border-gray-200 z-50 w-[23rem] p-4"
+      className="absolute top-0 right-0 bg-white dark:bg-black rounded-xl overflow-visible shadow-xl border border-gray-200 dark:border-gray-700 z-50 w-[23rem] p-4"
     >
       <Text className="text-base text-gray-500 mb-3">Copy link to post</Text>
 

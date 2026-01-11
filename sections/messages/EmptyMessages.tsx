@@ -1,6 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 function EmptyMessages() {
   return (
@@ -12,7 +12,7 @@ function EmptyMessages() {
           color="#9ca3af"
         />
       </View>
-      <Text className="text-base font-semibold text-gray-900 mb-1 text-center">
+      <Text className="text-base font-semibold dark:bg-black mb-1 text-center">
         No messages yet
       </Text>
       <Text className="text-sm font-medium text-gray-500 text-center mb-4">

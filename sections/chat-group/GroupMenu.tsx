@@ -3,10 +3,10 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import useChat from "@/hooks/useChat";
 import { selectUser } from "@/store/reducers/userSlice";
 import { CHAT_USER_ROLE } from "@/types/chat";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { Modal, Pressable, View, TouchableOpacity, Text } from "react-native";
+import { Modal, Pressable, Text, TouchableOpacity, View } from "react-native";
 
 interface GroupMenuProps {
   visible: boolean;
@@ -67,7 +67,7 @@ const GroupMenu: React.FC<GroupMenuProps> = ({
               }}
             >
               <Ionicons name="pencil" size={16} color="#111827" />
-              <Text className="text-gray-900">Edit Group</Text>
+              <Text className="dark:bg-black">Edit Group</Text>
             </TouchableOpacity>
           )}
           {!isAdmin && (
@@ -80,7 +80,7 @@ const GroupMenu: React.FC<GroupMenuProps> = ({
                   iconSize: 16,
                   iconPosition: "left",
                   iconColor: "red",
-                  textProps: { className: "text-gray-900 text-start " },
+                  textProps: { className: "dark:bg-black text-start " },
                   text: "Block Group",
                   className: " py-3 px-4 w-full items-start ",
                 }}
@@ -104,7 +104,7 @@ const GroupMenu: React.FC<GroupMenuProps> = ({
                   iconSize: 16,
                   iconPosition: "left",
                   iconColor: "red",
-                  textProps: { className: "text-gray-900 text-start " },
+                  textProps: { className: "dark:bg-black text-start " },
                   text: "Leave Group",
                   className: " py-3 px-4 w-full items-start ",
                 }}
@@ -132,7 +132,7 @@ const GroupMenu: React.FC<GroupMenuProps> = ({
                 iconSize: 16,
                 iconPosition: "left",
                 iconColor: "red",
-                textProps: { className: "text-gray-900 text-start " },
+                textProps: { className: "dark:bg-black text-start " },
                 text: "Delete Group",
                 className: " py-3 px-4 w-full items-start ",
               }}

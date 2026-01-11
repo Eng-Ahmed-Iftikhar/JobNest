@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
-import ProfileImage from "./ProfileImage";
-import GroupMemberList from "./GroupMemberList";
-import GroupMenu from "./GroupMenu";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import useChat from "@/hooks/useChat";
 import { useDeleteChatGroupMutation } from "@/api/services/chatApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
+import useChat from "@/hooks/useChat";
 import {
   showErrorNotification,
   showSuccessNotification,
 } from "@/store/reducers/notificationSlice";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import GroupMemberList from "./GroupMemberList";
+import GroupMenu from "./GroupMenu";
+import ProfileImage from "./ProfileImage";
 
 interface ChatGroupDetailsProps {
   // Add props as needed, e.g. group data
@@ -47,7 +47,7 @@ const ChatGroupDetails: React.FC<ChatGroupDetailsProps> = () => {
     <FlatList
       data={chatUsers}
       keyExtractor={(item) => item.id.toString()}
-      className="bg-white p-6 pb-12"
+      className="bg-white dark:bg-black p-6 pb-12"
       ListHeaderComponent={
         <>
           {/* Top bar with Back, Edit, and Menu buttons */}
@@ -83,7 +83,7 @@ const ChatGroupDetails: React.FC<ChatGroupDetailsProps> = () => {
 
           <View className="items-center mb-8">
             <ProfileImage imageUrl={chatGroup?.iconUrl as string} size={90} />
-            <Text className="text-2xl font-bold mt-4 text-gray-900">
+            <Text className="text-2xl font-bold mt-4 dark:bg-black">
               {chatGroup?.name}
             </Text>
             <Text className="text-base text-gray-500 mt-2 text-center max-w-xs">
@@ -93,7 +93,7 @@ const ChatGroupDetails: React.FC<ChatGroupDetailsProps> = () => {
             </Text>
           </View>
           <View className="mt-4">
-            <Text className="text-lg font-semibold mb-3 text-gray-900">
+            <Text className="text-lg font-semibold mb-3 dark:bg-black">
               Group Members
             </Text>
           </View>

@@ -1,20 +1,20 @@
+import { useDeleteChatMutation } from "@/api/services/chatApi";
 import ConfirmationButton from "@/components/ConfirmationButton";
 import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
-import useChat from "@/hooks/useChat";
-import { Chat } from "@/types/chat";
-import { useRouter } from "expo-router";
-import moment from "moment";
-import { Pressable, Text, View } from "react-native";
-import SwipeableItem from "react-native-swipeable-item";
-import LastMessage from "./LastMessage";
-import { useCallback } from "react";
-import { useDeleteChatMutation } from "@/api/services/chatApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
+import useChat from "@/hooks/useChat";
 import {
   showErrorNotification,
   showSuccessNotification,
 } from "@/store/reducers/notificationSlice";
+import { Chat } from "@/types/chat";
+import { useRouter } from "expo-router";
+import moment from "moment";
+import { useCallback } from "react";
+import { Pressable, Text, View } from "react-native";
+import SwipeableItem from "react-native-swipeable-item";
+import LastMessage from "./LastMessage";
 
 function ConversationRow({ item }: { item: Chat }) {
   const {
@@ -49,7 +49,7 @@ function ConversationRow({ item }: { item: Chat }) {
       console.error("Failed to delete chat:", error);
       dispatch(showErrorNotification("Failed to delete chat"));
     }
-  }, [item]);
+  }, [deleteChat, dispatch, item.id]);
 
   const rightContent = (
     <View className="  h-full pr-2">
@@ -83,12 +83,12 @@ function ConversationRow({ item }: { item: Chat }) {
     >
       <Pressable
         onPress={handlePress}
-        className="flex-row items-center gap-3 px-4 py-3 bg-white border-b border-gray-100"
+        className="flex-row items-center gap-3 px-4 py-3 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700"
       >
         <Avatar name={chatName} imageUrl={chatIconUrl} />
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
-            <Text className="text-base font-semibold text-gray-900">
+            <Text className="text-base font-semibold dark:bg-black">
               {chatName}
             </Text>
             {unreedMessagesCount > 0 && <Badge count={unreedMessagesCount} />}

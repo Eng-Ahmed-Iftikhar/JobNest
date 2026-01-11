@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, TextInput, FlatList } from "react-native";
+import Pagination from "@/components/Pagination";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import Pagination from "@/components/Pagination";
+import React, { useState } from "react";
+import { FlatList, Pressable, Text, TextInput, View } from "react-native";
 
 type TabKey = "connections" | "mutual";
 
@@ -81,7 +81,7 @@ export default function ConnectionsList({
         <Ionicons name="person" size={24} color="white" />
       </View>
       <View className="flex-1">
-        <Text className="text-base font-semibold text-gray-900">
+        <Text className="text-base font-semibold dark:bg-black">
           {item.name}
         </Text>
         <Text className="text-sm font-medium text-gray-600">
@@ -120,7 +120,7 @@ export default function ConnectionsList({
   return (
     <View className="flex-1 bg-gray-50">
       {/* Tab Navigation */}
-      <View className="flex-row border-b border-gray-200 bg-white px-4">
+      <View className="flex-row border-b border-gray-200 bg-white dark:bg-black px-4">
         <Pressable
           onPress={() => {
             setActiveTab("connections");
@@ -193,21 +193,21 @@ export default function ConnectionsList({
       </View>
 
       {/* Search Bar */}
-      <View className="px-4 py-3 bg-white border-b border-gray-100">
-        <View className="flex-row items-center bg-gray-50 rounded-lg px-3 h-10">
+      <View className="px-4 py-3 bg-white dark:bg-black border-b border-gray-100">
+        <View className="flex-row items-center bg-gray-50 dark:bg-gray-800 rounded-lg px-3 h-10">
           <Ionicons name="search" size={18} color="#9CA3AF" />
           <TextInput
             value={searchQuery}
             onChangeText={setSearchQuery}
             placeholder="Search"
             placeholderTextColor="#9CA3AF"
-            className="flex-1 ml-2 text-sm font-medium text-gray-900"
+            className="flex-1 ml-2 text-sm font-medium dark:bg-black"
           />
         </View>
       </View>
 
       {/* Connections List */}
-      <View className="flex-1 bg-white">
+      <View className="flex-1 bg-white dark:bg-black">
         <FlatList
           data={paginatedConnections}
           keyExtractor={(item) => item.id}

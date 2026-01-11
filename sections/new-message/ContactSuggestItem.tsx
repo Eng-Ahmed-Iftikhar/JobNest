@@ -19,13 +19,13 @@ function ContactSuggestItem({
   return (
     <Pressable
       onPress={onPress}
-      className="flex-row items-center gap-3 px-4 py-3 bg-white border-b border-gray-100"
+      className="flex-row items-center gap-3 px-4 py-3 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700"
     >
       <Avatar
         imageUrl={contactUser?.profile.pictureUrl || ""}
         name={`${contactUser?.profile.firstName} ${contactUser?.profile.lastName}`}
       />
-      <Text className="text-base font-semibold text-gray-900">{`${contactUser?.profile.firstName} ${contactUser?.profile.lastName}`}</Text>
+      <Text className="text-base font-semibold dark:bg-black">{`${contactUser?.profile.firstName} ${contactUser?.profile.lastName}`}</Text>
     </Pressable>
   );
 }

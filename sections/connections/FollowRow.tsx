@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { Text, TouchableOpacity, View, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import Icon from "react-native-vector-icons/Ionicons";
+import LocationText from "@/components/LocationText";
 import Avatar from "@/components/ui/Avatar";
 import { Follower } from "@/types/follower";
-import LocationText from "@/components/LocationText";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export interface FollowedCompany {
   id: string;
@@ -36,7 +36,7 @@ export function FollowRow({ item }: FollowRowProps) {
   return (
     <TouchableOpacity
       onPress={handlePress}
-      className="flex-row items-center px-4 py-3 bg-white"
+      className="flex-row items-center px-4 py-3 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700  "
       activeOpacity={0.7}
     >
       <View className="mr-3">
@@ -50,10 +50,10 @@ export function FollowRow({ item }: FollowRowProps) {
       </View>
 
       <View className="flex-1">
-        <Text className="text-base font-semibold text-gray-900">
+        <Text className="text-base font-semibold dark:bg-black">
           {item.company?.name}
         </Text>
-        <LocationText location={item.company?.profile.location} />
+        <LocationText location={item.company?.profile?.location} />
       </View>
 
       <Pressable onPress={handleMenu} className="p-2">

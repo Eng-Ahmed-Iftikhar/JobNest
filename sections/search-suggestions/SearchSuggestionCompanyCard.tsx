@@ -55,7 +55,7 @@ function SearchSuggestionCompanyCard({ item }: { item: SuggestedCompany }) {
         )}
         <View>
           <Text
-            className="text-base font-semibold text-gray-900"
+            className="text-base font-semibold dark:bg-black"
             numberOfLines={1}
           >
             {item.name}
@@ -67,7 +67,11 @@ function SearchSuggestionCompanyCard({ item }: { item: SuggestedCompany }) {
         </View>
       </View>
       <Pressable
-        className={`px-4 py-2 rounded-lg border ${isFollowed ? "bg-gray-100 border-gray-300" : "bg-azure-radiance-50 border-azure-radiance-200"}`}
+        className={`px-4 py-2 rounded-lg border ${
+          isFollowed
+            ? "bg-gray-100 border-gray-300"
+            : "bg-azure-radiance-50 border-azure-radiance-200"
+        }`}
         onPress={handleFollowToggle}
         disabled={isFollowLoading || isUnfollowLoading}
       >
@@ -75,7 +79,9 @@ function SearchSuggestionCompanyCard({ item }: { item: SuggestedCompany }) {
           <ActivityIndicator size="small" color="#3b82f6" />
         ) : (
           <Text
-            className={`text-sm font-medium ${isFollowed ? "text-gray-500" : "text-azure-radiance-500"}`}
+            className={`text-sm font-medium ${
+              isFollowed ? "text-gray-500" : "text-azure-radiance-500"
+            }`}
           >
             {isFollowed ? "Unfollow" : "Follow"}
           </Text>

@@ -1,12 +1,12 @@
-import React, { useMemo } from "react";
-import { Pressable, Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Connection } from "@/types/connection";
+import LocationText from "@/components/LocationText";
 import Avatar from "@/components/ui/Avatar";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectUser } from "@/store/reducers/userSlice";
-import LocationText from "@/components/LocationText";
+import { Connection } from "@/types/connection";
 import { Location } from "@/types/user";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useMemo } from "react";
+import { Pressable, Text, View } from "react-native";
 
 const ACCENT = "#1eadff";
 
@@ -44,12 +44,12 @@ export function ConnectionRow({ item }: { item: Connection }) {
   }, [item, user]);
 
   return (
-    <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+    <View className="flex-row items-center justify-between px-4 py-3 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700">
       <View className="flex-row items-center gap-3 flex-1">
         <Avatar size={48} imageUrl={userPicture} name={userName} />
         <View className="flex-1">
           <Text
-            className="text-base font-semibold text-gray-900"
+            className="text-base font-semibold dark:bg-black dark:text-gray-100"
             numberOfLines={1}
           >
             {userName}

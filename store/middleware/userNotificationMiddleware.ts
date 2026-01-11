@@ -1,12 +1,12 @@
 import { authApi } from "@/api/services/authApi";
+import { chatApi } from "@/api/services/chatApi";
 import { createListenerMiddleware } from "@reduxjs/toolkit";
+import * as Notifications from "expo-notifications";
+import { router } from "expo-router";
 import {
   showErrorNotification,
   showSuccessNotification,
 } from "../reducers/notificationSlice";
-import { chatApi } from "@/api/services/chatApi";
-import * as Notifications from "expo-notifications";
-import { router } from "expo-router";
 export const userNotificationMiddleware = createListenerMiddleware();
 
 const unReadNotifications: string[] = [];
@@ -46,7 +46,9 @@ userNotificationMiddleware.startListening({
       const notificationId = await Notifications.scheduleNotificationAsync({
         content: {
           title: "New Unread Message",
-          body: `You have ${unreadMessages.length} unread message${unreadMessages.length > 1 ? "s" : ""}.`,
+          body: `You have ${unreadMessages.length} unread message${
+            unreadMessages.length > 1 ? "s" : ""
+          }.`,
           sound: "default",
         },
         trigger: null,
@@ -56,13 +58,27 @@ userNotificationMiddleware.startListening({
   },
 });
 
-Notifications.addNotificationResponseReceivedListener((response) => {
-  if (unReadNotifications.includes(response.notification.request.identifier)) {
-    // redirect to messages screen
-    router.push("/messages");
-    //dismiss the notification
-    Notifications.dismissNotificationAsync(
-      response.notification.request.identifier
-    );
-  }
-});
+let userNotifResponseSubscription: Notifications.Subscription | null = null;
+
+export const initUserNotificationResponseHandler = () => {
+  if (userNotifResponseSubscription) return;
+  userNotifResponseSubscription =
+    Notifications.addNotificationResponseReceivedListener((response) => {
+      if (
+        unReadNotifications.includes(response.notification.request.identifier)
+      ) {
+        try {
+          router.push("/messages");
+        } finally {
+          Notifications.dismissNotificationAsync(
+            response.notification.request.identifier
+          );
+        }
+      }
+    });
+};
+
+export const disposeUserNotificationResponseHandler = () => {
+  userNotifResponseSubscription?.remove();
+  userNotifResponseSubscription = null;
+};

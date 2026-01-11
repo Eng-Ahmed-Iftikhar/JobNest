@@ -1,10 +1,9 @@
+import { useAsyncStorage } from "@/hooks/useAsyncStorage";
 import { useSearch } from "@/hooks/useSearch";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
-import { Pressable } from "react-native";
-import { Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useAsyncStorage } from "@/hooks/useAsyncStorage";
+import { Pressable, Text, View } from "react-native";
 
 function PopluarSearch() {
   const { setSearchQuery } = useSearch();
@@ -44,7 +43,7 @@ function PopluarSearch() {
               color="#9CA3AF"
               style={{ marginRight: 12 }}
             />
-            <Text className="text-base flex-1 text-gray-900">{item}</Text>
+            <Text className="text-base flex-1 dark:bg-black">{item}</Text>
           </Pressable>
           <Pressable
             onPress={() => handleRemovePopularSearch(item)}

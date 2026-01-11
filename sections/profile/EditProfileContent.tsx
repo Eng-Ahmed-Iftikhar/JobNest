@@ -16,7 +16,7 @@ import { selectUser, selectUserProfile } from "@/store/reducers/userSlice";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { Formik, FormikHelpers } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -54,19 +54,19 @@ interface EditProfileFormValues {
   };
   profilePicture: string | null;
   cvFile: string | null;
-  experiences: Array<{
+  experiences: {
     position: string;
     company: string;
     startDate: string;
     endDate: string;
     current: boolean;
-  }>;
-  educations: Array<{
+  }[];
+  educations: {
     degree: string;
     institution: string;
     startDate: string;
     endDate: string;
-  }>;
+  }[];
   skillIds: string[];
   bio: string;
 }
@@ -123,7 +123,7 @@ const FloatingActions: React.FC<{
         opacity,
       }}
     >
-      <View className="px-4 py-4 bg-white border-t border-gray-200">
+      <View className="px-4 py-4 bg-white dark:bg-black border-t border-gray-700">
         <View className="flex-row items-center gap-3">
           <TouchableOpacity
             onPress={onSubmit}
@@ -142,10 +142,10 @@ const FloatingActions: React.FC<{
 
           <TouchableOpacity
             onPress={onCancel}
-            className="border-2 border-gray-200 bg-white h-12 rounded-xl flex-1 items-center justify-center"
+            className="border-2 border-gray-200 bg-white dark:bg-gray-800 h-12 rounded-xl flex-1 items-center justify-center"
             activeOpacity={0.8}
           >
-            <Text className="text-gray-700 font-semibold text-base">
+            <Text className="text-gray-700 dark:text-gray-200 font-semibold text-base">
               Cancel
             </Text>
           </TouchableOpacity>
@@ -230,17 +230,19 @@ export default function EditProfileContent() {
     setInitialValues((prev) => {
       return {
         ...prev,
-        firstName: userProfile?.generalInfo?.firstName || "",
-        lastName: userProfile?.generalInfo?.lastName || "",
-        location: userProfile?.location?.address || "",
+        firstName: userProfile?.firstName || "",
+        lastName: userProfile?.lastName || "",
+        location: userProfile?.address || "",
         city: userProfile?.location?.city || "",
         state: userProfile?.location?.state || "",
         country: userProfile?.location?.country || "",
-        address: userProfile?.location?.address || "",
+        address: userProfile?.address || "",
         phoneNumber: {
-          countryCode: userProfile?.phoneNumber?.countryCode || "+1",
-          number: userProfile?.phoneNumber?.number || "",
-          isVerified: userProfile?.phoneNumber?.isVerified || false,
+          countryCode:
+            userProfile?.userPhoneNumbers?.[0]?.phoneNumber.countryCode || "+1",
+          number: userProfile?.userPhoneNumbers?.[0]?.phoneNumber.number || "",
+          isVerified:
+            userProfile?.userPhoneNumbers?.[0]?.phoneNumber.isVerified || false,
         },
         profilePicture: userProfile?.pictureUrl || null,
         cvFile: userProfile?.resumeUrl || null,
@@ -280,84 +282,99 @@ export default function EditProfileContent() {
     }));
   }, [user]);
 
-  const handleSubmit = async (
-    values: EditProfileFormValues,
-    { setSubmitting }: FormikHelpers<EditProfileFormValues>
-  ) => {
-    try {
-      setIsSubmitting(true);
+  const handleSubmit = useCallback(
+    async (
+      values: EditProfileFormValues,
+      { setSubmitting }: FormikHelpers<EditProfileFormValues>
+    ) => {
+      try {
+        setIsSubmitting(true);
 
-      // Update general info
-      await updateGeneralInfo({
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-      }).unwrap();
-
-      if (
-        values.phoneNumber.number !== userProfile?.phoneNumber?.number ||
-        values.phoneNumber.countryCode !== userProfile?.phoneNumber?.countryCode
-      ) {
-        // Phone number has changed, mark as unverified
-        await updatePhoneNumber({
-          countryCode: values.phoneNumber.countryCode,
-          number: values.phoneNumber.number,
-          isVerified: false,
+        // Update general info
+        await updateGeneralInfo({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
         }).unwrap();
-      }
 
-      // Update location info
-      await updateLocation({
-        country: values.country,
-        state: values.state,
-        city: values.city,
-        address: values.address || values.location,
-      }).unwrap();
+        if (
+          values.phoneNumber.number !==
+            userProfile?.userPhoneNumbers?.[0]?.phoneNumber.number ||
+          values.phoneNumber.countryCode !==
+            userProfile?.userPhoneNumbers?.[0]?.phoneNumber.countryCode
+        ) {
+          // Phone number has changed, mark as unverified
+          await updatePhoneNumber({
+            countryCode: values.phoneNumber.countryCode,
+            number: values.phoneNumber.number,
+            isVerified: false,
+          }).unwrap();
+        }
 
-      // Update profile picture if changed
-      if (
-        values.profilePicture &&
-        values.profilePicture !== userProfile?.pictureUrl
-      ) {
-        await updateProfilePicture({
-          pictureUrl: values.profilePicture,
+        // Update location info
+        await updateLocation({
+          country: values.country,
+          state: values.state,
+          city: values.city,
+          address: values.address || values.location,
         }).unwrap();
-      }
 
-      // Update CV details
-      await updateCvDetails({
-        bio: values.bio,
-        experiences: values.experiences.map((exp) => ({
-          position: exp.position,
-          company: exp.company,
-          startDate: exp.startDate,
-          endDate: exp.endDate,
-          isCurrent: exp.current,
-        })),
-        educations: values.educations.map((edu) => ({
-          school: edu.institution,
-          degree: edu.degree,
-          yearStarted: parseInt(edu.startDate),
-          yearGraduated: edu.endDate ? parseInt(edu.endDate) : undefined,
-        })),
-        skillIds: values.skillIds,
-        resumeUrl: values.cvFile as string,
-      }).unwrap();
-      refetchCvDetails();
-      dispatch(showSuccessNotification("Profile updated successfully"));
-    } catch (error) {
-      dispatch(
-        showErrorNotification("Failed to update profile. Please try again.")
-      );
-    } finally {
-      setIsSubmitting(false);
-      setSubmitting(false);
-    }
-  };
+        // Update profile picture if changed
+        if (
+          values.profilePicture &&
+          values.profilePicture !== userProfile?.pictureUrl
+        ) {
+          await updateProfilePicture({
+            pictureUrl: values.profilePicture,
+          }).unwrap();
+        }
+
+        // Update CV details
+        await updateCvDetails({
+          bio: values.bio,
+          experiences: values.experiences.map((exp) => ({
+            position: exp.position,
+            company: exp.company,
+            startDate: exp.startDate,
+            endDate: exp.endDate,
+            isCurrent: exp.current,
+          })),
+          educations: values.educations.map((edu) => ({
+            school: edu.institution,
+            degree: edu.degree,
+            yearStarted: parseInt(edu.startDate),
+            yearGraduated: edu.endDate ? parseInt(edu.endDate) : undefined,
+          })),
+          skillIds: values.skillIds,
+          resumeUrl: values.cvFile as string,
+        }).unwrap();
+        refetchCvDetails();
+        dispatch(showSuccessNotification("Profile updated successfully"));
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+        dispatch(
+          showErrorNotification("Failed to update profile. Please try again.")
+        );
+      } finally {
+        setIsSubmitting(false);
+        setSubmitting(false);
+      }
+    },
+    [
+      dispatch,
+      refetchCvDetails,
+      updateCvDetails,
+      updateGeneralInfo,
+      updateLocation,
+      updatePhoneNumber,
+      updateProfilePicture,
+      userProfile,
+    ]
+  );
 
   if (isCvDetailsLoading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <View className="flex-1 items-center justify-center bg-white dark:bg-black">
         <ActivityIndicator size="large" color="#1eadff" />
       </View>
     );
@@ -425,7 +442,7 @@ export default function EditProfileContent() {
         );
 
         return (
-          <View className="flex-1 bg-white">
+          <View className="flex-1 bg-white dark:bg-black">
             <ScrollView
               refreshControl={
                 <RefreshControl
@@ -449,7 +466,7 @@ export default function EditProfileContent() {
               <View className="px-4 pt-4">
                 {/* Profile Picture */}
                 <View className="mb-6">
-                  <Text className="text-base font-semibold text-gray-900 mb-3">
+                  <Text className="text-base font-semibold text-gray-900 dark:text-gray-100 mb-3">
                     Profile picture
                   </Text>
                   <Pressable onPress={pickImage} className="relative">

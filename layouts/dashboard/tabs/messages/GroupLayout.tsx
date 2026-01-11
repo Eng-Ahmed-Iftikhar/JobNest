@@ -4,7 +4,7 @@ import { View } from "react-native";
 
 function ChatGroupLayout() {
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       <Slot />
     </View>
   );

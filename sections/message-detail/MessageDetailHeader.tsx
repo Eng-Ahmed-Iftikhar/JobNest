@@ -31,7 +31,7 @@ function MessageDetailHeader() {
   }, [router, id]);
 
   return (
-    <View className="flex-row items-center gap-3 px-4 py-3 bg-white border-b border-gray-200">
+    <View className="flex-row items-center gap-3 px-4 py-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700">
       <Pressable onPress={handleBack} className="p-2 -ml-2">
         <Ionicons name="chevron-back" size={24} color="#1F2937" />
       </Pressable>
@@ -40,7 +40,7 @@ function MessageDetailHeader() {
         className="flex-row items-center gap-3 p-2 -ml-2"
       >
         <Avatar name={chatName} imageUrl={chatIconUrl} size={36} />
-        <Text className="text-base font-semibold text-gray-900">
+        <Text className="text-base font-semibold dark:bg-black">
           {chatName}
         </Text>
       </TouchableOpacity>

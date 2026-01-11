@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
-import { FlatList, Pressable, Text, View, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useMemo, useState } from "react";
+import { FlatList, Image, Pressable, Text, View } from "react-native";
 
 const ACCENT = "#1eadff";
 
@@ -89,7 +89,7 @@ function TabButton({
       <Text
         className={
           "text-base font-semibold " +
-          (active ? "text-gray-900" : "text-gray-400")
+          (active ? "dark:bg-black" : "text-gray-400")
         }
       >
         {label}
@@ -111,7 +111,7 @@ function InterviewNotification({
   notification: Notification;
 }) {
   return (
-    <View className="px-4 py-4 bg-white border-b border-gray-100">
+    <View className="px-4 py-4 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700">
       <View className="flex-row items-start gap-3">
         {!notification.read && (
           <View className="w-2 h-2 rounded-full bg-red-500 mt-3" />
@@ -135,7 +135,7 @@ function InterviewNotification({
         </View>
 
         <View className="flex-1">
-          <Text className="text-base font-semibold text-gray-900">
+          <Text className="text-base font-semibold dark:bg-black">
             Job interview scheduled with{" "}
             <Text className="font-bold">{notification.companyName}</Text>
           </Text>
@@ -166,7 +166,7 @@ function ConnectionNotification({
 
   if (status === "accepted") {
     return (
-      <View className="px-4 py-4 bg-white border-b border-gray-100">
+      <View className="px-4 py-4 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700">
         <View className="flex-row items-center gap-3">
           {!notification.read && (
             <View className="w-2 h-2 rounded-full bg-red-500" />
@@ -199,7 +199,7 @@ function ConnectionNotification({
   }
 
   return (
-    <View className="px-4 py-4 bg-white border-b border-gray-100">
+    <View className="px-4 py-4 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700  ">
       <View className="flex-row items-start gap-3">
         {!notification.read && (
           <View className="w-2 h-2 rounded-full bg-red-500 mt-1" />
@@ -220,7 +220,7 @@ function ConnectionNotification({
         </View>
 
         <View className="flex-1">
-          <Text className="text-base font-semibold text-gray-900">
+          <Text className="text-base font-semibold dark:bg-black">
             <Text className="font-bold">{notification.userName}</Text> wants to
             connect
           </Text>
@@ -280,8 +280,8 @@ export default function NotificationsContent({
 
   return (
     <View className="flex-1 bg-gray-50">
-      <View className="flex-row items-center justify-between px-4 py-3 bg-white border-b border-gray-200">
-        <Text className="text-lg font-semibold text-gray-900">
+      <View className="flex-row items-center justify-between px-4 py-3 bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700">
+        <Text className="text-lg font-semibold dark:bg-black dark:text-gray-100">
           Notifications
         </Text>
         <Pressable onPress={onClose} className="p-2">
@@ -289,7 +289,7 @@ export default function NotificationsContent({
         </Pressable>
       </View>
 
-      <View className="flex-row bg-white border-b border-gray-200">
+      <View className="flex-row bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700">
         <TabButton
           label="All"
           count={unreadCount}
@@ -313,7 +313,7 @@ export default function NotificationsContent({
               color="#9ca3af"
             />
           </View>
-          <Text className="text-base font-semibold text-gray-900 mb-1 text-center">
+          <Text className="text-base font-semibold dark:bg-black mb-1 text-center">
             No notifications
           </Text>
           <Text className="text-sm font-medium text-gray-500 text-center">

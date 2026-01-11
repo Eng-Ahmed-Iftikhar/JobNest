@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { View, Text, Pressable } from "react-native";
-import { useFormikContext } from "formik";
 import * as DocumentPicker from "expo-document-picker";
+import { useFormikContext } from "formik";
+import React, { useState } from "react";
+import { Pressable, Text, View } from "react-native";
 
 interface FormValues {
   cvFile: { uri: string; name: string; size?: number } | null;
@@ -37,8 +37,8 @@ export const CVSection: React.FC = () => {
   };
 
   return (
-    <View className="px-4 py-6 bg-white rounded-lg mb-4">
-      <Text className="text-lg font-semibold text-gray-800 mb-4">
+    <View className="px-4 py-6 bg-white dark:bg-black rounded-lg mb-4">
+      <Text className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
         CV/Resume
       </Text>
 

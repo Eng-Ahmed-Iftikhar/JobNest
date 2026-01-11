@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from "react";
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
   useColorScheme,
+  View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Octicons"; // or 'react-native-vector-icons/Ionicons'
 
@@ -31,7 +31,7 @@ export default function Input({
         return (
           <TextInput
             placeholderTextColor={colorScheme === "dark" ? "#d1d5db" : "gray"}
-            className={`border min-h-12 dark:text-white  font-medium ${
+            className={`border dark:border-gray-600 min-h-12 dark:text-white  font-medium ${
               isError ? "border-red-500" : "border-gray-300"
             }  rounded-lg px-4 py-2 text-base`}
             {...props}
@@ -42,13 +42,15 @@ export default function Input({
         return (
           <View
             className={`flex-row min-h-12 items-center border ${
-              isError ? "border-red-500" : "border-gray-300 "
+              isError
+                ? "border-red-500"
+                : "border-gray-300 dark:border-gray-600"
             } rounded-lg px-3`}
           >
             <TextInput
               secureTextEntry={!passwordVisible}
               placeholderTextColor={colorScheme === "dark" ? "#d1d5db" : "gray"}
-              className="flex-1 py-2 text-base font-medium"
+              className="flex-1 py-2 text-base font-medium dark:text-white "
               {...props}
             />
             <TouchableOpacity
@@ -66,7 +68,7 @@ export default function Input({
       default:
         return (
           <TextInput
-            className="border min-h-12 font-medium border-gray-300 rounded-lg  text-base"
+            className="border min-h-12 font-medium border-gray-300 dark:border-gray-600 rounded-lg  text-base"
             {...props}
           />
         );

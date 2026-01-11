@@ -34,7 +34,7 @@ export default function SearchJobResultCard({ job, onPress }: Props) {
       <View className="flex-row items-start gap-3">
         <View className="flex-1">
           <Text
-            className="text-base font-semibold text-gray-900"
+            className="text-base font-semibold dark:bg-black"
             numberOfLines={2}
           >
             {job.name}
@@ -56,7 +56,9 @@ export default function SearchJobResultCard({ job, onPress }: Props) {
             {[
               company?.name,
               job.location
-                ? `• ${job.location.city ? job.location.city : ""} ${job.location.state ? ", " + job.location.state : ""} ${job.location.country ? ", " + job.location.country : ""}`
+                ? `• ${job.location.city ? job.location.city : ""} ${
+                    job.location.state ? ", " + job.location.state : ""
+                  } ${job.location.country ? ", " + job.location.country : ""}`
                 : null,
             ]
               .filter(Boolean)

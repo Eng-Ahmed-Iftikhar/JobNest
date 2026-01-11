@@ -36,7 +36,7 @@ export default function SearchResultCard({
     >
       <View className="flex-1">
         <Text
-          className="text-base font-semibold text-gray-900"
+          className="text-base font-semibold dark:bg-black"
           numberOfLines={2}
         >
           {job.name}

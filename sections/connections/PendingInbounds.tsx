@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { FlatList, View } from "react-native";
+import { useLazyGetMeConnectionRequestsQuery } from "@/api/services/connectionRequestsApi";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectConnectionRequests } from "@/store/reducers/connectionRequestSlice";
 import { selectUser } from "@/store/reducers/userSlice";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { FlatList, View } from "react-native";
 import { EmptyState } from "./EmptyState";
 import { PendingRow } from "./PendingRow";
-import { useLazyGetMeConnectionRequestsQuery } from "@/api/services/connectionRequestsApi";
 
 const PAGE_SIZE = 20;
 const STATUS = "INBOUND";
@@ -49,7 +49,7 @@ function PendingInbounds() {
   }, [connectionRequests, page]);
 
   return (
-    <View className="h-[320px] bg-white">
+    <View className="h-[320px] bg-white dark:bg-black flex-1">
       <FlatList
         data={inboundRequests}
         keyExtractor={(item) => item.id}

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+import { Text, TextInput, useColorScheme, View } from "react-native";
 
 type TextAreaProps = {
   label?: string;
@@ -15,18 +15,25 @@ export default function TextArea({
   numberOfLines = 4,
   ...props
 }: TextAreaProps) {
+  const colorScheme = useColorScheme();
   const minHeight = numberOfLines * 24 + 16; // 24px per line + padding
 
   return (
     <View style={{ flex: 1, minHeight }}>
       {label && (
-        <Text className="text-sm font-medium text-gray-600 mb-1">{label}</Text>
+        <Text className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+          {label}
+        </Text>
       )}
       <TextInput
-        className={`border ${isError ? "border-red-500" : "border-gray-300"} rounded-lg px-4 py-2 text-base`}
+        className={`border dark:border-gray-600 ${
+          isError ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+        } rounded-lg px-4 py-2 text-base text-gray-800 dark:text-white `}
         style={{ minHeight }}
         multiline
         numberOfLines={numberOfLines}
+        placeholderClassName=" font-medium "
+        placeholderTextColor={colorScheme === "dark" ? "#d1d5db" : "gray"}
         textAlignVertical="top"
         {...props}
       />

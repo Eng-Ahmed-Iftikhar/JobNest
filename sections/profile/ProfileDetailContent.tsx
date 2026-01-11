@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  Pressable,
-  TouchableOpacity,
-} from "react-native";
+import ConnectionsList from "@/sections/profile/ConnectionsList";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import ConnectionsList from "@/sections/profile/ConnectionsList";
+import React, { useState } from "react";
+import {
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 interface ProfileDetailContentProps {
   userId?: string;
@@ -73,7 +72,7 @@ export default function ProfileDetailContent({
 
           {/* Name and Info */}
           <View className="items-center mb-2">
-            <Text className="text-2xl font-bold text-gray-900 mb-1">
+            <Text className="text-2xl font-bold dark:bg-black mb-1">
               {mockProfile.name}
             </Text>
             <Text className="text-base text-gray-600 mb-1">
@@ -139,7 +138,7 @@ export default function ProfileDetailContent({
 
           {/* About Section */}
           <View>
-            <Text className="text-lg font-bold text-gray-900 mb-3">About</Text>
+            <Text className="text-lg font-bold dark:bg-black mb-3">About</Text>
             <Text className="text-base text-gray-700 leading-6">
               {mockProfile.about}
             </Text>

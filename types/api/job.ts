@@ -31,6 +31,7 @@ export interface SuggestedJobResponseItem {
   deletedAt?: string | null;
   location?: Location;
   isSaved: boolean;
+  isApplied: boolean;
   employers?: SuggestedJobEmployerRef[];
 }
 

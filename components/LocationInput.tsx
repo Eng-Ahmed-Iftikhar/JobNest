@@ -1,7 +1,11 @@
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
 import { useLocationSuggestions } from "@/hooks/useLocationSuggestions";
+import { showErrorNotification } from "@/store/reducers/notificationSlice";
+import { selectNativeEvent } from "@/store/reducers/uiSlice";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -11,10 +15,6 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { showErrorNotification } from "@/store/reducers/notificationSlice";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import { selectNativeEvent } from "@/store/reducers/uiSlice";
 
 interface LocationInputProps {
   value: string;
@@ -73,7 +73,9 @@ export default function LocationInput({
     const locationName = reverseGeocode[0];
     const locationString = `${locationName.city || ""}${
       locationName.city && locationName.region ? ", " : ""
-    }${locationName.region || ""}${locationName.region && locationName.country ? ", " : ""}${locationName.country || ""}`;
+    }${locationName.region || ""}${
+      locationName.region && locationName.country ? ", " : ""
+    }${locationName.country || ""}`;
 
     onChangeText(locationString);
     setInput(locationString);
@@ -102,11 +104,11 @@ export default function LocationInput({
         console.log("Clicked outside inputContainerRef");
       }
     });
-  }, [nativeEvent]);
+  }, [locationSelected, nativeEvent]);
 
   return (
     <View className="relative">
-      <View className="flex-row items-center bg-white rounded-full border border-gray-200 px-3 h-12">
+      <View className="flex-row items-center bg-white dark:bg-black rounded-full border border-gray-200 dark:border-gray-700 px-3 h-12">
         <Ionicons
           name="location-outline"
           size={20}
@@ -114,7 +116,7 @@ export default function LocationInput({
           style={{ marginRight: 8 }}
         />
         <TextInput
-          className="flex-1 text-base text-gray-900"
+          className="flex-1 text-base dark:bg-black"
           placeholder={placeholder}
           placeholderTextColor="#9CA3AF"
           value={input}
@@ -129,10 +131,10 @@ export default function LocationInput({
         )}
       </View>
       {locationSelected ? null : (
-        <View className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg mt-1 shadow-lg z-50">
+        <View className="absolute top-full left-0 right-0 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg mt-1 shadow-lg z-50">
           <Pressable
             onPress={handleUseCurrentLocation}
-            className="flex-row items-center px-4 py-3 border-b border-gray-100"
+            className="flex-row items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700  "
           >
             {fetchCurrentLocation ? (
               <ActivityIndicator
@@ -170,7 +172,7 @@ export default function LocationInput({
                   style={{ marginRight: 12, marginTop: 2 }}
                 />
                 <View className="flex-1">
-                  <Text className="text-base text-gray-900">{item}</Text>
+                  <Text className="text-base dark:bg-black">{item}</Text>
                 </View>
               </Pressable>
             )}
@@ -183,8 +185,8 @@ export default function LocationInput({
                     {isFetching
                       ? "Fetching your results..."
                       : input
-                        ? `Not results found for "${input}"`
-                        : "Type city, state or country"}
+                      ? `Not results found for "${input}"`
+                      : "Type city, state or country"}
                   </Text>
                 </View>
               </Pressable>

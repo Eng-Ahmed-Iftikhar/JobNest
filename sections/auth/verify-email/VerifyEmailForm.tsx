@@ -45,7 +45,7 @@ function VerifyEmailForm() {
         : error?.data?.message || "Failed to send verification code";
       dispatch(showErrorNotification(errorMessage));
     }
-  }, [sendEmailVerification]);
+  }, [dispatch, sendEmailVerification]);
 
   const handleVerifyCode = useCallback(
     async (values: { verificationCode: string }, { setFieldError }: any) => {
@@ -152,13 +152,17 @@ function VerifyEmailForm() {
               onPress={handleSendCode}
             >
               <Text
-                className={`${isSendAgain || isSending ? "text-gray-400" : "text-azure-radiance-500"}  text-sm font-medium  `}
+                className={`${
+                  isSendAgain || isSending
+                    ? "text-gray-400"
+                    : "text-azure-radiance-500"
+                }  text-sm font-medium  `}
               >
                 {isSending
                   ? "Sending..."
                   : isSendAgain
-                    ? "Code is sent"
-                    : "Send code again"}
+                  ? "Code is sent"
+                  : "Send code again"}
               </Text>
               {isSendAgain && (
                 <CircularCountdown

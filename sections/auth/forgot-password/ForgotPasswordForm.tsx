@@ -37,8 +37,10 @@ export default function ForgotPasswordForm() {
 
   return (
     <View className="flex-1">
-      <Text className="text-2xl font-semibold mb-2">Forgot Password</Text>
-      <Text className="text-sm font-medium text-gray-600 mb-6">
+      <Text className="text-2xl font-semibold text-black dark:text-white mb-2">
+        Forgot Password
+      </Text>
+      <Text className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-6">
         Enter your email address and we&apos;ll send you a verification code to
         reset your password
       </Text>
@@ -97,7 +99,7 @@ export default function ForgotPasswordForm() {
               Continue
             </Button>
             <View className="flex-row  mt-6 items-center gap-1">
-              <Text className="text-gray-500 text-sm font-medium">
+              <Text className="text-gray-500 dark:text-gray-400 text-sm font-medium">
                 Remember your password?
               </Text>
               <TouchableOpacity onPress={() => router.replace("/(auth)/login")}>

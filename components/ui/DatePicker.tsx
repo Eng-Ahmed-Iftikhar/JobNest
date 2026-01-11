@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
-  View,
+  FlatList,
+  Modal,
+  Pressable,
   Text,
   TouchableOpacity,
-  Modal,
-  FlatList,
-  Pressable,
+  View,
 } from "react-native";
 
 type DatePickerProps = {
@@ -131,18 +131,18 @@ function DatePicker({
   return (
     <View className="flex-1">
       {label && (
-        <Text className="text-sm font-medium font-normal text-gray-600 mb-1">
-          {label}
-        </Text>
+        <Text className="text-sm font-medium text-gray-600 mb-1">{label}</Text>
       )}
       <TouchableOpacity
         onPress={() => editable && setShowModal(true)}
         className={`border rounded-lg px-4 py-3 ${
           isError ? "border-red-500" : "border-gray-300"
-        } ${!editable ? "bg-gray-100" : "bg-white"}`}
+        } ${!editable ? "bg-gray-100" : "bg-white dark:bg-black"}`}
         disabled={!editable}
       >
-        <Text className={`text-base ${value ? "text-black" : "text-gray-400"}`}>
+        <Text
+          className={`text-base ${value ? "dark:bg-black" : "text-gray-400"}`}
+        >
           {getDisplayValue()}
         </Text>
       </TouchableOpacity>
@@ -161,7 +161,7 @@ function DatePicker({
           onPress={handleCancel}
         >
           <Pressable
-            className="bg-white rounded-lg w-11/12 max-h-4/5"
+            className="bg-white dark:bg-black rounded-lg w-11/12 max-h-4/5"
             onPress={(e) => e.stopPropagation()}
           >
             <View className="p-4">
@@ -172,9 +172,7 @@ function DatePicker({
               <View className="flex-row gap-4 mb-4">
                 {/* Year Selector */}
                 <View className="flex-1">
-                  <Text className="text-sm font-medium font-medium mb-2">
-                    Year
-                  </Text>
+                  <Text className="text-sm font-medium  mb-2">Year</Text>
                   <FlatList
                     data={years}
                     keyExtractor={(item) => item.toString()}
@@ -210,9 +208,7 @@ function DatePicker({
 
                 {/* Month Selector */}
                 <View className="flex-1">
-                  <Text className="text-sm font-medium font-medium mb-2">
-                    Month
-                  </Text>
+                  <Text className="text-sm font-medium mb-2">Month</Text>
                   <FlatList
                     data={months}
                     keyExtractor={(item) => item.value.toString()}
@@ -229,8 +225,8 @@ function DatePicker({
                             selectedMonth === item.value
                               ? "bg-azure-radiance-100"
                               : disabled
-                                ? "bg-gray-100"
-                                : ""
+                              ? "bg-gray-100"
+                              : ""
                           }`}
                         >
                           <Text
@@ -238,8 +234,8 @@ function DatePicker({
                               selectedMonth === item.value
                                 ? "text-azure-radiance-500 font-bold"
                                 : disabled
-                                  ? "text-gray-400"
-                                  : "text-gray-700"
+                                ? "text-gray-400"
+                                : "text-gray-700"
                             }`}
                           >
                             {item.label}

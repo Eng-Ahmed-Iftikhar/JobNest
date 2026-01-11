@@ -1,6 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
-import { TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, View } from "react-native";
 import SelectedUser from "./SelectedUser";
 type SelectedUserType = {
   id: string;
@@ -10,7 +9,7 @@ type SelectedUserType = {
 
 type SelectUsersProps = {
   onSearchChange: (text: string) => void;
-  selectedUsers?: Array<SelectedUserType>;
+  selectedUsers?: SelectedUserType[];
   onRemoveUser: (userId: string) => void;
 };
 
@@ -29,7 +28,7 @@ function SelectUsers({
   return (
     <View
       style={{ flexWrap: "wrap" }}
-      className=" gap-1  flex-row p-2 bg-white rounded-xl text-base text-gray-900 border-2 border-azure-radiance-500"
+      className=" gap-1  flex-row p-2 bg-white dark:bg-black rounded-xl text-base dark:bg-black dark:text-gray-100 border-2 border-azure-radiance-500"
     >
       {selectedUsers.map((user) => {
         return (

@@ -47,7 +47,7 @@ export default function ApplyJobSheet({
           multiline
           numberOfLines={6}
           textAlignVertical="top"
-          className="text-base text-gray-900 h-full"
+          className="text-base dark:bg-black h-full"
         />
       </View>
     </BottomSheet>

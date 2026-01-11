@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 function PendingLayout() {
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       <View>
         <PendingConnectionsTabs />
       </View>

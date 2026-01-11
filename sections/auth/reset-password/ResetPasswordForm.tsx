@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { View, Text } from "react-native";
-import { Formik } from "formik";
-import * as Yup from "yup";
-import { router, useLocalSearchParams } from "expo-router";
-import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
 import { useResetPasswordMutation } from "@/api/services/authApi";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { router, useLocalSearchParams } from "expo-router";
+import { Formik } from "formik";
+import React, { useCallback, useState } from "react";
+import { Text, View } from "react-native";
+import * as Yup from "yup";
 
 const resetPasswordSchema = Yup.object().shape({
   newPassword: Yup.string()
@@ -24,30 +24,32 @@ export default function ResetPasswordForm() {
   const [serverError, setServerError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmitForm = async (values: {
-    newPassword: string;
-    confirmPassword: string;
-  }) => {
-    setServerError(null);
-    setSuccess(null);
-    try {
-      await resetPassword({
-        code,
-        newPassword: values.newPassword,
-      }).unwrap();
-      setSuccess("Password reset successfully! Redirecting to login...");
-      setTimeout(() => {
-        router.replace("/(auth)/login");
-      }, 2000);
-    } catch (err: any) {
-      setServerError(err?.data?.message || "Failed to reset password");
-    }
-  };
+  const handleSubmitForm = useCallback(
+    async (values: { newPassword: string; confirmPassword: string }) => {
+      setServerError(null);
+      setSuccess(null);
+      try {
+        await resetPassword({
+          code,
+          newPassword: values.newPassword,
+        }).unwrap();
+        setSuccess("Password reset successfully! Redirecting to login...");
+        setTimeout(() => {
+          router.replace("/(auth)/login");
+        }, 2000);
+      } catch (err: any) {
+        setServerError(err?.data?.message || "Failed to reset password");
+      }
+    },
+    [code, resetPassword]
+  );
 
   return (
     <View className="flex-1">
-      <Text className="text-2xl font-semibold mb-2">Reset Password</Text>
-      <Text className="text-sm font-medium text-gray-600 mb-6">
+      <Text className="text-2xl font-semibold mb-2 text-gray-500 dark:text-white">
+        Reset Password
+      </Text>
+      <Text className="text-sm font-medium text-gray-600 mb-6 dark:text-gray-400">
         Choose a strong password for your account. Make sure it's at least 6
         characters long.
       </Text>
@@ -65,7 +67,7 @@ export default function ResetPasswordForm() {
           errors,
           touched,
         }) => (
-          <View className="flex-1">
+          <View className="flex-1 flex-col">
             {serverError && (
               <View className="mb-4 p-3 bg-red-50 rounded-lg">
                 <Text className="text-sm font-medium text-red-600">
@@ -82,7 +84,7 @@ export default function ResetPasswordForm() {
               </View>
             )}
 
-            <View className="mb-4">
+            <View className="mb-4 ">
               <Input
                 label="New Password"
                 type="password"
@@ -99,7 +101,7 @@ export default function ResetPasswordForm() {
               />
             </View>
 
-            <View className="mb-6">
+            <View className="mb-6 ">
               <Input
                 label="Confirm Password"
                 type="password"

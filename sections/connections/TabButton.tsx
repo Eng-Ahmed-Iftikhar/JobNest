@@ -17,7 +17,7 @@ function TabButton({
         <Text
           className={
             "text-base font-semibold " +
-            (active ? "text-gray-900" : "text-gray-500")
+            (active ? "dark:bg-black" : "text-gray-500")
           }
         >
           {label}

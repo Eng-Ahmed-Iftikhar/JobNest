@@ -53,7 +53,7 @@ function OnboardingLayout() {
   }, [currentIdx]);
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black pt-4">
       <View className="h-[56px] flex-row items-center justify-between px-4 ">
         <View className="w-6 h-6">
           {isShowBackIcon && (

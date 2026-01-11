@@ -14,6 +14,7 @@ import {
   Pressable,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -22,6 +23,7 @@ function DashboardHeader() {
   const router = useRouter();
   const user = useAppSelector(selectUser);
   const userProfile = useAppSelector(selectUserProfile);
+  const colorScheme = useColorScheme();
 
   const { searchQuery } = useSearch();
   const [logoutApi, { isLoading: isLoggingOut }] = useLogoutMutation();
@@ -58,7 +60,7 @@ function DashboardHeader() {
   }, [router]);
 
   return (
-    <View className="bg-white border-b border-gray-200 px-4 py-3">
+    <View className="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-700 px-4 py-3">
       <View className="flex-row items-center justify-between">
         <TouchableOpacity
           activeOpacity={1}
@@ -101,17 +103,17 @@ function DashboardHeader() {
       >
         <Pressable className="flex-1" onPress={() => setOpen(false)}>
           <View className="flex-1">
-            <View className="absolute right-4 top-16 bg-white rounded-xl border border-gray-200 shadow-lg w-56">
-              <View className="px-4 py-3 border-b border-gray-100">
+            <View className="absolute right-10 top-24  bg-white dark:bg-black rounded-xl border border-gray-200 dark:border-gray-700 shadow-lg w-56">
+              <View className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                 <Text
-                  className="text-base font-semibold text-gray-900"
+                  className="text-base font-semibold dark:bg-black dark:text-white"
                   numberOfLines={1}
                 >
                   {fullName}
                 </Text>
                 {user?.email && (
                   <Text
-                    className="text-sm font-medium text-gray-500"
+                    className="text-sm font-medium text-gray-500 dark:text-gray-400"
                     numberOfLines={1}
                   >
                     {user.email.email}
@@ -126,10 +128,10 @@ function DashboardHeader() {
                 <Icon
                   name="person-outline"
                   size={18}
-                  color="#4B5563"
+                  color={colorScheme === "dark" ? "#D1D5DB" : "#4B5563"}
                   style={{ marginRight: 10 }}
                 />
-                <Text className="text-sm font-medium text-gray-800">
+                <Text className="text-sm font-medium text-gray-800 dark:text-gray-200">
                   Edit profile
                 </Text>
               </TouchableOpacity>
@@ -141,10 +143,10 @@ function DashboardHeader() {
                 <Icon
                   name="settings-outline"
                   size={18}
-                  color="#4B5563"
+                  color={colorScheme === "dark" ? "#D1D5DB" : "#4B5563"}
                   style={{ marginRight: 10 }}
                 />
-                <Text className="text-sm font-medium text-gray-800">
+                <Text className="text-sm font-medium text-gray-800 dark:text-gray-200 ">
                   Settings
                 </Text>
               </TouchableOpacity>
@@ -157,18 +159,18 @@ function DashboardHeader() {
                 {isLoggingOut ? (
                   <ActivityIndicator
                     size="small"
-                    color="#EF4444"
+                    color={colorScheme === "dark" ? "#D1D5DB" : "#4B5563"}
                     style={{ marginRight: 10 }}
                   />
                 ) : (
                   <Icon
                     name="log-out-outline"
                     size={18}
-                    color="#EF4444"
+                    color={"#EF4444"}
                     style={{ marginRight: 10 }}
                   />
                 )}
-                <Text className="text-sm font-medium text-red-500">
+                <Text className="text-sm font-medium text-red-500 dark:text-red-400">
                   Log out
                 </Text>
               </TouchableOpacity>
@@ -184,7 +186,7 @@ function DashboardHeader() {
         onRequestClose={() => setNotificationsOpen(false)}
       >
         <View className="flex-1 bg-black/50">
-          <View className="flex-1 bg-gray-50">
+          <View className="flex-1 bg-gray-50 dark:bg-black pt-16 rounded-t-3xl">
             <NotificationsContent onClose={() => setNotificationsOpen(false)} />
           </View>
         </View>

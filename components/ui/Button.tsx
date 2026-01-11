@@ -1,6 +1,6 @@
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 type ButtonProps = {
   children?: React.ReactNode;
@@ -39,16 +39,16 @@ function Button({
         (isText
           ? " bg-transparent border-0"
           : disabled
-            ? " bg-gray-300"
-            : isPrimary
-              ? " bg-azure-radiance-500"
-              : " bg-white border-2 border-azure-radiance-500") +
+          ? " bg-gray-300 dark:bg-gray-700"
+          : isPrimary
+          ? " bg-azure-radiance-500"
+          : " bg-white dark:bg-black border-2 border-azure-radiance-500") +
         (className ? ` ${className}` : "")
       }
       {...props}
     >
       {loading && (
-        <View className="animate-spin">
+        <View className="w-full  items-center  animate-spin ">
           <Ionicons
             name="reload"
             size={16}
@@ -67,10 +67,10 @@ function Button({
                 iconColor
                   ? iconColor
                   : isText
-                    ? "#1eadff"
-                    : isOutline
-                      ? "#1eadff"
-                      : "white"
+                  ? "#1eadff"
+                  : isOutline
+                  ? "#1eadff"
+                  : "white"
               }
             />
           )}
@@ -81,8 +81,8 @@ function Button({
                 (isText
                   ? " text-azure-radiance-500 "
                   : isOutline
-                    ? " text-azure-radiance-500"
-                    : " text-white") +
+                  ? " text-azure-radiance-500"
+                  : "text-gray-50  dark:text-white ") +
                 (textProps?.className ? ` ${textProps.className}` : "")
               }
               {...textProps}
@@ -99,10 +99,10 @@ function Button({
                 iconColor
                   ? iconColor
                   : isText
-                    ? "#1eadff"
-                    : isOutline
-                      ? "#1eadff"
-                      : "white"
+                  ? "#1eadff"
+                  : isOutline
+                  ? "#1eadff"
+                  : "white"
               }
             />
           )}

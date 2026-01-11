@@ -1,6 +1,6 @@
+import ResetPasswordForm from "@/sections/auth/reset-password/ResetPasswordForm";
 import React from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
-import ResetPasswordForm from "@/sections/auth/reset-password/ResetPasswordForm";
 
 export default function ResetPasswordScreen() {
   return (
@@ -10,7 +10,7 @@ export default function ResetPasswordScreen() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <ScrollView
-        className="flex-1 bg-white px-4"
+        className="flex-1 bg-white dark:bg-black px-4"
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}

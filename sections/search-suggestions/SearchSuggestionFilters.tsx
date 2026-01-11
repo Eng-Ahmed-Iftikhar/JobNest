@@ -1,8 +1,7 @@
 import BottomSheet from "@/components/ui/BottomSheet";
-import React, { useState } from "react";
-import { View } from "react-native";
-import { Pressable, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import { Pressable, Text, View } from "react-native";
 
 type SearchSuggestionFiltersProps = {
   show: boolean;
@@ -29,8 +28,8 @@ function SearchSuggestionFilters({
     sheetView === "employment"
       ? "Employment type"
       : sheetView === "distance"
-        ? "Distance"
-        : "Filters";
+      ? "Distance"
+      : "Filters";
   const clearFilters = () => {
     setEmploymentTypes({ fullTime: true, partTime: true, shift: false });
   };
@@ -45,7 +44,7 @@ function SearchSuggestionFilters({
         className="flex-row items-center justify-between py-3"
         onPress={() => setSheetView("employment")}
       >
-        <Text className="text-base text-gray-900">Employment type</Text>
+        <Text className="text-base dark:bg-black">Employment type</Text>
         <View className="flex-row items-center gap-2">
           <Text className="text-sm font-medium text-gray-500">
             {Object.keys(employmentTypes)
@@ -54,8 +53,8 @@ function SearchSuggestionFilters({
                 k === "fullTime"
                   ? "Full time"
                   : k === "partTime"
-                    ? "Part time"
-                    : "Shift position"
+                  ? "Part time"
+                  : "Shift position"
               )
               .join(", ") || "Any"}
           </Text>
@@ -67,7 +66,7 @@ function SearchSuggestionFilters({
         className="flex-row items-center justify-between py-3"
         onPress={() => setSheetView("distance")}
       >
-        <Text className="text-base text-gray-900">Distance</Text>
+        <Text className="text-base dark:bg-black">Distance</Text>
         <View className="flex-row items-center gap-2">
           <Text className="text-sm font-medium text-gray-500">{`${distanceRange[0]} - ${distanceRange[1]} mi`}</Text>
           <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
@@ -94,7 +93,7 @@ function SearchSuggestionFilters({
             color={employmentTypes[item.key] ? "#1eadff" : "#9CA3AF"}
             style={{ marginRight: 12 }}
           />
-          <Text className="text-base text-gray-900">{item.label}</Text>
+          <Text className="text-base dark:bg-black">{item.label}</Text>
         </Pressable>
       ))}
     </View>
@@ -104,11 +103,11 @@ function SearchSuggestionFilters({
     <View className="gap-4">
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-2 px-3 py-2 rounded-lg border border-gray-300">
-          <Text className="text-base text-gray-900">0</Text>
+          <Text className="text-base dark:bg-black">0</Text>
         </View>
         <Text className="text-sm font-medium text-gray-500">-</Text>
         <View className="flex-row items-center gap-2 px-3 py-2 rounded-lg border border-gray-300">
-          <Text className="text-base text-gray-900">5</Text>
+          <Text className="text-base dark:bg-black">5</Text>
         </View>
         <Text className="text-sm font-medium text-gray-500">mi</Text>
       </View>

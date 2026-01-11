@@ -71,7 +71,9 @@ export default function EditChatGroupForm() {
           type: getMimeTypeImage(selectedImage.fileName || "") || "image/jpeg",
           name:
             selectedImage.fileName ||
-            `photo.${getMimeTypeImage(selectedImage.fileName || "")?.split("/")[1]}`,
+            `photo.${
+              getMimeTypeImage(selectedImage.fileName || "")?.split("/")[1]
+            }`,
         };
 
         formData.append("file", fileObj as any);
@@ -255,7 +257,7 @@ export default function EditChatGroupForm() {
                       <Ionicons name="person" size={40} color="white" />
                     )}
                   </View>
-                  <View className="absolute bottom-0 left-0 w-6 h-6 rounded-full bg-white border-2 border-gray-200 items-center justify-center">
+                  <View className="absolute bottom-0 left-0 w-6 h-6 rounded-full bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-700 items-center justify-center">
                     <Ionicons name="pencil" size={12} color="#6B7280" />
                   </View>
                 </Pressable>

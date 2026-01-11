@@ -1,12 +1,12 @@
-import React, { use, useState } from "react";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import MemberMenu from "./MemberMenu";
-import { CHAT_USER_ROLE, ChatUser } from "@/types/chat";
-import { selectUser } from "@/store/reducers/userSlice";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import { useLocalSearchParams } from "expo-router";
 import useChat from "@/hooks/useChat";
+import { selectUser } from "@/store/reducers/userSlice";
+import { CHAT_USER_ROLE, ChatUser } from "@/types/chat";
+import { Ionicons } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import MemberMenu from "./MemberMenu";
 
 interface GroupMemberListProps {
   members?: ChatUser[];
@@ -50,7 +50,7 @@ const GroupMemberList: React.FC<GroupMemberListProps> = ({
               className="mr-3 bg-gray-200"
             />
             <View>
-              <Text className="text-base font-semibold text-gray-900">
+              <Text className="text-base font-semibold dark:bg-black">
                 {item.user.profile.firstName} {item.user.profile.lastName}
               </Text>
               <Text className="text-sm font-semibold text-gray-500 mt-0.5">

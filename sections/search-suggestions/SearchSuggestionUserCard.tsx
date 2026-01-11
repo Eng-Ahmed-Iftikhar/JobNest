@@ -83,7 +83,7 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
           </View>
           <View>
             <Text
-              className="text-base font-semibold text-gray-900"
+              className="text-base font-semibold dark:bg-black"
               numberOfLines={1}
             >
               {item.profile.firstName} {item.profile.lastName}
@@ -112,10 +112,10 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
                 isConnected
                   ? "chatbubble"
                   : receiverIsUser
-                    ? "checkmark"
-                    : requestSent
-                      ? "time"
-                      : "person-add"
+                  ? "checkmark"
+                  : requestSent
+                  ? "time"
+                  : "person-add"
               }
               size={12}
               color="#3B82F6"
@@ -124,10 +124,10 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
               {isConnected
                 ? "Message"
                 : receiverIsUser
-                  ? "Accept"
-                  : requestSent
-                    ? "Pending"
-                    : "Connect"}
+                ? "Accept"
+                : requestSent
+                ? "Pending"
+                : "Connect"}
             </Text>
           </>
         )}

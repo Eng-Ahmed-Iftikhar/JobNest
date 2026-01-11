@@ -12,7 +12,10 @@ type Props = {
 function LocationText({ location, ...props }: Props) {
   if (!location) return null;
   return (
-    <Text className="text-sm font-medium text-gray-600" {...props}>
+    <Text
+      className="text-sm font-medium text-gray-600 dark:text-gray-200"
+      {...props}
+    >
       {[location?.city, location?.state, location?.country]
         .filter(Boolean)
         .join(", ")}

@@ -29,7 +29,7 @@ export default function SearchCompanyCard({ company }: SearchCompanyCardProps) {
         name={company?.company.name}
       />
       <Text
-        className="text-sm font-semibold text-gray-900 mt-3 text-center"
+        className="text-sm font-semibold dark:bg-black mt-3 text-center"
         numberOfLines={2}
       >
         {company?.company.name}

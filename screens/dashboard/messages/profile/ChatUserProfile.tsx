@@ -85,7 +85,7 @@ function ChatUserProfile() {
     } catch (error) {
       dispatch(showErrorNotification("An error occurred. Please try again."));
     }
-  }, [blockChat, chat, blockedUser]);
+  }, [chat, blockedUser, dispatch, unblockChat, blockChat, chatUser?.userId]);
 
   const handleMuteUser = useCallback(
     async (date?: string) => {
@@ -114,7 +114,7 @@ function ChatUserProfile() {
         dispatch(showErrorNotification("An error occurred. Please try again."));
       }
     },
-    [chat, chatUser, isMuted, muteUser, unMuteUser]
+    [chat, chatUser, dispatch, isMuted, muteUser, mutedEntry?.id, unMuteUser]
   );
 
   return (
@@ -123,9 +123,11 @@ function ChatUserProfile() {
       <ChatUserHeader onMenuToggle={setMenuVisible} />
 
       {/* Header with avatar, name, and info */}
-      <View className="items-center pt-4 pb-6 bg-white">
+      <View className="items-center pt-4 pb-6 bg-white dark:bg-black">
         <Avatar imageUrl={image} name="" size={AVATAR_SIZE} />
-        <Text className="text-xl font-bold text-gray-900 mb-1">{name}</Text>
+        <Text className="text-xl font-bold dark:bg-black dark:text-white mb-1">
+          {name}
+        </Text>
         {location && <LocationText location={location} />}
       </View>
 
@@ -182,8 +184,8 @@ function ChatUserProfile() {
               ? "lock-open-outline"
               : "lock-closed-outline"
             : isMuted
-              ? "volume-high-outline"
-              : "volume-mute-outline"
+            ? "volume-high-outline"
+            : "volume-mute-outline"
         }
         onConfirm={userAction === "block" ? handleBlockUser : handleMuteUser}
       />

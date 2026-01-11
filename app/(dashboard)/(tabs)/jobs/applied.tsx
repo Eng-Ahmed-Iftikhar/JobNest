@@ -42,7 +42,7 @@ function AppliedJobsScreen() {
   }
 
   return (
-    <View className="flex-1 bg-gray-50 px-4 pt-4">
+    <View className="flex-1 bg-gray-50 dark:bg-black px-4 pt-4">
       <FlatList
         data={appliedJobs}
         keyExtractor={(item) => item.id}
@@ -57,7 +57,9 @@ function AppliedJobsScreen() {
         ListFooterComponent={
           isFetching && page > 1 ? (
             <View className="py-4 items-center">
-              <Text className="text-gray-500">Loading more jobs…</Text>
+              <Text className="text-gray-500 dark:text-gray-300">
+                Loading more jobs…
+              </Text>
             </View>
           ) : null
         }

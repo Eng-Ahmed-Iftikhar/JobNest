@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  Pressable,
-  RefreshControl,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import {
   useGetNotificationSettingsQuery,
   useUpdateNotificationSettingsMutation,
 } from "@/api/services/notificationSettingsApi";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import PasswordSection from "./PasswordSection";
 
 type NotificationId =
@@ -161,7 +161,7 @@ export default function SettingsContent() {
 
           {/* Notification Settings */}
           <View>
-            <Text className="text-base font-semibold text-gray-900 mb-4">
+            <Text className="text-base font-semibold dark:bg-black mb-4">
               Notification settings
             </Text>
 
@@ -191,7 +191,7 @@ export default function SettingsContent() {
                 className="flex-row items-center py-4 border-b border-gray-100"
               >
                 <View className="flex-1">
-                  <Text className="text-sm font-medium text-gray-900">
+                  <Text className="text-sm font-medium dark:bg-black">
                     {notification.label}
                   </Text>
                 </View>

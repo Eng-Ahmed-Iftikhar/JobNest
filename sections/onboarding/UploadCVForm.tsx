@@ -232,7 +232,7 @@ function UploadCVForm() {
           <View className="w-12 h-12 bg-gray-200 rounded-lg justify-center items-center mb-2">
             <Text className="text-2xl">📄</Text>
           </View>
-          <Text className="text-black font-medium text-center">
+          <Text className="dark:bg-black font-medium text-center">
             Click to upload your CV
           </Text>
           <Text className="text-gray-500 text-sm font-medium mt-1">
@@ -264,7 +264,9 @@ function UploadCVForm() {
           <Text className="text-lg">📄</Text>
         </View>
         <View className="flex-1">
-          <Text className="text-black font-medium">{selectedFile?.name}</Text>
+          <Text className="dark:bg-black font-medium">
+            {selectedFile?.name}
+          </Text>
           <Text className="text-gray-600 text-sm font-medium">
             Uploading... {uploadProgress}%
           </Text>
@@ -296,7 +298,9 @@ function UploadCVForm() {
           <Text className="text-lg">✅</Text>
         </View>
         <View className="flex-1">
-          <Text className="text-black font-medium">{selectedFile?.name}</Text>
+          <Text className="dark:bg-black font-medium">
+            {selectedFile?.name}
+          </Text>
           <Text className="text-green-600 text-sm font-medium">
             Upload Complete • {formatFileSize(selectedFile?.size || 0)}
           </Text>

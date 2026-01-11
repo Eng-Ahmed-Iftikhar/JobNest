@@ -66,12 +66,12 @@ function Message({ message, loading = false }: MessageProps) {
       fileExt === "pdf"
         ? "document"
         : fileExt === "doc" || fileExt === "docx"
-          ? "document-text"
-          : fileExt === "xls" || fileExt === "xlsx"
-            ? "document"
-            : fileExt === "ppt" || fileExt === "pptx"
-              ? "document"
-              : "attach";
+        ? "document-text"
+        : fileExt === "xls" || fileExt === "xlsx"
+        ? "document"
+        : fileExt === "ppt" || fileExt === "pptx"
+        ? "document"
+        : "attach";
 
     const handleOpenFile = async () => {
       if (Platform.OS === "android" && message.fileUrl) {
@@ -85,17 +85,17 @@ function Message({ message, loading = false }: MessageProps) {
 
     return (
       <TouchableOpacity
-        className="mb-2 p-3 bg-white rounded-lg border border-gray-300 flex-row items-center gap-3"
+        className="mb-2 p-3 bg-white dark:bg-black rounded-lg border border-gray-300 dark:border-gray-700 flex-row items-center gap-3"
         activeOpacity={0.8}
         onPress={handleOpenFile}
       >
-        <View className="bg-gray-100 rounded-full p-2">
+        <View className="bg-gray-100 dark:bg-gray-800 rounded-full p-2">
           <Ionicons name={fileIcon} size={28} color="#3b82f6" />
         </View>
         <View className="flex-1">
           <Text
             numberOfLines={1}
-            className="text-base font-medium text-gray-900"
+            className="text-base font-medium dark:bg-black"
           >
             {fileName}
           </Text>
@@ -112,7 +112,7 @@ function Message({ message, loading = false }: MessageProps) {
         (isOwn ? "bg-azure-radiance-500 self-end " : "bg-gray-100 self-start ")
       }
     >
-      <Text className={"text-base " + (isOwn ? "text-white" : "text-gray-900")}>
+      <Text className={"text-base " + (isOwn ? "text-white" : "dark:bg-black")}>
         {message.text}
       </Text>
     </View>

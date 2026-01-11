@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, Pressable } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useLazyGetSuggestedJobsQuery } from "@/api/services/jobsApi";
 import JobCard from "@/sections/dashboard/JobCard";
-import { useRouter } from "expo-router";
 import { SuggestedJobResponseItem } from "@/types/api/job";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
+import { Pressable, Text, View } from "react-native";
 
 interface RelatedJobsProps {
   currentJob: SuggestedJobResponseItem;
@@ -21,7 +21,7 @@ export default function RelatedJobs({
 
   const employerId = currentJob?.employers?.[0]?.employerId;
   const companyName =
-    currentJob?.employers?.[0]?.employer?.companyProfiles?.[0]?.name;
+    currentJob?.employers?.[0]?.employer?.companyProfiles?.[0]?.company?.name;
 
   useEffect(() => {
     // Prefetch a page of suggested jobs to derive related ones.
@@ -47,7 +47,7 @@ export default function RelatedJobs({
   return (
     <View className="px-4 mt-2 mb-6">
       <View className="flex-row items-center justify-between mb-2">
-        <Text className="text-lg font-bold text-gray-900">
+        <Text className="text-lg font-bold text-gray-900 dark:text-gray-100">
           {companyName ? `Jobs at ${companyName}` : "Related jobs"}
         </Text>
         <Pressable
@@ -62,7 +62,7 @@ export default function RelatedJobs({
       </View>
 
       {relatedJobs.map((job) => (
-        <JobCard key={job.id} job={job} />
+        <JobCard key={job.id} job={job} isSaved={job.isSaved} />
       ))}
     </View>
   );

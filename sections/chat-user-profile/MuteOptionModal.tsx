@@ -1,8 +1,8 @@
-import React from "react";
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import Modal from "@/components/ui/Modal";
-import moment from "moment";
 import { Formik } from "formik";
+import moment from "moment";
+import React from "react";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import * as Yup from "yup";
 
 type MuteOption = {
@@ -73,22 +73,30 @@ const MuteOptionModal: React.FC<MuteOptionModalProps> = ({
               {options.map((opt) => (
                 <Pressable
                   key={opt.value}
-                  className={`flex-row items-center px-4 py-3 rounded-xl ${values.muteOption === opt.value ? "bg-azure-radiance-50 border border-azure-radiance-500" : "bg-gray-50"}`}
+                  className={`flex-row items-center px-4 py-3 rounded-xl ${
+                    values.muteOption === opt.value
+                      ? "bg-azure-radiance-50 border border-azure-radiance-500"
+                      : "bg-gray-50"
+                  }`}
                   onPress={() => setFieldValue("muteOption", opt.value)}
                 >
                   <View
-                    className={`w-5 h-5 rounded-full border-2 ${values.muteOption === opt.value ? "border-azure-radiance-500 bg-azure-radiance-500" : "border-gray-300 bg-white"} items-center justify-center mr-3`}
+                    className={`w-5 h-5 rounded-full border-2 ${
+                      values.muteOption === opt.value
+                        ? "border-azure-radiance-500 bg-azure-radiance-500"
+                        : "border-gray-300 bg-white dark:bg-black "
+                    } items-center justify-center mr-3`}
                   >
                     {values.muteOption === opt.value && (
-                      <View className="w-2.5 h-2.5 rounded-full bg-white" />
+                      <View className="w-2.5 h-2.5 rounded-full bg-white dark:bg-black" />
                     )}
                   </View>
                   <View className="flex-1">
-                    <Text className="text-base font-medium text-gray-900">
+                    <Text className="text-base font-medium dark:bg-black dark:text-white">
                       {opt.label}
                     </Text>
                     {opt.description && (
-                      <Text className="text-xs text-gray-500 mt-0.5">
+                      <Text className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         {opt.description}
                       </Text>
                     )}
@@ -112,7 +120,9 @@ const MuteOptionModal: React.FC<MuteOptionModalProps> = ({
                 </Text>
               </Pressable>
               <TouchableOpacity
-                className={`flex-1 py-3 rounded-xl items-center justify-center ${values.muteOption ? "bg-azure-radiance-500" : "bg-gray-300"}`}
+                className={`flex-1 py-3 rounded-xl items-center justify-center ${
+                  values.muteOption ? "bg-azure-radiance-500" : "bg-gray-300"
+                }`}
                 onPress={() => handleSubmit()}
                 disabled={!values.muteOption || isSubmitting}
               >
