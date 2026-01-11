@@ -1,23 +1,24 @@
-import React from "react";
-import { View, Text, Pressable } from "react-native";
-import { useFormikContext, FieldArray, ErrorMessage } from "formik";
 import Input from "@/components/ui/Input";
+import { ErrorMessage, FieldArray, useFormikContext } from "formik";
+import React from "react";
+import { Pressable, Text, View } from "react-native";
 
+type Education = {
+  degree: string;
+  institution: string;
+  startDate: string;
+  endDate: string;
+};
 interface FormValues {
-  educations: Array<{
-    degree: string;
-    institution: string;
-    startDate: string;
-    endDate: string;
-  }>;
+  educations: Education[];
   [key: string]: any;
 }
 
 export const EducationSection: React.FC = () => {
   const formik = useFormikContext<FormValues>();
   return (
-    <View className="px-4 py-6 bg-white rounded-lg mb-4">
-      <Text className="text-lg font-semibold text-gray-800 mb-4">
+    <View className="px-4 py-6 border border-gray-700 bg-white dark:bg-black rounded-lg mb-4">
+      <Text className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
         Education
       </Text>
 
@@ -28,14 +29,14 @@ export const EducationSection: React.FC = () => {
               formik.values.educations.map((education: any, index: number) => (
                 <View
                   key={index}
-                  className="bg-gray-50 p-4 rounded-lg mb-4 border border-gray-200"
+                  className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg mb-4 border border-gray-200 dark:border-gray-700"
                 >
                   <View className="flex-row justify-end items-center mb-4">
                     <Pressable
                       onPress={() => arrayHelpers.remove(index)}
                       className="bg-red-100 px-3 py-1 rounded"
                     >
-                      <Text className="text-red-600 font-semibold text-sm font-medium">
+                      <Text className="text-red-600 font-semibold text-sm">
                         Remove
                       </Text>
                     </Pressable>
@@ -128,9 +129,9 @@ export const EducationSection: React.FC = () => {
                   endDate: "",
                 })
               }
-              className="bg-azure-radiance/10 border border-dashed border-azure-radiance p-2 rounded-lg"
+              className="bg-azure-radiance-500/10 border border-dashed border-azure-radiance-500 p-2 rounded-lg"
             >
-              <Text className="text-azure-radiance font-semibold text-center">
+              <Text className="text-azure-radiance-500 font-semibold text-center">
                 + Add Education
               </Text>
             </Pressable>

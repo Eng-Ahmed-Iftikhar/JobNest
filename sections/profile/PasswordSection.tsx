@@ -8,7 +8,7 @@ export default function PasswordSection() {
   return (
     <>
       <View className="mb-8">
-        <Text className="text-base font-semibold dark:bg-black mb-3">
+        <Text className="text-base font-semibold text-black dark:text-white mb-3">
           Password
         </Text>
         <Pressable onPress={() => setModalVisible(true)}>

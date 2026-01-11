@@ -3,7 +3,7 @@ import {
   useUpdateNotificationSettingsMutation,
 } from "@/api/services/notificationSettingsApi";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Pressable,
   RefreshControl,
@@ -34,32 +34,35 @@ export default function SettingsContent() {
   const [updateSettings, { isLoading: isUpdating }] =
     useUpdateNotificationSettingsMutation();
 
-  const defaultNotifications: NotificationSetting[] = [
-    {
-      id: "jobInterviewScheduled",
-      label: "Someone scheduled a job interview with me",
-      system: false,
-      email: false,
-    },
-    {
-      id: "connectionRequest",
-      label: "Someone wants to connect",
-      system: false,
-      email: false,
-    },
-    {
-      id: "newJobOpening",
-      label: "New job opening from the company I follow",
-      system: false,
-      email: false,
-    },
-    {
-      id: "interviewReminder",
-      label: "Reminder about upcoming job interview",
-      system: false,
-      email: false,
-    },
-  ];
+  const defaultNotifications: NotificationSetting[] = useMemo(
+    () => [
+      {
+        id: "jobInterviewScheduled",
+        label: "Someone scheduled a job interview with me",
+        system: false,
+        email: false,
+      },
+      {
+        id: "connectionRequest",
+        label: "Someone wants to connect",
+        system: false,
+        email: false,
+      },
+      {
+        id: "newJobOpening",
+        label: "New job opening from the company I follow",
+        system: false,
+        email: false,
+      },
+      {
+        id: "interviewReminder",
+        label: "Reminder about upcoming job interview",
+        system: false,
+        email: false,
+      },
+    ],
+    []
+  );
 
   useEffect(() => {
     if (!data) return;
@@ -95,46 +98,49 @@ export default function SettingsContent() {
     if (notifications.length === 0 && !data) {
       setNotifications(defaultNotifications);
     }
-  }, [notifications.length, data]);
+  }, [notifications, data, defaultNotifications]);
 
-  const toPayload = (items: NotificationSetting[]) => ({
-    jobInterviewScheduledSystem:
-      items.find((n) => n.id === "jobInterviewScheduled")?.system ?? false,
-    jobInterviewScheduledEmail:
-      items.find((n) => n.id === "jobInterviewScheduled")?.email ?? false,
-    connectionRequestSystem:
-      items.find((n) => n.id === "connectionRequest")?.system ?? false,
-    connectionRequestEmail:
-      items.find((n) => n.id === "connectionRequest")?.email ?? false,
-    newJobOpeningSystem:
-      items.find((n) => n.id === "newJobOpening")?.system ?? false,
-    newJobOpeningEmail:
-      items.find((n) => n.id === "newJobOpening")?.email ?? false,
-    interviewReminderSystem:
-      items.find((n) => n.id === "interviewReminder")?.system ?? false,
-    interviewReminderEmail:
-      items.find((n) => n.id === "interviewReminder")?.email ?? false,
-  });
+  const toPayload = useCallback(
+    (items: NotificationSetting[]) => ({
+      jobInterviewScheduledSystem:
+        items.find((n) => n.id === "jobInterviewScheduled")?.system ?? false,
+      jobInterviewScheduledEmail:
+        items.find((n) => n.id === "jobInterviewScheduled")?.email ?? false,
+      connectionRequestSystem:
+        items.find((n) => n.id === "connectionRequest")?.system ?? false,
+      connectionRequestEmail:
+        items.find((n) => n.id === "connectionRequest")?.email ?? false,
+      newJobOpeningSystem:
+        items.find((n) => n.id === "newJobOpening")?.system ?? false,
+      newJobOpeningEmail:
+        items.find((n) => n.id === "newJobOpening")?.email ?? false,
+      interviewReminderSystem:
+        items.find((n) => n.id === "interviewReminder")?.system ?? false,
+      interviewReminderEmail:
+        items.find((n) => n.id === "interviewReminder")?.email ?? false,
+    }),
+    []
+  );
 
-  const toggleNotification = async (
-    id: NotificationId,
-    type: "system" | "email"
-  ) => {
-    const previous = notifications;
-    const updated = notifications.map((notif) =>
-      notif.id === id ? { ...notif, [type]: !notif[type] } : notif
-    );
+  const toggleNotification = useCallback(
+    async (id: NotificationId, type: "system" | "email") => {
+      const previous = notifications;
+      const updated = notifications.map((notif) =>
+        notif.id === id ? { ...notif, [type]: !notif[type] } : notif
+      );
 
-    setNotifications(updated);
-    try {
-      await updateSettings(toPayload(updated)).unwrap();
-    } catch (error) {
-      setNotifications(previous);
-      console.log("Failed to update notification settings", error);
-    }
-  };
+      setNotifications(updated);
+      try {
+        await updateSettings(toPayload(updated)).unwrap();
+      } catch (error) {
+        setNotifications(previous);
+        console.log("Failed to update notification settings", error);
+      }
+    },
+    [notifications, toPayload, updateSettings]
+  );
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
       await refetch();
@@ -143,10 +149,10 @@ export default function SettingsContent() {
     } finally {
       setRefreshing(false);
     }
-  };
+  }, [refetch]);
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-white dark:bg-black">
       <ScrollView
         className="flex-1"
         refreshControl={
@@ -160,25 +166,25 @@ export default function SettingsContent() {
           <PasswordSection />
 
           {/* Notification Settings */}
-          <View>
-            <Text className="text-base font-semibold dark:bg-black mb-4">
+          <View className="px-4 py-6 border border-gray-700 bg-white dark:bg-black rounded-lg mb-4">
+            <Text className="text-base font-semibold text-black dark:text-white mb-4">
               Notification settings
             </Text>
 
             {/* Table Header */}
             <View className="flex-row items-center mb-3">
               <View className="flex-1">
-                <Text className="text-sm font-medium font-semibold text-gray-500 uppercase">
+                <Text className="text-sm font-medium  text-gray-500 dark:text-gray-200  uppercase">
                   NOTIFICATION
                 </Text>
               </View>
               <View className="w-20 items-center">
-                <Text className="text-sm font-medium font-semibold text-gray-500 uppercase">
+                <Text className="text-sm font-medium  text-gray-500 dark:text-gray-200  uppercase">
                   SYSTEM
                 </Text>
               </View>
               <View className="w-20 items-center">
-                <Text className="text-sm font-medium font-semibold text-gray-500 uppercase">
+                <Text className="text-sm font-medium  text-gray-500 dark:text-gray-200  uppercase">
                   EMAIL
                 </Text>
               </View>
@@ -188,10 +194,10 @@ export default function SettingsContent() {
             {notifications.map((notification) => (
               <View
                 key={notification.id}
-                className="flex-row items-center py-4 border-b border-gray-100"
+                className="flex-row items-center py-4 border-b border-gray-100 dark:border-gray-700"
               >
                 <View className="flex-1">
-                  <Text className="text-sm font-medium dark:bg-black">
+                  <Text className="text-sm font-medium text-gray-800 dark:text-gray-200">
                     {notification.label}
                   </Text>
                 </View>
@@ -204,7 +210,7 @@ export default function SettingsContent() {
                     className={`w-6 h-6 rounded items-center justify-center ${
                       notification.system
                         ? "bg-azure-radiance-500"
-                        : "border-2 border-gray-300"
+                        : "border-2 border-gray-300 dark:border-gray-600"
                     }`}
                   >
                     {notification.system && (
@@ -219,7 +225,7 @@ export default function SettingsContent() {
                     className={`w-6 h-6 rounded items-center justify-center ${
                       notification.email
                         ? "bg-azure-radiance-500"
-                        : "border-2 border-gray-300"
+                        : "border-2 border-gray-300 dark:border-gray-600"
                     }`}
                   >
                     {notification.email && (

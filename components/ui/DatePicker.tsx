@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   FlatList,
   Modal,
@@ -42,52 +42,59 @@ function DatePicker({
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 60 }, (_, i) => currentYear - i);
 
-  const months = [
-    { value: 1, label: "January" },
-    { value: 2, label: "February" },
-    { value: 3, label: "March" },
-    { value: 4, label: "April" },
-    { value: 5, label: "May" },
-    { value: 6, label: "June" },
-    { value: 7, label: "July" },
-    { value: 8, label: "August" },
-    { value: 9, label: "September" },
-    { value: 10, label: "October" },
-    { value: 11, label: "November" },
-    { value: 12, label: "December" },
-  ];
+  const months = useMemo(
+    () => [
+      { value: 1, label: "January" },
+      { value: 2, label: "February" },
+      { value: 3, label: "March" },
+      { value: 4, label: "April" },
+      { value: 5, label: "May" },
+      { value: 6, label: "June" },
+      { value: 7, label: "July" },
+      { value: 8, label: "August" },
+      { value: 9, label: "September" },
+      { value: 10, label: "October" },
+      { value: 11, label: "November" },
+      { value: 12, label: "December" },
+    ],
+    []
+  );
 
-  const formatDate = (year: number, month: number): string => {
+  const formatDate = useCallback((year: number, month: number): string => {
     return `${year}-${month.toString().padStart(2, "0")}`;
-  };
+  }, []);
 
-  const parseDate = (
-    dateStr: string
-  ): { year: number; month: number } | null => {
-    if (!dateStr) return null;
-    const parts = dateStr.split("-");
-    if (parts.length !== 2) return null;
-    return {
-      year: parseInt(parts[0]),
-      month: parseInt(parts[1]),
-    };
-  };
+  const parseDate = useCallback(
+    (dateStr: string): { year: number; month: number } | null => {
+      if (!dateStr) return null;
+      const parts = dateStr.split("-");
+      if (parts.length !== 2) return null;
+      return {
+        year: parseInt(parts[0]),
+        month: parseInt(parts[1]),
+      };
+    },
+    []
+  );
 
-  const isDateValid = (year: number, month: number): boolean => {
-    const dateStr = formatDate(year, month);
+  const isDateValid = useCallback(
+    (year: number, month: number): boolean => {
+      const dateStr = formatDate(year, month);
 
-    if (minDate) {
-      if (dateStr < minDate) return false;
-    }
+      if (minDate) {
+        if (dateStr < minDate) return false;
+      }
 
-    if (maxDate) {
-      if (dateStr > maxDate) return false;
-    }
+      if (maxDate) {
+        if (dateStr > maxDate) return false;
+      }
 
-    return true;
-  };
+      return true;
+    },
+    [formatDate, minDate, maxDate]
+  );
 
-  const handleConfirm = () => {
+  const handleConfirm = useCallback(() => {
     if (selectedYear && selectedMonth) {
       if (isDateValid(selectedYear, selectedMonth)) {
         const formattedDate = formatDate(selectedYear, selectedMonth);
@@ -95,9 +102,9 @@ function DatePicker({
         setShowModal(false);
       }
     }
-  };
+  }, [selectedYear, selectedMonth, isDateValid, formatDate, onChangeDate]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     // Reset to current value
     if (value) {
       const parsed = parseDate(value);
@@ -110,9 +117,9 @@ function DatePicker({
       setSelectedMonth(null);
     }
     setShowModal(false);
-  };
+  }, [value, parseDate, currentYear]);
 
-  const getDisplayValue = () => {
+  const getDisplayValue = useCallback(() => {
     if (value) {
       const parsed = parseDate(value);
       if (parsed) {
@@ -121,27 +128,38 @@ function DatePicker({
       }
     }
     return placeholder;
-  };
+  }, [value, placeholder, parseDate, months]);
 
-  const isMonthDisabled = (month: number): boolean => {
-    if (!selectedYear) return false;
-    return !isDateValid(selectedYear, month);
-  };
+  const isMonthDisabled = useCallback(
+    (month: number): boolean => {
+      if (!selectedYear) return false;
+      return !isDateValid(selectedYear, month);
+    },
+    [selectedYear, isDateValid]
+  );
 
   return (
     <View className="flex-1">
       {label && (
-        <Text className="text-sm font-medium text-gray-600 mb-1">{label}</Text>
+        <Text className="text-sm font-medium text-gray-600 dark:text-gray-200 mb-1">
+          {label}
+        </Text>
       )}
       <TouchableOpacity
         onPress={() => editable && setShowModal(true)}
         className={`border rounded-lg px-4 py-3 ${
           isError ? "border-red-500" : "border-gray-300"
-        } ${!editable ? "bg-gray-100" : "bg-white dark:bg-black"}`}
+        } ${
+          !editable
+            ? "bg-gray-100 dark:bg-gray-700"
+            : "bg-white dark:bg-gray-900"
+        }`}
         disabled={!editable}
       >
         <Text
-          className={`text-base ${value ? "dark:bg-black" : "text-gray-400"}`}
+          className={`text-base ${
+            value ? "text-gray-900 dark:text-gray-200" : "text-gray-400"
+          }`}
         >
           {getDisplayValue()}
         </Text>
@@ -161,26 +179,28 @@ function DatePicker({
           onPress={handleCancel}
         >
           <Pressable
-            className="bg-white dark:bg-black rounded-lg w-11/12 max-h-4/5"
+            className="bg-white border dark:border-gray-600 dark:bg-black rounded-lg w-11/12 max-h-4/5"
             onPress={(e) => e.stopPropagation()}
           >
             <View className="p-4">
-              <Text className="text-lg font-bold text-center mb-4">
+              <Text className="text-lg font-bold text-center mb-4 text-gray-800 dark:text-gray-200">
                 Select Date
               </Text>
 
               <View className="flex-row gap-4 mb-4">
                 {/* Year Selector */}
                 <View className="flex-1">
-                  <Text className="text-sm font-medium  mb-2">Year</Text>
+                  <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Year
+                  </Text>
                   <FlatList
                     data={years}
                     keyExtractor={(item) => item.toString()}
-                    className="border border-gray-300 rounded-lg max-h-48"
+                    className="border border-gray-300 dark:border-gray-600 rounded-lg max-h-48"
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         onPress={() => setSelectedYear(item)}
-                        className={`p-3 border-b border-gray-200 ${
+                        className={`p-3 border-b border-gray-200 dark:border-gray-600 ${
                           selectedYear === item ? "bg-azure-radiance-100" : ""
                         }`}
                       >
@@ -188,7 +208,7 @@ function DatePicker({
                           className={`text-center ${
                             selectedYear === item
                               ? "text-azure-radiance-500 font-bold"
-                              : "text-gray-700"
+                              : "text-gray-700 dark:text-gray-300"
                           }`}
                         >
                           {item}
@@ -208,11 +228,13 @@ function DatePicker({
 
                 {/* Month Selector */}
                 <View className="flex-1">
-                  <Text className="text-sm font-medium mb-2">Month</Text>
+                  <Text className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Month
+                  </Text>
                   <FlatList
                     data={months}
                     keyExtractor={(item) => item.value.toString()}
-                    className="border border-gray-300 rounded-lg max-h-48"
+                    className="border border-gray-300 dark:border-gray-600 rounded-lg max-h-48"
                     renderItem={({ item }) => {
                       const disabled = isMonthDisabled(item.value);
                       return (
@@ -221,11 +243,11 @@ function DatePicker({
                             !disabled && setSelectedMonth(item.value)
                           }
                           disabled={disabled}
-                          className={`p-3 border-b border-gray-200 ${
+                          className={`p-3 border-b border-gray-200 dark:border-gray-600 ${
                             selectedMonth === item.value
                               ? "bg-azure-radiance-100"
                               : disabled
-                              ? "bg-gray-100"
+                              ? "bg-gray-100 dark:bg-gray-700"
                               : ""
                           }`}
                         >
@@ -234,8 +256,8 @@ function DatePicker({
                               selectedMonth === item.value
                                 ? "text-azure-radiance-500 font-bold"
                                 : disabled
-                                ? "text-gray-400"
-                                : "text-gray-700"
+                                ? "text-gray-400 dark:text-gray-500"
+                                : "text-gray-700 dark:text-gray-300"
                             }`}
                           >
                             {item.label}
@@ -250,9 +272,9 @@ function DatePicker({
               <View className="flex-row gap-2">
                 <TouchableOpacity
                   onPress={handleCancel}
-                  className="flex-1 bg-gray-200 py-3 rounded-lg"
+                  className="flex-1 bg-gray-200 dark:bg-gray-700 py-3 rounded-lg"
                 >
-                  <Text className="text-center text-gray-700 font-medium">
+                  <Text className="text-center text-gray-700 dark:text-gray-300 font-medium">
                     Cancel
                   </Text>
                 </TouchableOpacity>

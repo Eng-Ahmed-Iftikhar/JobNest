@@ -142,7 +142,7 @@ const FloatingActions: React.FC<{
 
           <TouchableOpacity
             onPress={onCancel}
-            className="border-2 border-gray-200 bg-white dark:bg-gray-800 h-12 rounded-xl flex-1 items-center justify-center"
+            className="border-2 border-gray-700 bg-white dark:bg-gray-800 h-12 rounded-xl flex-1 items-center justify-center"
             activeOpacity={0.8}
           >
             <Text className="text-gray-700 dark:text-gray-200 font-semibold text-base">
@@ -197,7 +197,7 @@ export default function EditProfileContent() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const formatYearMonth = (value: any): string => {
+  const formatYearMonth = useCallback((value: any): string => {
     if (!value) return "";
 
     if (typeof value === "string") {
@@ -222,7 +222,7 @@ export default function EditProfileContent() {
       2,
       "0"
     )}`;
-  };
+  }, []);
 
   useEffect(() => {
     if (!userProfile) return;
@@ -272,7 +272,7 @@ export default function EditProfileContent() {
       skillIds: cvDetails?.skillIds || [],
       bio: cvDetails?.bio || "",
     }));
-  }, [cvDetails]);
+  }, [cvDetails, formatYearMonth]);
 
   useEffect(() => {
     if (!user) return;

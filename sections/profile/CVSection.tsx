@@ -1,6 +1,6 @@
 import * as DocumentPicker from "expo-document-picker";
 import { useFormikContext } from "formik";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 
 interface FormValues {
@@ -13,7 +13,7 @@ export const CVSection: React.FC = () => {
   const [cvName, setCVName] = useState(formik.values.cvFile?.name || "");
   const [isUploading, setIsUploading] = useState(false);
 
-  const handlePickDocument = async () => {
+  const handlePickDocument = useCallback(async () => {
     try {
       setIsUploading(true);
       const result = await DocumentPicker.getDocumentAsync({
@@ -31,10 +31,11 @@ export const CVSection: React.FC = () => {
         setCVName(file.name);
       }
     } catch (error) {
+      console.error("Document pick error:", error);
     } finally {
       setIsUploading(false);
     }
-  };
+  }, [formik]);
 
   return (
     <View className="px-4 py-6 bg-white dark:bg-black rounded-lg mb-4">
@@ -45,19 +46,22 @@ export const CVSection: React.FC = () => {
       <Pressable
         onPress={handlePickDocument}
         disabled={isUploading}
-        className="border-2 border-dashed border-azure-radiance rounded-lg p-6 items-center mb-4"
+        className="border-2 border-dashed border-azure-radiance-500  rounded-lg p-6 items-center mb-4"
       >
-        <Text className="text-azure-radiance font-semibold mb-2">
+        <Text className="text-azure-radiance-500 font-semibold mb-2">
           {isUploading ? "Uploading..." : "Choose File"}
         </Text>
-        <Text className="text-gray-600 text-sm font-medium text-center">
+        <Text className="text-gray-600 dark:text-gray-200 text-sm font-medium text-center">
           Click to select a PDF file
         </Text>
       </Pressable>
 
       {cvName && (
         <View className="bg-gray-50 p-3 rounded-lg flex-row items-center justify-between">
-          <Text className="text-gray-700 flex-1" numberOfLines={1}>
+          <Text
+            className="text-gray-700 dark:text-gray-200 flex-1"
+            numberOfLines={1}
+          >
             📄 {cvName}
           </Text>
           <Pressable

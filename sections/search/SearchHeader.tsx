@@ -4,7 +4,7 @@ import { useAsyncStorage } from "@/hooks/useAsyncStorage";
 import { useSearch } from "@/hooks/useSearch";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useCallback } from "react";
 import { Pressable, View } from "react-native";
 
 export default function SearchHeader() {
@@ -14,23 +14,27 @@ export default function SearchHeader() {
     useAsyncStorage<string>("searchQueries");
   const router = useRouter();
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setLocation("");
     setSearchQuery("");
     setSearchText("");
     router.back();
-  };
+  }, [router, setLocation, setSearchQuery, setSearchText]);
 
-  const handleSearchChange = (text: string) => {
-    setSearchText(text);
-  };
-  const handleSearchSubmit = () => {
+  const handleSearchChange = useCallback(
+    (text: string) => {
+      setSearchText(text);
+    },
+    [setSearchText]
+  );
+
+  const handleSearchSubmit = useCallback(() => {
     setSearchQuery(searchText);
     const queryList: string[] = JSON.parse(searchQueries || "[]");
     queryList.unshift(searchText);
     setSearchQueries(JSON.stringify(Array.from(new Set(queryList))));
     router.push("/search-suggestions");
-  };
+  }, [router, searchQueries, searchText, setSearchQueries, setSearchQuery]);
 
   return (
     <View className="bg-white border-b border-gray-200 px-4 pt-3 pb-3">
