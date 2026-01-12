@@ -37,11 +37,11 @@ function SearchSuggestionCompanyCard({ item }: { item: SuggestedCompany }) {
           params: { id: item.id },
         })
       }
-      className="flex-row items-center justify-between py-4 px-4 border-b border-gray-200 bg-white"
+      className="flex-row items-center justify-between py-4 px-4 border-b border-gray-200 bg-white dark:bg-black dark:border-gray-700"
     >
       <View className="flex-row items-center gap-3">
         {item.profile.pictureUrl ? (
-          <View className="w-11 h-11 rounded-full overflow-hidden bg-gray-100 items-center justify-center">
+          <View className="w-11 h-11 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800  items-center justify-center">
             <Image
               src={item.profile.pictureUrl}
               alt={item.name}
@@ -55,7 +55,7 @@ function SearchSuggestionCompanyCard({ item }: { item: SuggestedCompany }) {
         )}
         <View>
           <Text
-            className="text-base font-semibold dark:bg-black"
+            className="text-base font-semibold text-gray-900 dark:text-gray-100"
             numberOfLines={1}
           >
             {item.name}
@@ -69,7 +69,7 @@ function SearchSuggestionCompanyCard({ item }: { item: SuggestedCompany }) {
       <Pressable
         className={`px-4 py-2 rounded-lg border ${
           isFollowed
-            ? "bg-gray-100 border-gray-300"
+            ? "bg-gray-100 border-gray-300 dark:bg-gray-800 dark:border-gray-600"
             : "bg-azure-radiance-50 border-azure-radiance-200"
         }`}
         onPress={handleFollowToggle}
@@ -80,7 +80,9 @@ function SearchSuggestionCompanyCard({ item }: { item: SuggestedCompany }) {
         ) : (
           <Text
             className={`text-sm font-medium ${
-              isFollowed ? "text-gray-500" : "text-azure-radiance-500"
+              isFollowed
+                ? "text-gray-500 dark:text-gray-400"
+                : "text-azure-radiance-500"
             }`}
           >
             {isFollowed ? "Unfollow" : "Follow"}

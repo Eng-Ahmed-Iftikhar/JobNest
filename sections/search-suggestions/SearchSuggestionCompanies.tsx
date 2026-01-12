@@ -1,8 +1,8 @@
+import { useGetSuggestedCompaniesQuery } from "@/api/services/companyApi";
+import { useSearch } from "@/hooks/useSearch";
 import React, { useEffect } from "react";
 import { FlatList, RefreshControl, Text, View } from "react-native";
 import SearchSuggestionCompanyCard from "./SearchSuggestionCompanyCard";
-import { useSearch } from "@/hooks/useSearch";
-import { useGetSuggestedCompaniesQuery } from "@/api/services/companyApi";
 
 const PAGE_SIZE = 10;
 
@@ -47,12 +47,12 @@ function SearchSuggestionCompanies() {
 
   return (
     <View className="flex-1">
-      <View className="px-4 pt-4 flex-row justify-between items-center">
-        <Text className="text-sm font-medium text-gray-500 mb-3">
-          {data ? data.data.length : 0} companies found
+      <View className="px-4 pt-4 flex-row justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-black">
+        <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
+          {companies.length} companies found
         </Text>
       </View>
-      <View className="bg-white flex-1">
+      <View className="bg-white dark:bg-black flex-1">
         <FlatList
           data={companies}
           refreshControl={
@@ -65,7 +65,7 @@ function SearchSuggestionCompanies() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
             <View className="py-8 items-center">
-              <Text className="text-base text-gray-500 text-center">
+              <Text className="text-base text-gray-500 dark:text-gray-400 text-center">
                 {isLoading
                   ? "Loading companies..."
                   : `No companies found for "${searchQuery}"`}

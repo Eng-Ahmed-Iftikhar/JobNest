@@ -44,9 +44,11 @@ function SearchSuggestionFilters({
         className="flex-row items-center justify-between py-3"
         onPress={() => setSheetView("employment")}
       >
-        <Text className="text-base dark:bg-black">Employment type</Text>
+        <Text className="text-base text-gray-900 dark:text-gray-100">
+          Employment type
+        </Text>
         <View className="flex-row items-center gap-2">
-          <Text className="text-sm font-medium text-gray-500">
+          <Text className="text-sm font-medium text-gray-500 dark:text-gray-400">
             {Object.keys(employmentTypes)
               .filter((k) => employmentTypes[k])
               .map((k) =>
@@ -66,9 +68,11 @@ function SearchSuggestionFilters({
         className="flex-row items-center justify-between py-3"
         onPress={() => setSheetView("distance")}
       >
-        <Text className="text-base dark:bg-black">Distance</Text>
+        <Text className="text-base text-gray-900 dark:text-gray-100">
+          Distance
+        </Text>
         <View className="flex-row items-center gap-2">
-          <Text className="text-sm font-medium text-gray-500">{`${distanceRange[0]} - ${distanceRange[1]} mi`}</Text>
+          <Text className="text-sm font-medium text-gray-500 dark:text-gray-400">{`${distanceRange[0]} - ${distanceRange[1]} mi`}</Text>
           <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
         </View>
       </Pressable>
@@ -93,7 +97,9 @@ function SearchSuggestionFilters({
             color={employmentTypes[item.key] ? "#1eadff" : "#9CA3AF"}
             style={{ marginRight: 12 }}
           />
-          <Text className="text-base dark:bg-black">{item.label}</Text>
+          <Text className="text-base text-gray-900 dark:text-gray-100">
+            {item.label}
+          </Text>
         </Pressable>
       ))}
     </View>
@@ -103,13 +109,17 @@ function SearchSuggestionFilters({
     <View className="gap-4">
       <View className="flex-row items-center gap-2">
         <View className="flex-row items-center gap-2 px-3 py-2 rounded-lg border border-gray-300">
-          <Text className="text-base dark:bg-black">0</Text>
+          <Text className="text-base text-gray-900 dark:text-gray-100">0</Text>
         </View>
-        <Text className="text-sm font-medium text-gray-500">-</Text>
+        <Text className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          -
+        </Text>
         <View className="flex-row items-center gap-2 px-3 py-2 rounded-lg border border-gray-300">
-          <Text className="text-base dark:bg-black">5</Text>
+          <Text className="text-base text-gray-900 dark:text-gray-100">5</Text>
         </View>
-        <Text className="text-sm font-medium text-gray-500">mi</Text>
+        <Text className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          mi
+        </Text>
       </View>
       <View className="h-2 rounded-full bg-azure-radiance-100">
         <View className="h-2 rounded-full bg-azure-radiance-500 w-full" />
@@ -150,7 +160,9 @@ function SearchSuggestionFilters({
           onPress={() => setSheetView("root")}
         >
           <Ionicons name="chevron-back" size={20} color="#6B7280" />
-          <Text className="text-base text-gray-700">Back</Text>
+          <Text className="text-base text-gray-700 dark:text-gray-300">
+            Back
+          </Text>
         </Pressable>
       )}
       {renderSheetContent()}

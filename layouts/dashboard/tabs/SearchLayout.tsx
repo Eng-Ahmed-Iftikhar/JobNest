@@ -31,8 +31,8 @@ export default function SearchLayout() {
   ];
 
   return (
-    <View className="flex-1  bg-gray-50">
-      <View className="flex-row px-4 justify-between">
+    <View className="flex-1  bg-gray-50 dark:bg-black">
+      <View className="flex-row px-4 justify-between border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-black items-center">
         <Tabs items={items} activeKey={activeKey} />
         <SearchSuggestionFilterBtn openFilters={() => setFiltersOpen(true)} />
       </View>

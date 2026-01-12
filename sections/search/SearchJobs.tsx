@@ -2,12 +2,19 @@ import { useSearch } from "@/hooks/useSearch";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useCallback } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import SearchJobResultCard from "./SearchJobResultCard";
 
 function SearchJobs() {
   const { jobs, setSearchQuery, jobsCount, searchText } = useSearch();
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   const navigateToResults = useCallback(() => {
     console.log({ searchText });
@@ -21,14 +28,16 @@ function SearchJobs() {
   }
   return (
     <View className=" pt-4">
-      <View className="flex-row px-3">
-        <Text className="text-sm font-medium  text-gray-500 mb-3">Jobs</Text>
+      <View className="flex-row gap-2 px-3">
+        <Text className="text-sm font-medium  text-gray-500 dark:text-gray-400 mb-3">
+          Jobs
+        </Text>
         {jobsCount && (
           <TouchableOpacity
             className="flex-row items-center gap-1 "
             onPress={navigateToResults}
           >
-            <Text className="text-sm font-medium  text-blue-600 mb-3">
+            <Text className="text-sm font-medium text-azure-radiance-500 mb-3">
               See all jobs ({jobsCount})
             </Text>
             <Ionicons
@@ -53,10 +62,10 @@ function SearchJobs() {
             <Ionicons
               name="search-outline"
               size={48}
-              color="#D1D5DB"
+              color={colorScheme === "dark" ? "#4B5563" : "#D1D5DB"}
               style={{ marginBottom: 12 }}
             />
-            <Text className="text-base text-gray-500 text-center">
+            <Text className="text-base text-gray-500 dark:text-gray-400 text-center">
               No jobs found for "{searchText}"
             </Text>
           </View>

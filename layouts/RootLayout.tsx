@@ -63,8 +63,9 @@ export default function RootLayout() {
         "flex-1  dark:bg-black bg-white " +
         (colorScheme === "dark" ? "dark" : "")
       }
+      onTouchEndCapture={handleOnPress}
     >
-      <Pressable className="flex-1" onPress={handleOnPress}>
+      <Pressable className="flex-1">
         <Suspense fallback={<AppLoader />}>
           {isLogin ? <DashboardRoutes /> : <AuthRoutes />}
         </Suspense>

@@ -15,7 +15,7 @@ import { selectUser } from "@/store/reducers/userSlice";
 import { UserListItem } from "@/types/api/user";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
@@ -31,12 +31,14 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
     useAcceptConnectionRequestMutation();
 
   const isConnected = userConnections.find(
-    (connection) => connection.user?.id === item.id
+    (connection) =>
+      connection.connectionRequest?.senderId === item.id ||
+      connection.connectionRequest?.receiverId === item.id
   );
 
   const receiverIsUser = user?.id === item.connectionRequest?.receiverId;
 
-  const handleSendConnectionRequest = async () => {
+  const handleSendConnectionRequest = useCallback(async () => {
     if (isConnected) return;
     if (receiverIsUser && item.connectionRequest) {
       try {
@@ -57,14 +59,21 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
       console.log(error);
       dispatch(showErrorNotification("Failed to send connection request"));
     }
-  };
+  }, [
+    acceptConnectionRequest,
+    createConnectionRequest,
+    dispatch,
+    isConnected,
+    item,
+    receiverIsUser,
+  ]);
 
   useEffect(() => {
     setRequestSent(Boolean(item.connectionRequest));
   }, [item]);
 
   return (
-    <View className="flex-row justify-between items-center px-4 border-b border-gray-200">
+    <View className="flex-row justify-between items-center px-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-black">
       <Pressable
         onPress={() =>
           router.push({
@@ -72,7 +81,7 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
             params: { id: item.id },
           })
         }
-        className="flex-row items-center justify-between py-4  bg-white"
+        className="flex-row items-center justify-between py-4  bg-white dark:bg-black"
       >
         <View className="flex-row items-center gap-3">
           <View className="w-11 h-11 rounded-full items-center justify-center 0">
@@ -83,7 +92,7 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
           </View>
           <View>
             <Text
-              className="text-base font-semibold dark:bg-black"
+              className="text-base font-semibold dark:bg-black dark:text-gray-100"
               numberOfLines={1}
             >
               {item.profile.firstName} {item.profile.lastName}

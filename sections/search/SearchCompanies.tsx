@@ -2,12 +2,19 @@ import { useSearch } from "@/hooks/useSearch";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useCallback } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import {
+  FlatList,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import SearchCompanyCard from "./SearchCompanyCard";
 
 function SearchCompanies() {
   const { companies, companiesCount, setSearchQuery, searchText } = useSearch();
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   const navigateToResults = useCallback(() => {
     setSearchQuery(searchText);
@@ -20,8 +27,8 @@ function SearchCompanies() {
 
   return (
     <View className="pt-4">
-      <View className="flex-row px-3">
-        <Text className="text-sm flex-1 font-medium text-gray-500 mb-3">
+      <View className="flex-row gap-2 px-3">
+        <Text className="text-sm flex-1 font-medium text-gray-500 dark:text-gray-400 mb-3">
           Companies
         </Text>
         {companiesCount && (
@@ -29,13 +36,13 @@ function SearchCompanies() {
             className="flex-row items-center gap-1"
             onPress={navigateToResults}
           >
-            <Text className="text-sm font-medium text-blue-600 mb-3">
+            <Text className="text-sm font-medium text-azure-radiance-500 mb-3">
               See all companies ({companiesCount})
             </Text>
             <Ionicons
               name="chevron-forward"
               size={15}
-              color="#3B82F6"
+              color={colorScheme === "dark" ? "white" : "#3B82F6"}
               style={{ marginBottom: 12 }}
             />
           </TouchableOpacity>
@@ -51,7 +58,7 @@ function SearchCompanies() {
         contentContainerStyle={{
           paddingVertical: 12,
           // width: "100%",
-          backgroundColor: "white",
+          backgroundColor: colorScheme === "dark" ? "black" : "white",
         }}
         ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
         ListEmptyComponent={
@@ -65,10 +72,10 @@ function SearchCompanies() {
             <Ionicons
               name="person-outline"
               size={28}
-              color="#D1D5DB"
+              color={colorScheme === "dark" ? "#4B5563" : "#D1D5DB"}
               style={{ marginBottom: 12 }}
             />
-            <Text className="text-sm text-gray-500 text-center">
+            <Text className="text-sm text-gray-500 dark:text-gray-400 text-center">
               No people found
             </Text>
           </View>

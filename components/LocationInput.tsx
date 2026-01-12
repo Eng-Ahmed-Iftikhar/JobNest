@@ -5,7 +5,7 @@ import { showErrorNotification } from "@/store/reducers/notificationSlice";
 import { selectNativeEvent } from "@/store/reducers/uiSlice";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -13,6 +13,7 @@ import {
   Pressable,
   Text,
   TextInput,
+  useColorScheme,
   View,
 } from "react-native";
 
@@ -31,6 +32,7 @@ export default function LocationInput({
   placeholder = "Type city, state or country",
 }: LocationInputProps) {
   const [input, setInput] = useState(value);
+  const colorScheme = useColorScheme();
   const [locationSelected, setLocationSelected] = useState<boolean>(false);
   const nativeEvent = useAppSelector(selectNativeEvent);
   const [fetchCurrentLocation, setFetchCurrentLocation] =
@@ -40,22 +42,24 @@ export default function LocationInput({
     input,
     locationSelected
   );
-  const inputRef = useRef<TextInput>(null);
 
-  const handleTextChange = (text: string) => {
+  const inputRef = useRef<View>(null);
+
+  const handleTextChange = useCallback((text: string) => {
     setInput(text);
-    onChangeText(text);
     setLocationSelected(false);
-  };
+  }, []);
 
-  const handleSelectLocation = (location: string) => {
-    setInput(location);
-    onChangeText(location);
-    setLocationSelected(true);
-    Keyboard.dismiss();
-  };
+  const handleSelectLocation = useCallback(
+    (location: string) => {
+      onChangeText(location);
+      setLocationSelected(true);
+      Keyboard.dismiss();
+    },
+    [onChangeText]
+  );
 
-  const handleUseCurrentLocation = async () => {
+  const handleUseCurrentLocation = useCallback(async () => {
     setFetchCurrentLocation(true);
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -83,15 +87,16 @@ export default function LocationInput({
     setLocationSelected(true);
 
     Keyboard.dismiss();
-  };
+  }, [onChangeText, dispatch]);
+
   useEffect(() => {
     if (!nativeEvent || locationSelected) return;
     inputRef?.current?.measure((_x, _y, width, height, pageX, pageY) => {
       const touchX = nativeEvent?.pageX;
       const touchY = nativeEvent?.pageY;
+
       // Only proceed if touchX and touchY are numbers (i.e., from a touch event)
       if (typeof touchX !== "number" || typeof touchY !== "number") return;
-      // console.log(touchX, touchY, pageX, pageY, width, height);
 
       const isOutside =
         touchX < pageX ||
@@ -108,30 +113,32 @@ export default function LocationInput({
 
   return (
     <View className="relative">
-      <View className="flex-row items-center bg-white dark:bg-black rounded-full border border-gray-200 dark:border-gray-700 px-3 h-12">
+      <View
+        ref={inputRef}
+        className="flex-row items-center bg-white dark:bg-gray-800 rounded-full border  border-gray-200 dark:border-gray-700 px-3 h-12"
+      >
         <Ionicons
           name="location-outline"
           size={20}
-          color="#9CA3AF"
+          color={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
           style={{ marginRight: 8 }}
         />
         <TextInput
-          className="flex-1 text-base dark:bg-black"
+          className="flex-1 text-base dark:bg-gray-800 text-gray-900 dark:text-gray-100 py-2"
           placeholder={placeholder}
-          placeholderTextColor="#9CA3AF"
+          placeholderTextColor={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
           value={input}
-          ref={inputRef}
           onChangeText={handleTextChange}
           underlineColorAndroid="transparent"
         />
-        {value.length > 0 && (
+        {input && (
           <Pressable onPress={() => handleTextChange("")} className="p-1">
             <Ionicons name="close-circle" size={18} color="#9CA3AF" />
           </Pressable>
         )}
       </View>
       {locationSelected ? null : (
-        <View className="absolute top-full left-0 right-0 bg-white dark:bg-black border border-gray-200 dark:border-gray-700 rounded-lg mt-1 shadow-lg z-50">
+        <View className="absolute top-full left-0 right-0 bg-white dark:bg-black border border-b-0 overflow-hidden border-gray-200 dark:border-gray-700 rounded-lg mt-1 shadow-lg z-50">
           <Pressable
             onPress={handleUseCurrentLocation}
             className="flex-row items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700  "
@@ -163,7 +170,7 @@ export default function LocationInput({
             renderItem={({ item }) => (
               <Pressable
                 onPress={() => handleSelectLocation(item)}
-                className="flex-row items-start px-4 py-3 border-b border-gray-100"
+                className="flex-row items-start px-4 py-3 border-b border-gray-100 dark:border-gray-700"
               >
                 <Ionicons
                   name="location-outline"
@@ -172,16 +179,18 @@ export default function LocationInput({
                   style={{ marginRight: 12, marginTop: 2 }}
                 />
                 <View className="flex-1">
-                  <Text className="text-base dark:bg-black">{item}</Text>
+                  <Text className="text-base text-gray-900 dark:text-gray-100">
+                    {item}
+                  </Text>
                 </View>
               </Pressable>
             )}
             scrollEnabled={false}
             nestedScrollEnabled
             ListEmptyComponent={
-              <Pressable className="flex-row items-start px-4 py-3 border-b border-gray-100">
+              <Pressable className="flex-row items-start px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                 <View className="flex-1">
-                  <Text className="text-sm text-gray-500 font-medium">
+                  <Text className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                     {isFetching
                       ? "Fetching your results..."
                       : input

@@ -54,12 +54,12 @@ function SearchSuggestionJobs() {
 
   return (
     <View className="flex-1 ">
-      <View className="px-4 pt-4 flex-row justify-between items-center">
-        <Text className="text-sm  font-medium text-gray-500 mb-3">
-          {data ? data.data.length : 0} job`s found
+      <View className="px-4 pt-4 flex-row justify-between items-center border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-black">
+        <Text className="text-sm  font-medium text-gray-500 dark:text-gray-400 mb-3">
+          {jobs.length} job`s found
         </Text>
       </View>
-      <View className="bg-white flex-1">
+      <View className="bg-white dark:bg-black flex-1">
         <FlatList
           data={jobs}
           refreshControl={

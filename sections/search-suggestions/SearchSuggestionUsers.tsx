@@ -1,8 +1,8 @@
+import { useGetUsersQuery } from "@/api/services/userApi";
+import { useSearch } from "@/hooks/useSearch";
 import React, { useEffect } from "react";
 import { FlatList, RefreshControl, Text, View } from "react-native";
 import SearchSuggestionUserCard from "./SearchSuggestionUserCard";
-import { useGetUsersQuery } from "@/api/services/userApi";
-import { useSearch } from "@/hooks/useSearch";
 
 const PAGE_SIZE = 10;
 
@@ -47,12 +47,12 @@ function SearchSugesstionUsers() {
 
   return (
     <View className="flex-1">
-      <View className="px-4 pt-4 flex-row justify-between items-center">
-        <Text className="text-sm font-medium text-gray-500 mb-3">
+      <View className="px-4 pt-4 flex-row justify-between items-center border-b border-gray-200 dark:border-gray-700">
+        <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">
           {users.length} user`s found
         </Text>
       </View>
-      <View className="bg-white flex-1">
+      <View className="bg-white dark:bg-black flex-1">
         <FlatList
           data={users}
           refreshControl={
@@ -65,7 +65,7 @@ function SearchSugesstionUsers() {
           contentContainerStyle={{ paddingBottom: 24 }}
           ListEmptyComponent={
             <View className="py-8 items-center">
-              <Text className="text-base text-gray-500 text-center">
+              <Text className="text-base text-gray-500 dark:text-gray-400 text-center">
                 {isLoading
                   ? "Loading users..."
                   : `No users found for "${searchQuery}"`}

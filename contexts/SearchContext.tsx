@@ -1,7 +1,7 @@
-import { SearchCompany, SearchJob, SearchUser } from "@/types/search";
 import { useSearchQuery } from "@/api/services/searchApi";
-import React, { createContext, ReactNode, useCallback, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import { SearchCompany, SearchJob, SearchUser } from "@/types/search";
+import React, { createContext, ReactNode, useCallback, useState } from "react";
 
 export interface SearchContextType {
   searchQuery: string;
