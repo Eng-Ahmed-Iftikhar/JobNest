@@ -159,6 +159,12 @@ export const chatApi = createApi({
         method: "DELETE",
       }),
     }),
+    getChatByUserId: builder.query<Chat | null, { userId: string }>({
+      query: ({ userId }) => ({
+        url: API_ROUTES.chat.getChatByUserId.replace(":userId", userId),
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -179,4 +185,5 @@ export const {
   useUnMuteChatMutation,
   useDeleteChatGroupMutation,
   useDeleteChatMutation,
+  useLazyGetChatByUserIdQuery,
 } = chatApi;

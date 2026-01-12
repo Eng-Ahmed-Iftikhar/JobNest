@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { FlatList, RefreshControl } from "react-native";
-import { FollowRow } from "./FollowRow";
-import { EmptyState } from "./EmptyState";
+import { useLazyGetFollowedCompaniesQuery } from "@/api/services/companyApi";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import { useLocalSearchParams } from "expo-router";
 import { selectCompanyFollowers } from "@/store/reducers/companySlice";
-import { useLazyGetCompanyFollowersQuery } from "@/api/services/companyApi";
+import { useLocalSearchParams } from "expo-router";
+import React, { useCallback, useEffect } from "react";
+import { FlatList, RefreshControl } from "react-native";
+import { EmptyState } from "./EmptyState";
+import { FollowRow } from "./FollowRow";
 
 const PAGE_SIZE = 10;
 export function FollowingList() {
@@ -14,7 +14,7 @@ export function FollowingList() {
   const [page, setPage] = React.useState(1);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const followedCompanies = useAppSelector(selectCompanyFollowers);
-  const [trigger, result] = useLazyGetCompanyFollowersQuery();
+  const [trigger, result] = useLazyGetFollowedCompaniesQuery();
 
   const dataPage = result.data?.page ?? 1;
   const dataTotal = result.data?.total ?? 0;

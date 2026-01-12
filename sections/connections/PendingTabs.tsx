@@ -8,8 +8,8 @@ import { ScrollView, View } from "react-native";
 import TabButton from "./TabButton";
 
 import { selectConnectionRequests } from "@/store/reducers/connectionRequestSlice";
-import { usePathname, useRouter } from "expo-router";
 import { selectUser } from "@/store/reducers/userSlice";
+import { usePathname, useRouter } from "expo-router";
 
 const pendingTabs: PendingConnectionsTab[] = [
   {
@@ -49,7 +49,7 @@ function PendingConnectionsTabs() {
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ paddingInline: 16 }}
     >
-      <View className="flex-row items-center ">
+      <View className="flex-row items-center gap-3 pt-3 ">
         {pendingTabs.map((pendingTab) => {
           let count = 0;
           switch (pendingTab.key) {

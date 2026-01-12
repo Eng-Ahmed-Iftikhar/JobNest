@@ -1,20 +1,18 @@
-import React, { useCallback } from "react";
-import { Pressable, Text } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import {
   useCreateChatMutation,
-  useLazyGetUserChatQuery,
+  useLazyGetChatByUserIdQuery,
 } from "@/api/services/chatApi";
-import { useRouter } from "expo-router";
+import Button from "@/components/ui/Button";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { selectUser } from "@/store/reducers/userSlice";
 import { CreateChatRequest } from "@/types/api/chat";
 import { Chat, CHAT_TYPE } from "@/types/chat";
-import { selectUser } from "@/store/reducers/userSlice";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import Button from "@/components/ui/Button";
+import { useRouter } from "expo-router";
+import React, { useCallback } from "react";
 
 function MessageBtn({ userId }: { userId: string }) {
   const [getUserChat, { isLoading: isUserChatLoading }] =
-    useLazyGetUserChatQuery();
+    useLazyGetChatByUserIdQuery();
   const [createChat, { isLoading: isCreatingChat }] = useCreateChatMutation();
   const user = useAppSelector(selectUser);
   const router = useRouter();
@@ -47,7 +45,10 @@ function MessageBtn({ userId }: { userId: string }) {
       loading={isUserChatLoading || isCreatingChat}
       variant="outline"
       icon="chatbubble-ellipses-outline"
-      className="h-9 "
+      className="h-9 text-sm "
+      textProps={{
+        className: "text-sm text-azure-radiance-500 ",
+      }}
     >
       Message
     </Button>

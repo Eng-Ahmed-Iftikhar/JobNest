@@ -12,19 +12,21 @@ function TabButton({
   onPress: () => void;
 }) {
   return (
-    <Pressable onPress={onPress} className="mr-6 pb-2">
+    <Pressable onPress={onPress}>
       <View className="flex-row items-center gap-2">
         <Text
           className={
             "text-base font-semibold " +
-            (active ? "dark:bg-black" : "text-gray-500")
+            (active
+              ? "text-black dark:text-white"
+              : "text-gray-500 dark:text-gray-400")
           }
         >
           {label}
         </Text>
         {typeof count === "number" && count > 0 && (
-          <View className="px-2 py-0.5 bg-azure-radiance-50 rounded-full border border-azure-radiance-100">
-            <Text className="text-sm font-semibold text-azure-radiance-600">
+          <View className="px-2 py-0.5 bg-azure-radiance-50 dark:bg-azure-radiance-500 rounded-full border border-azure-radiance-100 dark:border-azure-radiance-500">
+            <Text className="text-sm font-semibold text-azure-radiance-600 dark:text-white">
               {count}
             </Text>
           </View>

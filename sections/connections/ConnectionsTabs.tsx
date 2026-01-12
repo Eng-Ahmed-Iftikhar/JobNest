@@ -43,12 +43,8 @@ function ConnectionsTabs() {
   );
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingRight: 16 }}
-    >
-      <View className="flex-row items-center">
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View className="flex-row items-center gap-3 border-b border-gray-200 dark:border-gray-700 px-4">
         {connectionsTabs.map((connectionsTab) => {
           let count = 0;
           switch (connectionsTab.key) {

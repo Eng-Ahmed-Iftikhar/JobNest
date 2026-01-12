@@ -15,10 +15,11 @@ export default function ConnectionLayout() {
   };
   return (
     <View className="flex-1 bg-white dark:bg-black">
-      <View className="px-4 pt-4">
+      <View className="pt-4">
         <ConnectionsTabs />
-        <View className="mt-3 w-[65%]">
+        <View className="mt-3 p-3 w-full border-b border-gray-200 dark:border-gray-700">
           <SearchInput
+            textViewStyle={{ width: "70%" }}
             value={searchParams.search as string}
             onChangeText={handleSearchChange}
             placeholder="Search"
