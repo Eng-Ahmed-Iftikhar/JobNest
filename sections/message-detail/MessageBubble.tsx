@@ -1,9 +1,4 @@
-import {
-  useCreateChatMessageMutation,
-  useUpdateMessageStatusMutation,
-} from "@/api/services/chatApi";
-import { useUploadFileMutation } from "@/api/services/fileApi";
-import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useUpdateMessageStatusMutation } from "@/api/services/chatApi";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import useChat from "@/hooks/useChat";
 
@@ -41,7 +36,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
   const seenUsers =
     message?.userStatuses?.filter((status) => status.seenAt) || [];
 
-  const chatUserWithoutSender = chatUsers.filter(
+  const chatUserWithoutSender = chatUsers?.filter(
     (chatUser) => chatUser.id !== message?.senderId
   );
   const isSeenByAllOthers = chatUserWithoutSender.length === seenUsers.length;
@@ -76,7 +71,8 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
 
     hasStatusRef.current = false;
     handleMessageSeenStatusUpdate();
-  }, [handleMessageSeenStatusUpdate, userStatus?.id, pathname]);
+  }, [handleMessageSeenStatusUpdate, pathname]);
+
   if (!message) {
     return null;
   }
@@ -102,7 +98,11 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
             (isOwn ? "justify-end" : "justify-start")
           }
         >
-          <Text className={"text-sm font-medium " + "text-gray-500"}>
+          <Text
+            className={
+              "text-sm font-medium " + "text-gray-500 dark:text-gray-200"
+            }
+          >
             {moment(message?.createdAt).format("hh:mm A")}
           </Text>
           {/* Seen double tick for own messages */}

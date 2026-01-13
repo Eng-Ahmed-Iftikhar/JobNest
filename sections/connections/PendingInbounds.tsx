@@ -2,6 +2,7 @@ import { useLazyGetMeConnectionRequestsQuery } from "@/api/services/connectionRe
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectConnectionRequests } from "@/store/reducers/connectionRequestSlice";
 import { selectUser } from "@/store/reducers/userSlice";
+import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { FlatList, View } from "react-native";
 import { EmptyState } from "./EmptyState";
@@ -14,11 +15,12 @@ function PendingInbounds() {
   const connectionRequest = useAppSelector(selectConnectionRequests);
   const user = useAppSelector(selectUser);
   const [page, setPage] = React.useState(1);
+  const router = useRouter();
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const [connectionRequests, { data }] = useLazyGetMeConnectionRequestsQuery();
-  const handleFindPeople = () => {
-    // Navigate to find people screen
-  };
+  const handleFindPeople = useCallback(() => {
+    router.push("/search");
+  }, [router]);
 
   const inboundRequests = useMemo(() => {
     return connectionRequest.filter(

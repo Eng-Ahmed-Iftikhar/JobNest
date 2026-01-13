@@ -58,7 +58,7 @@ export function PendingRow({ item }: { item: ConnectionRequest }) {
       console.log(error);
       dispatch(showErrorNotification("Failed to accept connection request"));
     }
-  }, [acceptConnectionRequest, item.id]);
+  }, [acceptConnectionRequest, dispatch, item]);
 
   const handleReject = useCallback(async () => {
     try {
@@ -68,7 +68,7 @@ export function PendingRow({ item }: { item: ConnectionRequest }) {
       console.log(error);
       dispatch(showErrorNotification("Failed to reject connection request"));
     }
-  }, [rejectConnectionRequest, item.id]);
+  }, [rejectConnectionRequest, item, dispatch]);
 
   return (
     <View className="flex-row items-center justify-between px-4 py-3 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700">

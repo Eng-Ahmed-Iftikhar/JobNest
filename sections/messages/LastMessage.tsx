@@ -1,14 +1,12 @@
+import useChat from "@/hooks/useChat";
 import {
   CHAT_MESSAGE_STATUS,
   CHAT_MESSAGE_TYPE,
   ChatMessage,
 } from "@/types/chat";
+import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { selectUser } from "@/store/reducers/userSlice";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import useChat from "@/hooks/useChat";
 
 function LastMessage({
   lastMessage,
@@ -20,7 +18,11 @@ function LastMessage({
   const { chatGroup, chatUsers = [], currentChatUser } = useChat(chatId);
 
   if (!lastMessage) {
-    return <Text>No messages yet.</Text>;
+    return (
+      <Text className="text-sm font-medium text-gray-500 dark:text-gray-300">
+        No messages yet.
+      </Text>
+    );
   }
   const isOwn = lastMessage.senderId === currentChatUser?.id;
   const chatUserWithoutSender = chatUsers.filter(
@@ -43,10 +45,10 @@ function LastMessage({
         lastMessage.status === CHAT_MESSAGE_STATUS.PENDING
           ? "time"
           : lastMessage.status === CHAT_MESSAGE_STATUS.SENT
-            ? receivedUsers?.length > 0
-              ? "checkmark-done"
-              : "checkmark"
+          ? receivedUsers?.length > 0
+            ? "checkmark-done"
             : "checkmark"
+          : "checkmark"
       }
       size={16}
       color={isSeen ? "#1eadff" : "#9CA3AF"}
@@ -66,7 +68,10 @@ function LastMessage({
             {":"}
           </Text>
         )}
-        <Text className="text-sm font-medium text-gray-500" numberOfLines={1}>
+        <Text
+          className="text-sm font-medium text-gray-500 dark:text-gray-200"
+          numberOfLines={1}
+        >
           {lastMessage?.text || "No messages yet."}
         </Text>
       </View>
@@ -87,7 +92,9 @@ function LastMessage({
             {":"}
           </Text>
         )}
-        <Text className="text-sm font-medium text-gray-500 ">📷 Photo</Text>
+        <Text className="text-sm font-medium text-gray-500 dark:text-gray-200">
+          📷 Photo
+        </Text>
       </View>
     );
   }
@@ -104,7 +111,9 @@ function LastMessage({
           {":"}
         </Text>
       )}
-      <Text className="text-sm font-medium text-gray-500 ">📎 File</Text>
+      <Text className="text-sm font-medium text-gray-500 dark:text-gray-200">
+        📎 File
+      </Text>
     </View>
   );
 }

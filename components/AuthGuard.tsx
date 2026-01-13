@@ -1,11 +1,11 @@
 import { useLazyMeQuery } from "@/api/services/authApi";
-import { useAppSelector } from "@/hooks/useAppSelector";
-import AppLoader from "./AppLoader";
-import { useEffect } from "react";
-import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { useLazyGetMeConnectionRequestsCountQuery } from "@/api/services/connectionRequestsApi";
 import { useLazyGetMeConnectionsCountQuery } from "@/api/services/connectionApi";
+import { useLazyGetMeConnectionRequestsCountQuery } from "@/api/services/connectionRequestsApi";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectAuth } from "@/store/reducers/authSlice";
+import { useEffect } from "react";
+import AppLoader from "./AppLoader";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { access_token } = useAppSelector(selectAuth);
@@ -28,8 +28,7 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   if (gettingUser) {
     return <AppLoader />;
   }
-
-  return children;
+  return <>{children}</>;
 }
 
 export default AuthGuard;

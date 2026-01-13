@@ -19,6 +19,7 @@ export default function TabLayout() {
           initialRouteName="jobs"
           screenOptions={{
             headerShown: false,
+            animation: "fade",
             tabBarActiveTintColor: "#1eadff",
             tabBarLabelStyle: { fontSize: 11, fontWeight: "bold" },
             tabBarIconStyle: { marginTop: 4 },

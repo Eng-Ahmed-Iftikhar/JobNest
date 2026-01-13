@@ -1,7 +1,7 @@
 import { useLazyGetFollowedCompaniesQuery } from "@/api/services/companyApi";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectCompanyFollowers } from "@/store/reducers/companySlice";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useEffect } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { EmptyState } from "./EmptyState";
@@ -11,6 +11,7 @@ const PAGE_SIZE = 10;
 export function FollowingList() {
   const searchParams = useLocalSearchParams();
   const search = (searchParams.search as string) || "";
+  const router = useRouter();
   const [page, setPage] = React.useState(1);
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const followedCompanies = useAppSelector(selectCompanyFollowers);
@@ -20,9 +21,9 @@ export function FollowingList() {
   const dataTotal = result.data?.total ?? 0;
   const dataPageSize = result.data?.pageSize ?? PAGE_SIZE;
 
-  const handleFindBusinesses = () => {
-    // Navigate to find businesses screen
-  };
+  const handleFindBusinesses = useCallback(() => {
+    router.push("/search");
+  }, [router]);
 
   const handleReachEnd = useCallback(() => {
     if (dataPage * dataPageSize < dataTotal) {

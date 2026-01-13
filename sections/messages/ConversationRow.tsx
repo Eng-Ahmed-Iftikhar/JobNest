@@ -34,12 +34,13 @@ function ConversationRow({ item }: { item: Chat }) {
   );
   const lastMessage = sortedMessages[sortedMessages.length - 1];
 
-  const handlePress = () => {
+  const handlePress = useCallback(() => {
     router.push({
       pathname: "/messages/chat",
       params: { id: item.id },
     });
-  };
+  }, [router, item]);
+
   const handleDeleteChat = useCallback(async () => {
     if (!item?.id) return;
     try {
@@ -88,7 +89,10 @@ function ConversationRow({ item }: { item: Chat }) {
         <Avatar name={chatName} imageUrl={chatIconUrl} />
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
-            <Text className="text-base font-semibold dark:bg-black">
+            <Text
+              className="text-base font-semibold text-gray-900 dark:text-gray-100"
+              numberOfLines={1}
+            >
               {chatName}
             </Text>
             {unreedMessagesCount > 0 && <Badge count={unreedMessagesCount} />}
@@ -96,7 +100,7 @@ function ConversationRow({ item }: { item: Chat }) {
 
           <LastMessage chatId={item?.id} lastMessage={lastMessage} />
         </View>
-        <Text className="text-sm font-medium text-gray-400">
+        <Text className="text-sm font-medium text-gray-500 dark:text-gray-200">
           {lastMessage ? moment(lastMessage.createdAt).format("hh:mm A") : ""}
         </Text>
       </Pressable>

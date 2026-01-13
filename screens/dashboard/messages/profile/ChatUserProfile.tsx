@@ -83,6 +83,7 @@ function ChatUserProfile() {
         )
       );
     } catch (error) {
+      console.log(error);
       dispatch(showErrorNotification("An error occurred. Please try again."));
     }
   }, [chat, blockedUser, dispatch, unblockChat, blockChat, chatUser?.userId]);
@@ -111,6 +112,7 @@ function ChatUserProfile() {
           )
         );
       } catch (error) {
+        console.log(error);
         dispatch(showErrorNotification("An error occurred. Please try again."));
       }
     },
@@ -118,7 +120,7 @@ function ChatUserProfile() {
   );
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50 dark:bg-black">
       {/* Top bar with back and menu */}
       <ChatUserHeader onMenuToggle={setMenuVisible} />
 
@@ -132,7 +134,7 @@ function ChatUserProfile() {
       </View>
 
       {/* Divider */}
-      <View className="h-px bg-gray-200 mx-4 mb-2" />
+      <View className="h-px bg-gray-200 dark:bg-gray-700 mx-4 mb-2" />
 
       {/* Menu Modal */}
 

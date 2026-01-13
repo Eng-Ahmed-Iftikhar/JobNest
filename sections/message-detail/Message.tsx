@@ -78,6 +78,7 @@ function Message({ message, loading = false }: MessageProps) {
         try {
           await Linking.openURL(message.fileUrl);
         } catch (e) {
+          console.error("Failed to open file:", e);
           // Optionally show error toast
         }
       }
@@ -95,11 +96,13 @@ function Message({ message, loading = false }: MessageProps) {
         <View className="flex-1">
           <Text
             numberOfLines={1}
-            className="text-base font-medium dark:bg-black"
+            className="text-base font-medium text-gray-900 dark:text-gray-100"
           >
             {fileName}
           </Text>
-          <Text className="text-xs text-gray-400 mt-1">Tap to open file</Text>
+          <Text className="text-xs text-gray-400 dark:text-gray-300 mt-1">
+            Tap to open file
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -109,10 +112,17 @@ function Message({ message, loading = false }: MessageProps) {
     <View
       className={
         "px-4 py-3 rounded-2xl max-w-xs " +
-        (isOwn ? "bg-azure-radiance-500 self-end " : "bg-gray-100 self-start ")
+        (isOwn
+          ? "bg-azure-radiance-500 self-end "
+          : "bg-gray-100 dark:bg-gray-800 self-start ")
       }
     >
-      <Text className={"text-base " + (isOwn ? "text-white" : "dark:bg-black")}>
+      <Text
+        className={
+          "text-base " +
+          (isOwn ? "text-white" : "text-gray-900 dark:text-gray-100")
+        }
+      >
         {message.text}
       </Text>
     </View>

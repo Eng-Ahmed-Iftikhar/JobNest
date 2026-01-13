@@ -1,13 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React, { useCallback } from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, useColorScheme, View } from "react-native";
 
 type ChatUserHeaderProps = {
   onMenuToggle: (visible: boolean) => void;
 };
 function ChatUserHeader({ onMenuToggle }: ChatUserHeaderProps) {
   const router = useRouter();
+  const colorScheme = useColorScheme();
 
   const onPressBack = useCallback(() => {
     router.back();
@@ -20,14 +21,22 @@ function ChatUserHeader({ onMenuToggle }: ChatUserHeaderProps) {
         onPress={onPressBack}
         accessibilityLabel="Go back"
       >
-        <Ionicons name="arrow-back" size={20} />
+        <Ionicons
+          name="arrow-back"
+          color={colorScheme === "dark" ? "#9CA3AF" : "#000"}
+          size={20}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         className="p-2 "
         onPress={() => onMenuToggle(true)}
         accessibilityLabel="Open menu"
       >
-        <Ionicons name="ellipsis-vertical" size={20} />
+        <Ionicons
+          name="ellipsis-vertical"
+          color={colorScheme === "dark" ? "#9CA3AF" : "#000"}
+          size={20}
+        />
       </TouchableOpacity>
     </View>
   );

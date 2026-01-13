@@ -1,5 +1,4 @@
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { useAppSelector } from "@/hooks/useAppSelector";
 import useChat from "@/hooks/useChat";
 import BlockedChat from "@/sections/message-detail/BlockedChat";
 import DeletedGroup from "@/sections/message-detail/DeletedGroup";
@@ -7,7 +6,6 @@ import MessageDetailBody from "@/sections/message-detail/MessageDetailBody";
 import MessageDetailHeader from "@/sections/message-detail/MessageDetailHeader";
 import SendActions from "@/sections/new-message/SendActions";
 import { addMessage } from "@/store/reducers/chatSlice";
-import { selectUser } from "@/store/reducers/userSlice";
 import { CreateChatMessageRequest } from "@/types/api/chat";
 import {
   CHAT_MESSAGE_STATUS,
@@ -16,12 +14,7 @@ import {
 } from "@/types/chat";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useMemo } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, Platform } from "react-native";
 
 type MessagePayload = CreateChatMessageRequest & {
   id: string;
@@ -33,7 +26,6 @@ type MessagePayload = CreateChatMessageRequest & {
 
 function ChatDetailScreen() {
   const param = useLocalSearchParams();
-  const user = useAppSelector(selectUser);
   const id = typeof param.id === "string" ? param.id : "";
   const dispatch = useAppDispatch();
   const { chat, chatGroup, currentChatUser } = useChat(id);
@@ -102,27 +94,25 @@ function ChatDetailScreen() {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 100}
-      >
-        <MessageDetailHeader />
-        <MessageDetailBody />
-        {youBlockedChat ? (
-          <BlockedChat />
-        ) : chatGroupDeleted ? (
-          <DeletedGroup />
-        ) : (
-          <SendActions
-            onSendMessage={handleSendMessage}
-            onSelectImage={handleSelectImage}
-            onAttachFile={handleSelectFile}
-          />
-        )}
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+    <KeyboardAvoidingView
+      className="h-full"
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 100}
+    >
+      <MessageDetailHeader />
+      <MessageDetailBody />
+      {youBlockedChat ? (
+        <BlockedChat />
+      ) : chatGroupDeleted ? (
+        <DeletedGroup />
+      ) : (
+        <SendActions
+          onSendMessage={handleSendMessage}
+          onSelectImage={handleSelectImage}
+          onAttachFile={handleSelectFile}
+        />
+      )}
+    </KeyboardAvoidingView>
   );
 }
 

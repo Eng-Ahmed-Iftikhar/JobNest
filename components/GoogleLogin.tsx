@@ -80,7 +80,7 @@ function GoogleLogin() {
 
   return (
     <TouchableOpacity
-      className="flex-row items-center justify-center font-bold bg-gray-100 h-12 rounded-lg shadow-md"
+      className="flex-row items-center justify-center font-bold bg-gray-100 dark:bg-gray-700 h-12 rounded-lg shadow-md"
       onPress={handleGooglePress}
       disabled={isLoading}
     >
@@ -89,7 +89,7 @@ function GoogleLogin() {
       ) : (
         <Image source={GoogleIcon} className="h-6 w-6 mr-2" />
       )}
-      <Text className="text-gray-700 font-semibold">
+      <Text className="text-gray-700  dark:text-gray-200 font-semibold">
         {isLoading ? "Signing in..." : "Continue with Google"}
       </Text>
     </TouchableOpacity>

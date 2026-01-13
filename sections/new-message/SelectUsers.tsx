@@ -28,7 +28,7 @@ function SelectUsers({
   return (
     <View
       style={{ flexWrap: "wrap" }}
-      className=" gap-1  flex-row p-2 bg-white dark:bg-black rounded-xl text-base dark:bg-black dark:text-gray-100 border-2 border-azure-radiance-500"
+      className=" gap-1  flex-row px-2 bg-white dark:bg-black rounded-xl text-base  dark:text-gray-100 border-2 border-azure-radiance-500"
     >
       {selectedUsers.map((user) => {
         return (
@@ -40,10 +40,11 @@ function SelectUsers({
         );
       })}
 
-      <View className=" h-10 ">
+      <View className=" h-12 ">
         <TextInput
           placeholder="Type name of the user or business"
           placeholderTextColor="#9CA3AF"
+          className="text-base dark:text-gray-100 min-w-[150px] max-w-[250px] flex-1 p-0 m-0"
           value={searchInput}
           onChangeText={handleSearchChange}
         />

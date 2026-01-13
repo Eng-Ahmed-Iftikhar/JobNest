@@ -6,8 +6,13 @@ import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 
-import React from "react";
-import { ActivityIndicator, Pressable, View } from "react-native";
+import React, { useCallback } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  useColorScheme,
+  View,
+} from "react-native";
 
 const ACCENT = "#1eadff";
 
@@ -26,19 +31,20 @@ function SendActions({
 }: ActionsProps) {
   const [message, setMessage] = React.useState("");
   const dispatch = useAppDispatch();
+  const colorScheme = useColorScheme();
 
-  const handleTextChange = (text: string) => {
+  const handleTextChange = useCallback((text: string) => {
     setMessage(text);
-  };
+  }, []);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = useCallback(() => {
     if (onSendMessage && message.trim().length > 0) {
       onSendMessage(message.trim());
       setMessage("");
     }
-  };
+  }, [onSendMessage, message]);
 
-  const handleFileAttach = async () => {
+  const handleFileAttach = useCallback(async () => {
     const result = await DocumentPicker.getDocumentAsync({
       type: [
         "application/pdf",
@@ -60,9 +66,9 @@ function SendActions({
       name: file.name,
     };
     onAttachFile && onAttachFile(fileObj);
-  };
+  }, [dispatch, onAttachFile]);
 
-  const handleImageSelect = async () => {
+  const handleImageSelect = useCallback(async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       return dispatch(
@@ -87,22 +93,30 @@ function SendActions({
       name: `image_${Date.now()}.jpg`,
     };
     onSelectImage && onSelectImage(imageObj);
-  };
+  }, [dispatch, onSelectImage]);
 
   return (
     <View className="px-4 py-3 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700">
       <View className="flex-row items-center gap-2 mb-2">
         <Pressable onPress={handleFileAttach} className="p-2">
-          <Ionicons name="attach" size={20} color="#6B7280" />
+          <Ionicons
+            name="attach"
+            size={20}
+            color={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
+          />
         </Pressable>
         <Pressable onPress={handleImageSelect} className="p-2">
-          <Ionicons name="image" size={20} color="#6B7280" />
+          <Ionicons
+            name="image"
+            size={20}
+            color={colorScheme === "dark" ? "#9CA3AF" : "#6B7280"}
+          />
         </Pressable>
       </View>
       <View className="flex-row items-center gap-2">
         <TextArea
           numberOfLines={2}
-          className="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-base dark:bg-black border border-gray-200"
+          className="flex-1 px-3 py-2 bg-gray-100 rounded-lg text-base dark:bg-black border border-gray-200 dark:border-gray-700 dark:text-gray-100"
           placeholder="Type a message"
           placeholderTextColor="#9CA3AF"
           onChangeText={handleTextChange}
@@ -111,8 +125,22 @@ function SendActions({
         {loading ? (
           <ActivityIndicator color={ACCENT} size={20} />
         ) : (
-          <Pressable onPress={handleSendMessage} className="p-2">
-            <Ionicons name="send" size={20} color={ACCENT} />
+          <Pressable
+            disabled={message.trim().length === 0}
+            onPress={handleSendMessage}
+            className="p-2"
+          >
+            <Ionicons
+              name="send"
+              size={20}
+              color={
+                colorScheme === "dark"
+                  ? message.trim().length === 0
+                    ? "#9CA3AF"
+                    : ACCENT
+                  : ACCENT
+              }
+            />
           </Pressable>
         )}
       </View>

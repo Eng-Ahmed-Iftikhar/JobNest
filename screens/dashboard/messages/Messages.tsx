@@ -17,12 +17,15 @@ function MessagesScreen() {
   const [page, setPage] = useState(1);
 
   const [trigger, { data: conversationsDataResponse }] = useLazyGetChatsQuery();
+  const dataPage = conversationsDataResponse?.page || 1;
+  const dataTotal = conversationsDataResponse?.total || 1;
+  const dataPageSize = conversationsDataResponse?.pageSize || PAGE_SIZE;
 
   const handleReachedEnd = useCallback(() => {
-    if (chats.length !== conversationsDataResponse?.total) {
+    if (dataPage * dataPageSize < dataTotal) {
       setPage((prev) => prev + 1);
     }
-  }, [conversationsDataResponse]);
+  }, [dataPage, dataPageSize, dataTotal]);
 
   const handleOnRefresh = useCallback(() => {
     setIsRefreshing(true);
@@ -36,7 +39,6 @@ function MessagesScreen() {
   }, [search, trigger]);
 
   useEffect(() => {
-    if (page === 1 && isRefreshing) return;
     trigger({
       page,
       pageSize: PAGE_SIZE,
@@ -45,7 +47,7 @@ function MessagesScreen() {
   }, [page, search, trigger]);
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className="flex-1 bg-gray-50 dark:bg-black">
       <MessagesHeader />
 
       <View className="px-4 py-3 ">

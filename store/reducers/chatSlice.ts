@@ -1,11 +1,11 @@
 import { chatApi } from "@/api/services/chatApi";
-import { GetChatsResponse, GetMessagesResponse } from "@/types/api/chat";
+import { GetChatsResponse } from "@/types/api/chat";
 import { Chat, ChatGroup, ChatMessage } from "@/types/chat";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { enableMapSet } from "immer";
-import _, { update } from "lodash";
-import { RootState } from ".";
+import _ from "lodash";
 import moment from "moment";
+import { RootState } from ".";
 
 // Enable Map/Set support for Immer (required for Map usage in state)
 enableMapSet();

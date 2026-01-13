@@ -31,9 +31,9 @@ function SettingMenuModal({
         activeOpacity={1}
         onPressOut={onClose}
       >
-        <View className="absolute right-10 top-32 w-48 bg-white dark:bg-black rounded-xl shadow-lg p-2">
+        <View className="absolute right-10 top-36 w-48 bg-white dark:bg-black rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-2">
           <TouchableOpacity
-            className="flex-row items-center px-3 py-3 rounded-lg hover:bg-gray-100"
+            className="flex-row items-center px-3 py-3 rounded-lg hover:bg-gray-100 border-b border-gray-200 dark:border-gray-700"
             onPress={onBlockUser}
           >
             <Ionicons
@@ -42,7 +42,7 @@ function SettingMenuModal({
               color="#ef4444"
               className="mr-2"
             />
-            <Text className="text-base dark:bg-black ml-2">
+            <Text className="text-base text-black dark:text-white ml-2">
               {blocked ? "Unblock User" : "Block User"}
             </Text>
           </TouchableOpacity>
@@ -56,7 +56,7 @@ function SettingMenuModal({
               color="#f59e42"
               className="mr-2"
             />
-            <Text className="text-base dark:bg-black ml-2">
+            <Text className="text-base text-black dark:text-white ml-2">
               {muted ? "Unmute User" : "Mute User"}
             </Text>
           </TouchableOpacity>

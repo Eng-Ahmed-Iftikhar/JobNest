@@ -1,9 +1,9 @@
-import { createListenerMiddleware } from "@reduxjs/toolkit";
-import { addMessage, updateMessage } from "../reducers/chatSlice";
 import { chatApi } from "@/api/services/chatApi";
-import { CHAT_MESSAGE_TYPE, CHAT_TYPE } from "@/types/chat";
 import { fileApi } from "@/api/services/fileApi";
+import { CHAT_MESSAGE_TYPE, CHAT_TYPE } from "@/types/chat";
+import { createListenerMiddleware } from "@reduxjs/toolkit";
 import { RootState } from "../reducers";
+import { addMessage, updateMessage } from "../reducers/chatSlice";
 
 export const chatListenerMiddleware = createListenerMiddleware();
 
@@ -11,7 +11,6 @@ chatListenerMiddleware.startListening({
   actionCreator: addMessage,
   effect: async (action, listenerApi) => {
     const payload = action.payload;
-
     const state = listenerApi.getState() as RootState;
     const userId = state.user.user?.id || "";
     const chats = state.chats.chats || [];

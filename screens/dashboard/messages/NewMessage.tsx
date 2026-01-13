@@ -1,14 +1,15 @@
+import { useCreateChatMutation } from "@/api/services/chatApi";
+import { useLazyGetMeConnectionsQuery } from "@/api/services/connectionApi";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import SendActions from "@/sections/new-message/SendActions";
 import ContactSuggestItem from "@/sections/new-message/ContactSuggestItem";
 import NewMessageHeader from "@/sections/new-message/NewMessageHeader";
 import SelectUsers from "@/sections/new-message/SelectUsers";
+import SendActions from "@/sections/new-message/SendActions";
+import { addMessage, selectChats } from "@/store/reducers/chatSlice";
+import { selectConnections } from "@/store/reducers/connectionSlice";
+import { showErrorNotification } from "@/store/reducers/notificationSlice";
 import { selectUser } from "@/store/reducers/userSlice";
-import { ContactItem } from "@/types/api/message";
-import { useRouter } from "expo-router";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, View } from "react-native";
-import { useCreateChatMutation } from "@/api/services/chatApi";
 import { CreateChatRequest } from "@/types/api/chat";
 import {
   Chat,
@@ -16,13 +17,10 @@ import {
   CHAT_MESSAGE_TYPE,
   CHAT_TYPE,
 } from "@/types/chat";
-import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { showErrorNotification } from "@/store/reducers/notificationSlice";
-import { addMessage, selectChats } from "@/store/reducers/chatSlice";
-import { SafeAreaView } from "react-native";
-import { selectConnections } from "@/store/reducers/connectionSlice";
 import { Connection } from "@/types/connection";
-import { useLazyGetMeConnectionsQuery } from "@/api/services/connectionApi";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import { FlatList, KeyboardAvoidingView, Platform, View } from "react-native";
 
 let PAGE_SIZE = 20;
 function NewMessageScreen() {
@@ -138,7 +136,7 @@ function NewMessageScreen() {
         );
       }
     },
-    [selectedUsers, user, handleCreateChat, handleExistingChat]
+    [handleExistingChat, handleCreateChat, dispatch, router, user]
   );
 
   const handleSelectImage = useCallback(
@@ -173,12 +171,13 @@ function NewMessageScreen() {
 
         dispatch(addMessage(newMessage));
       } catch (error) {
+        console.log(error);
         dispatch(
           showErrorNotification("Failed to create chat. Please try again.")
         );
       }
     },
-    [selectedUsers, user, handleCreateChat, handleExistingChat]
+    [handleExistingChat, handleCreateChat, dispatch, user, router]
   );
 
   const handleSelectFile = useCallback(
@@ -217,12 +216,13 @@ function NewMessageScreen() {
 
         dispatch(addMessage(newMessage));
       } catch (error) {
+        console.log(error);
         dispatch(
           showErrorNotification("Failed to create chat. Please try again.")
         );
       }
     },
-    [selectedUsers, user, handleCreateChat, handleExistingChat]
+    [handleExistingChat, handleCreateChat, dispatch, router, user]
   );
   const dataPage = dataResponse?.page || 1;
   const dataTotal = dataResponse?.total || 0;
@@ -246,45 +246,43 @@ function NewMessageScreen() {
   }, [page, search, trigger]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 100}
-      >
-        <NewMessageHeader />
-        <View className="p-4">
-          <SelectUsers
-            onSearchChange={setSearch}
-            selectedUsers={selectedUsers}
-            onRemoveUser={handleRemoveUser}
-          />
-        </View>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 100}
+    >
+      <NewMessageHeader />
+      <View className="p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-black">
+        <SelectUsers
+          onSearchChange={setSearch}
+          selectedUsers={selectedUsers}
+          onRemoveUser={handleRemoveUser}
+        />
+      </View>
 
-        <FlatList
-          data={connections}
-          keyExtractor={(item) => item.id}
-          refreshing={isRefreshing}
-          renderItem={({ item }) => (
-            <ContactSuggestItem
-              item={item}
-              onPress={() => onSelectContact(item)}
-            />
-          )}
-          onRefresh={handleRefresh}
-          onEndReached={handleReachedEnd}
-          onEndReachedThreshold={0.5}
-          contentContainerStyle={{ paddingBottom: 24 }}
-          showsVerticalScrollIndicator={false}
-        />
-        <SendActions
-          loading={creatingChat}
-          onSelectImage={handleSelectImage}
-          onAttachFile={handleSelectFile}
-          onSendMessage={handleSendMessage}
-        />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <FlatList
+        data={connections}
+        keyExtractor={(item) => item.id}
+        refreshing={isRefreshing}
+        renderItem={({ item }) => (
+          <ContactSuggestItem
+            item={item}
+            onPress={() => onSelectContact(item)}
+          />
+        )}
+        onRefresh={handleRefresh}
+        onEndReached={handleReachedEnd}
+        onEndReachedThreshold={0.5}
+        contentContainerStyle={{ paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      />
+      <SendActions
+        loading={creatingChat}
+        onSelectImage={handleSelectImage}
+        onAttachFile={handleSelectFile}
+        onSendMessage={handleSendMessage}
+      />
+    </KeyboardAvoidingView>
   );
 }
 export default NewMessageScreen;

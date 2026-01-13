@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import CustomSpinner from "../CustomSpinner";
 
 type ButtonProps = {
   children?: React.ReactNode;
@@ -48,11 +49,12 @@ function Button({
       {...props}
     >
       {loading && (
-        <View className="w-full  items-center  animate-spin ">
-          <Ionicons
-            name="reload"
-            size={16}
-            color={iconColor ? iconColor : isOutline ? "#1eadff" : "white"}
+        <View className="flex-row items-center justify-center">
+          <CustomSpinner
+            size="small"
+            color={
+              iconColor ? iconColor : isOutline || isText ? "#1eadff" : "white"
+            }
           />
         </View>
       )}

@@ -6,7 +6,7 @@ import { useAppSelector } from "./useAppSelector";
 const useChat = (chatId: string) => {
   const user = useAppSelector(selectUser) || null;
 
-  const chats = useAppSelector(selectChats) || [];
+  const chats = useAppSelector(selectChats);
 
   const chat = useMemo(
     () => chats?.find((ch) => ch?.id === chatId),
@@ -36,7 +36,7 @@ const useChat = (chatId: string) => {
       name = chatUsersnames.join(", ");
     }
     return name;
-  }, [chatGroup, chatUsers]);
+  }, [chatGroup, chatMembers]);
 
   const chatIconUrl = useMemo(() => {
     let icon = "";
@@ -50,17 +50,20 @@ const useChat = (chatId: string) => {
       icon = chatUsersPics?.[0] || "";
     }
     return icon;
-  }, [chatGroup, chatUsers]);
+  }, [chatGroup, chatMembers]);
 
   const chatUnseenCounts = chat?.unseenMessageCounts || [];
-  const currentUserUnseenCount = chatUnseenCounts.filter(
+  const currentUserUnseenCount = (chatUnseenCounts || [])?.filter(
     (count) => count.senderId !== currentChatUser?.id
   );
 
   const unreedMessagesCount = useMemo(() => {
     if (!chat) return 0;
-    return currentUserUnseenCount.reduce((acc, count) => acc + count.count, 0);
-  }, [chat]);
+    return (currentUserUnseenCount || [])?.reduce(
+      (acc, count) => acc + count.count,
+      0
+    );
+  }, [chat, currentUserUnseenCount]);
 
   return {
     chatGroup,

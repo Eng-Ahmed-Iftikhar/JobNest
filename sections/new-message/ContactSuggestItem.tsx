@@ -25,7 +25,7 @@ function ContactSuggestItem({
         imageUrl={contactUser?.profile.pictureUrl || ""}
         name={`${contactUser?.profile.firstName} ${contactUser?.profile.lastName}`}
       />
-      <Text className="text-base font-semibold dark:bg-black">{`${contactUser?.profile.firstName} ${contactUser?.profile.lastName}`}</Text>
+      <Text className="text-base font-semibold text-gray-900 dark:text-gray-100">{`${contactUser?.profile.firstName} ${contactUser?.profile.lastName}`}</Text>
     </Pressable>
   );
 }
