@@ -1,6 +1,9 @@
 import { useUploadFileMutation } from "@/api/services/fileApi";
 import { useUpdateProfilePictureMutation } from "@/api/services/userApi";
+import Button from "@/components/ui/Button";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
 import useOnboarding from "@/hooks/useOnboarding";
+import { showErrorNotification } from "@/store/reducers/notificationSlice";
 import { OnboardingSteps } from "@/types/onboarding";
 import * as ImagePicker from "expo-image-picker";
 import { Formik } from "formik";
@@ -13,8 +16,10 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
+  useColorScheme,
   View,
 } from "react-native";
+
 import Icon from "react-native-vector-icons/AntDesign";
 import * as yup from "yup";
 
@@ -27,6 +32,7 @@ type FormValues = yup.InferType<typeof formSchema>;
 function ProfileImageForm() {
   const { handleUserProfile, handleChangeCurrentStep, userProfile } =
     useOnboarding();
+  const dispatch = useAppDispatch();
   const [uploadFile, { isLoading: isUploadingFile }] = useUploadFileMutation();
   const [updateProfilePicture, { isLoading: isUpdatingProfile }] =
     useUpdateProfilePictureMutation();
@@ -35,6 +41,7 @@ function ProfileImageForm() {
     name: string;
     size: number;
   } | null>(null);
+  const colorScheme = useColorScheme();
 
   const handleImagePick = useCallback(
     async (setFieldValue: (field: string, value: any) => void) => {
@@ -175,100 +182,114 @@ function ProfileImageForm() {
     [handleCameraCapture, handleImagePick]
   );
 
-  const handleSubmit = async (values: FormValues) => {
-    // If pictureUrl exists but no new image selected, skip upload and move to next step
-    if (values.pictureUrl && !selectedImage) {
-      handleUserProfile({ pictureUrl: values.pictureUrl });
-      handleChangeCurrentStep(OnboardingSteps.RESUME_URL);
+  const handleSubmit = useCallback(
+    async (values: FormValues) => {
+      // If pictureUrl exists but no new image selected, skip upload and move to next step
+      if (values.pictureUrl && !selectedImage) {
+        handleUserProfile({ pictureUrl: values.pictureUrl });
+        handleChangeCurrentStep(OnboardingSteps.RESUME_URL);
 
-      return;
-    }
-
-    if (!values.pictureUrl) {
-      Alert.alert("No image selected", "Please select a profile image first");
-      return;
-    }
-
-    if (!selectedImage) {
-      Alert.alert("No image selected", "Please select a profile image first");
-      return;
-    }
-
-    try {
-      // Determine MIME type based on file extension
-      const getMimeType = (fileName: string) => {
-        const extension = fileName.split(".").pop()?.toLowerCase();
-        switch (extension) {
-          case "jpg":
-          case "jpeg":
-            return "image/jpeg";
-          case "png":
-            return "image/png";
-          case "gif":
-            return "image/gif";
-          default:
-            return "image/jpeg";
-        }
-      };
-
-      // Create FormData for file upload
-      const formData = new FormData();
-
-      // For React Native, FormData expects specific structure
-      const fileObj = {
-        uri: selectedImage.uri,
-        type: getMimeType(selectedImage.name),
-        name: selectedImage.name,
-      };
-
-      console.log("File object to upload:", fileObj);
-
-      // Append file - React Native expects this structure
-      formData.append("file", fileObj as any);
-      formData.append("fileType", "image");
-      formData.append("folderPath", "profile-images");
-      formData.append("customFilename", `profile-${Date.now()}`);
-
-      console.log("FormData prepared, uploading...");
-
-      // First upload the image to get the URL
-      const fileUploadResponse = await uploadFile(formData).unwrap();
-
-      console.log("Upload successful:", fileUploadResponse);
-
-      // Then update the profile with the uploaded image URL
-      await updateProfilePicture({
-        pictureUrl: fileUploadResponse.url,
-      }).unwrap();
-
-      // Save to context with the uploaded image URL
-      handleUserProfile({ pictureUrl: fileUploadResponse.url });
-      handleChangeCurrentStep(OnboardingSteps.RESUME_URL);
-    } catch (error: any) {
-      console.error("Failed to upload image:", error);
-      console.error("Error details:", JSON.stringify(error, null, 2));
-
-      // Extract error message
-      let errorMessage = "Failed to upload image. Please try again.";
-
-      if (error?.data?.message) {
-        if (Array.isArray(error.data.message)) {
-          errorMessage = error.data.message[0];
-        } else {
-          errorMessage = error.data.message;
-        }
-      } else if (error?.error) {
-        errorMessage = error.error;
+        return;
       }
 
-      Alert.alert("Upload Error", errorMessage);
-    }
-  };
+      if (!values.pictureUrl) {
+        dispatch(
+          showErrorNotification(
+            "Please select a profile image or skip this step."
+          )
+        );
+        return;
+      }
 
-  const handleSkip = () => {
+      if (!selectedImage) {
+        dispatch(
+          showErrorNotification(
+            "Please select a profile image or skip this step."
+          )
+        );
+        return;
+      }
+
+      try {
+        // Determine MIME type based on file extension
+        const getMimeType = (fileName: string) => {
+          const extension = fileName.split(".").pop()?.toLowerCase();
+          switch (extension) {
+            case "jpg":
+            case "jpeg":
+              return "image/jpeg";
+            case "png":
+              return "image/png";
+            case "gif":
+              return "image/gif";
+            default:
+              return "image/jpeg";
+          }
+        };
+
+        // Create FormData for file upload
+        const formData = new FormData();
+
+        // For React Native, FormData expects specific structure
+        const fileObj = {
+          uri: selectedImage.uri,
+          type: getMimeType(selectedImage.name),
+          name: selectedImage.name,
+        };
+
+        // Append file - React Native expects this structure
+        formData.append("file", fileObj as any);
+        formData.append("fileType", "image");
+        formData.append("folderPath", "profile-images");
+        formData.append("customFilename", `profile-${Date.now()}`);
+
+        // First upload the image to get the URL
+        const fileUploadResponse = await uploadFile(formData).unwrap();
+
+        console.log("Upload successful:", fileUploadResponse);
+
+        // Then update the profile with the uploaded image URL
+        await updateProfilePicture({
+          pictureUrl: fileUploadResponse.url,
+        }).unwrap();
+
+        // Save to context with the uploaded image URL
+        handleUserProfile({ pictureUrl: fileUploadResponse.url });
+        handleChangeCurrentStep(OnboardingSteps.RESUME_URL);
+      } catch (error: any) {
+        console.error("Failed to upload image:", error);
+        console.error("Error details:", JSON.stringify(error, null, 2));
+
+        // Extract error message
+        let errorMessage = "Failed to upload image. Please try again.";
+
+        if (error?.data?.message) {
+          if (Array.isArray(error.data.message)) {
+            errorMessage = error.data.message[0];
+          } else {
+            errorMessage = error.data.message;
+          }
+        } else if (error?.error) {
+          errorMessage = error.error;
+        }
+
+        dispatch(showErrorNotification(errorMessage));
+      }
+    },
+    [
+      selectedImage,
+      handleUserProfile,
+      handleChangeCurrentStep,
+      dispatch,
+      uploadFile,
+      updateProfilePicture,
+    ]
+  );
+
+  const handleSkip = useCallback(() => {
     // Skip this step and move to next
     handleChangeCurrentStep(OnboardingSteps.RESUME_URL);
-  };
+  }, [handleChangeCurrentStep]);
 
   return (
     <Formik
@@ -295,7 +316,11 @@ function ProfileImageForm() {
                     resizeMode="cover"
                   />
                 ) : (
-                  <Icon name="user" size={48} color="white" />
+                  <Icon
+                    name="user"
+                    size={48}
+                    color={colorScheme === "dark" ? "white" : "black"}
+                  />
                 )}
               </TouchableOpacity>
 
@@ -309,47 +334,36 @@ function ProfileImageForm() {
 
               {/* Image Requirements */}
               <View className="mb-8">
-                <Text className="text-gray-600 text-center text-sm font-medium mb-1">
+                <Text className="text-gray-600 dark:text-gray-400 text-center text-sm font-medium mb-1">
                   Recommended resolution is 300×300 px.
                 </Text>
-                <Text className="text-gray-600 text-center text-sm font-medium mb-1">
+                <Text className="text-gray-600 dark:text-gray-400 text-center text-sm font-medium mb-1">
                   Max size - 2 MB.
                 </Text>
-                <Text className="text-gray-600 text-center text-sm font-medium">
+                <Text className="text-gray-600 dark:text-gray-400  text-center text-sm font-medium">
                   Allowed formats: *.jpg, *.jpeg, *.png, *.gif
                 </Text>
               </View>
 
               {/* Action Buttons */}
               <View className="w-full space-y-4">
-                <TouchableOpacity
+                <Button
                   onPress={() => handleSubmit()}
                   disabled={
-                    !values.pictureUrl ||
-                    isSubmitting ||
-                    isUploadingFile ||
-                    isUpdatingProfile
+                    isSubmitting || isUploadingFile || isUpdatingProfile
                   }
-                  className={`w-full py-3 px-6 rounded-lg font-semibold text-center ${
-                    values.pictureUrl ? "bg-azure-radiance-500" : "bg-gray-300"
-                  }`}
+                  loading={isSubmitting || isUploadingFile || isUpdatingProfile}
                 >
-                  <Text
-                    className={`text-center font-semibold text-lg ${
-                      values.pictureUrl ? "text-white" : "text-gray-500"
-                    }`}
-                  >
-                    {isUploadingFile || isUpdatingProfile
-                      ? "Processing..."
-                      : "Next"}
-                  </Text>
-                </TouchableOpacity>
+                  {isSubmitting || isUploadingFile || isUpdatingProfile
+                    ? "Uploading..."
+                    : "Continue"}
+                </Button>
 
                 <TouchableOpacity
                   onPress={handleSkip}
                   className="w-full py-3 px-6 rounded-lg font-semibold text-center"
                 >
-                  <Text className="text-gray-500 text-center font-semibold text-lg">
+                  <Text className="text-gray-500 dark:text-gray-400 text-center font-semibold text-lg">
                     Skip
                   </Text>
                 </TouchableOpacity>

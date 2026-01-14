@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, useColorScheme, View } from "react-native";
 import Select, { SelectItem } from "./Select";
 
 type PhoneNumberInputProps = {
@@ -25,10 +25,13 @@ function PhoneNumberInput({
   inputNumberProps,
   disabled = false,
 }: PhoneNumberInputProps) {
+  const colorScheme = useColorScheme();
   return (
     <View>
       {label && (
-        <Text className="text-sm font-medium text-gray-600 mb-1">{label}</Text>
+        <Text className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+          {label}
+        </Text>
       )}
       <View className="flex-row items-center gap-2">
         <View className="w-[30%]">
@@ -40,10 +43,12 @@ function PhoneNumberInput({
             disabled={disabled}
           />
         </View>
-        <View className="border flex justify-center h-12 w-[68%] border-gray-300 rounded-lg px-3">
+        <View className="border flex justify-center h-12 w-[68%] border-gray-300 dark:border-gray-700 rounded-lg px-3">
           <TextInput
-            className="text-sm font-medium dark:bg-black"
-            placeholderTextColor="#9CA3AF"
+            className="text-sm font-medium dark:bg-black text-gray-900 dark:text-white p-0 m-0"
+            placeholderTextColor={
+              colorScheme === "dark" ? "#9ca3af" : "#6b7280"
+            }
             editable={!disabled}
             {...inputNumberProps}
           />

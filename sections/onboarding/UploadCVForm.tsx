@@ -2,7 +2,6 @@ import * as DocumentPicker from "expo-document-picker";
 import { Formik } from "formik";
 import React, { useCallback, useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
-import { useDispatch } from "react-redux";
 import * as yup from "yup";
 
 import { useUploadFileMutation } from "@/api/services/fileApi";
@@ -20,8 +19,6 @@ type FormValues = yup.InferType<typeof formSchema>;
 type UploadState = "initial" | "uploading" | "ready";
 
 function UploadCVForm() {
-  const dispatch = useDispatch();
-
   const { handleUserProfile, userProfile, handleChangeCurrentStep } =
     useOnboarding();
   const [uploadState, setUploadState] = useState<UploadState>("initial");
@@ -204,115 +201,120 @@ function UploadCVForm() {
         Alert.alert("Update Error", errorMessage);
       }
     },
-    [selectedFile, updateResume, handleUserProfile, dispatch]
+    [selectedFile, updateResume, handleUserProfile, handleChangeCurrentStep]
   );
 
-  const formatFileSize = (bytes: number) => {
+  const formatFileSize = useCallback((bytes: number) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
+  }, []);
 
-  const handleGenericApplication = () => {
+  const handleGenericApplication = useCallback(() => {
     // Navigate to generic application form
     handleChangeCurrentStep(OnboardingSteps.GENERIC_APPLICATION);
-  };
+  }, [handleChangeCurrentStep]);
 
-  const renderInitialState = (
-    setFieldValue: (field: string, value: any) => void
-  ) => (
-    <View className="items-center">
-      <TouchableOpacity
-        onPress={() => handleFilePick(setFieldValue)}
-        className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg justify-center items-center bg-gray-50"
-      >
-        <View className="items-center">
-          <View className="w-12 h-12 bg-gray-200 rounded-lg justify-center items-center mb-2">
-            <Text className="text-2xl">📄</Text>
+  const renderInitialState = useCallback(
+    (setFieldValue: (field: string, value: any) => void) => (
+      <View className="items-center">
+        <TouchableOpacity
+          onPress={() => handleFilePick(setFieldValue)}
+          className="w-full h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg justify-center items-center bg-gray-50 dark:bg-gray-800"
+        >
+          <View className="items-center">
+            <View className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-lg justify-center items-center mb-2">
+              <Text className="text-2xl">📄</Text>
+            </View>
+            <Text className="text-gray-900 dark:text-gray-100 font-medium text-center">
+              Click to upload your CV
+            </Text>
+            <Text className="text-gray-500 dark:text-gray-400 text-sm font-medium mt-1">
+              Max size 5 MB
+            </Text>
           </View>
-          <Text className="dark:bg-black font-medium text-center">
-            Click to upload your CV
-          </Text>
-          <Text className="text-gray-500 text-sm font-medium mt-1">
-            Max size 5 MB
-          </Text>
-        </View>
-      </TouchableOpacity>
-
-      <View className="mt-6">
-        <Text className="text-gray-500 text-center mb-3">or</Text>
-        <TouchableOpacity
-          onPress={handleGenericApplication}
-          className="bg-azure-radiance-100 px-6 py-3 rounded-lg"
-        >
-          <Text className="text-azure-radiance-700 font-medium text-center">
-            Fill a generic application instead
-          </Text>
         </TouchableOpacity>
+
+        <View className="mt-6">
+          <Text className="text-gray-500 dark:text-gray-400 text-center mb-3">
+            or
+          </Text>
+          <TouchableOpacity
+            onPress={handleGenericApplication}
+            className="bg-azure-radiance-100 dark:bg-azure-radiance-500 px-6 py-3 rounded-lg"
+          >
+            <Text className="text-azure-radiance-700 dark:text-white font-medium text-center">
+              Fill a generic application instead
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    ),
+    [handleFilePick, handleGenericApplication]
   );
 
-  const renderUploadingState = (
-    setFieldValue: (field: string, value: any) => void
-  ) => (
-    <View className="w-full bg-gray-100 rounded-lg p-4">
-      <View className="flex-row items-center">
-        <View className="w-10 h-10 bg-green-100 rounded-lg justify-center items-center mr-3">
-          <Text className="text-lg">📄</Text>
+  const renderUploadingState = useCallback(
+    (setFieldValue: (field: string, value: any) => void) => (
+      <View className="w-full bg-gray-100 rounded-lg p-4">
+        <View className="flex-row items-center">
+          <View className="w-10 h-10 bg-green-100 rounded-lg justify-center items-center mr-3">
+            <Text className="text-lg">📄</Text>
+          </View>
+          <View className="flex-1">
+            <Text className="dark:bg-black font-medium">
+              {selectedFile?.name}
+            </Text>
+            <Text className="text-gray-600 text-sm font-medium">
+              Uploading... {uploadProgress}%
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => handleRemoveFile(setFieldValue)}
+            className="p-2"
+          >
+            <Text className="text-gray-400 text-xl">🗑️</Text>
+          </TouchableOpacity>
         </View>
-        <View className="flex-1">
-          <Text className="dark:bg-black font-medium">
-            {selectedFile?.name}
-          </Text>
-          <Text className="text-gray-600 text-sm font-medium">
-            Uploading... {uploadProgress}%
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => handleRemoveFile(setFieldValue)}
-          className="p-2"
-        >
-          <Text className="text-gray-400 text-xl">🗑️</Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Progress bar */}
-      <View className="mt-3 bg-gray-200 rounded-full h-2">
-        <View
-          className="bg-green-500 h-2 rounded-full"
-          style={{ width: `${uploadProgress}%` }}
-        />
+        {/* Progress bar */}
+        <View className="mt-3 bg-gray-200 rounded-full h-2">
+          <View
+            className="bg-green-500 h-2 rounded-full"
+            style={{ width: `${uploadProgress}%` }}
+          />
+        </View>
       </View>
-    </View>
+    ),
+    [uploadProgress, selectedFile, handleRemoveFile]
   );
 
-  const renderReadyState = (
-    setFieldValue: (field: string, value: any) => void
-  ) => (
-    <View className="w-full bg-green-50 border border-green-200 rounded-lg p-4">
-      <View className="flex-row items-center">
-        <View className="w-10 h-10 bg-green-100 rounded-lg justify-center items-center mr-3">
-          <Text className="text-lg">✅</Text>
+  const renderReadyState = useCallback(
+    (setFieldValue: (field: string, value: any) => void) => (
+      <View className="w-full bg-green-50 border border-green-200 rounded-lg p-4">
+        <View className="flex-row items-center">
+          <View className="w-10 h-10 bg-green-100 rounded-lg justify-center items-center mr-3">
+            <Text className="text-lg">✅</Text>
+          </View>
+          <View className="flex-1">
+            <Text className="dark:bg-black font-medium">
+              {selectedFile?.name}
+            </Text>
+            <Text className="text-green-600 text-sm font-medium">
+              Upload Complete • {formatFileSize(selectedFile?.size || 0)}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => handleRemoveFile(setFieldValue)}
+            className="p-2"
+          >
+            <Text className="text-gray-400 text-xl">🗑️</Text>
+          </TouchableOpacity>
         </View>
-        <View className="flex-1">
-          <Text className="dark:bg-black font-medium">
-            {selectedFile?.name}
-          </Text>
-          <Text className="text-green-600 text-sm font-medium">
-            Upload Complete • {formatFileSize(selectedFile?.size || 0)}
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => handleRemoveFile(setFieldValue)}
-          className="p-2"
-        >
-          <Text className="text-gray-400 text-xl">🗑️</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    ),
+    [selectedFile, formatFileSize, handleRemoveFile]
   );
 
   return (

@@ -13,7 +13,7 @@ import {
 import { OnboardingSteps } from "@/types/onboarding";
 import { PhoneNumber } from "@/types/user";
 import React, { useCallback, useState } from "react";
-import { Text, View } from "react-native";
+import { Text, useColorScheme, View } from "react-native";
 import { OtpInput } from "react-native-otp-entry";
 
 function PhoneVerificationScreen() {
@@ -22,7 +22,7 @@ function PhoneVerificationScreen() {
   const dispatch = useAppDispatch();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-
+  const colorScheme = useColorScheme();
   const [canResend, setCanResend] = useState(false);
 
   const [sendPhoneVerification, { isLoading: isSending }] =
@@ -43,9 +43,9 @@ function PhoneVerificationScreen() {
 
       dispatch(showErrorNotification(msg));
     }
-  }, [sendPhoneVerification]);
+  }, [dispatch, sendPhoneVerification]);
 
-  const handleVerifyCode = async () => {
+  const handleVerifyCode = useCallback(async () => {
     if (!code.trim() || code.trim().length !== 5) {
       setError("Verification code must be 5 digits");
       return;
@@ -75,10 +75,17 @@ function PhoneVerificationScreen() {
 
       dispatch(showErrorNotification(msg));
     }
-  };
+  }, [
+    code,
+    dispatch,
+    handleChangeCurrentStep,
+    handleUserProfile,
+    userProfile,
+    verifyPhoneCode,
+  ]);
 
   return (
-    <View className="flex-1 bg-white dark:bg-black px-4 pt-6">
+    <View className="flex-1 bg-white dark:bg-black  pt-6">
       <View className="flex-1 justify-start">
         <View className="mb-6 flex-col gap-6 w-[80%]  mx-auto">
           <OtpInput
@@ -92,6 +99,9 @@ function PhoneVerificationScreen() {
                 borderColor: error ? "#ef4444" : "#1eadff",
                 backgroundColor: "transparent",
                 borderRadius: 0,
+              },
+              pinCodeTextStyle: {
+                color: colorScheme === "dark" ? "white" : "black",
               },
             }}
             onTextChange={(text) => {
@@ -121,6 +131,7 @@ function PhoneVerificationScreen() {
           <Button
             onPress={handleResendCode}
             disabled={isSending || !canResend}
+            loading={isSending}
             variant="outline"
             className="flex-row items-center gap-2 max-w-[150px]"
           >

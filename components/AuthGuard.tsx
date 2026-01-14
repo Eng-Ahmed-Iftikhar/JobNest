@@ -1,34 +1,20 @@
-import { useLazyMeQuery } from "@/api/services/authApi";
-import { useLazyGetMeConnectionsCountQuery } from "@/api/services/connectionApi";
-import { useLazyGetMeConnectionRequestsCountQuery } from "@/api/services/connectionRequestsApi";
-import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useMeQuery } from "@/api/services/authApi";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectAuth } from "@/store/reducers/authSlice";
-import { useEffect } from "react";
 import AppLoader from "./AppLoader";
 
 function AuthGuard({ children }: { children: React.ReactNode }) {
   const { access_token } = useAppSelector(selectAuth);
-  const dispatch = useAppDispatch();
-  const [trigger, { isLoading, isFetching }] = useLazyMeQuery();
-  const [triggerCount] = useLazyGetMeConnectionRequestsCountQuery();
-  const [triggerConnectionsCount] = useLazyGetMeConnectionsCountQuery();
 
-  useEffect(() => {
-    if (access_token) {
-      trigger().then(async () => {
-        dispatch({ type: "socket/connect" });
-        await triggerCount();
-        await triggerConnectionsCount();
-      });
-    }
-  }, [access_token, trigger, triggerCount, triggerConnectionsCount, dispatch]);
+  const { isFetching, error } = useMeQuery(undefined, {
+    skip: !access_token,
+    refetchOnMountOrArgChange: true,
+  });
 
-  const gettingUser = isLoading || isFetching;
-  if (gettingUser) {
+  if (isFetching && !error) {
     return <AppLoader />;
   }
-  return <>{children}</>;
+  return children;
 }
 
 export default AuthGuard;

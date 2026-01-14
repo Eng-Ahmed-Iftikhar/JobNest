@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
-import { View, Text, Pressable, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useCallback, useEffect } from "react";
+import { Animated, Pressable, Text, View } from "react-native";
 
 interface ErrorToastProps {
   visible: boolean;
@@ -17,6 +17,23 @@ export default function ErrorToast({
 }: ErrorToastProps) {
   const [opacity] = React.useState(new Animated.Value(0));
   const [translateY] = React.useState(new Animated.Value(-20));
+
+  const handleClose = useCallback(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: -20,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      onClose();
+    });
+  }, [onClose, opacity, translateY]);
 
   useEffect(() => {
     if (visible) {
@@ -39,24 +56,7 @@ export default function ErrorToast({
 
       return () => clearTimeout(timer);
     }
-  }, [visible]);
-
-  const handleClose = () => {
-    Animated.parallel([
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: -20,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      onClose();
-    });
-  };
+  }, [duration, handleClose, opacity, translateY, visible]);
 
   if (!visible) return null;
 
@@ -66,7 +66,7 @@ export default function ErrorToast({
         opacity,
         transform: [{ translateY }],
       }}
-      className="absolute bottom-8 left-4 right-4 z-50"
+      className="absolute top-8 left-4 right-4 z-50"
     >
       <View className="bg-red-500 rounded-xl px-4 py-3 flex-row items-center justify-between shadow-lg">
         <View className="flex-row items-center flex-1">

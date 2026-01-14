@@ -18,13 +18,13 @@ export default function Layout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <ReduxPersisted>
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-        <NotificationProvider />
-        <GestureRoot>
-          <AuthGuard>
+        <AuthGuard>
+          <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+          <GestureRoot>
             <RootLayout />
-          </AuthGuard>
-        </GestureRoot>
+            <NotificationProvider />
+          </GestureRoot>
+        </AuthGuard>
       </ReduxPersisted>
     </ThemeProvider>
   );

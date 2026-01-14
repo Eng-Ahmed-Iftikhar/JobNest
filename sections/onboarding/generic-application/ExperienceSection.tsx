@@ -142,14 +142,16 @@ function ExperienceSection({
                 className={`w-5 h-5 rounded border-2 mr-2 items-center justify-center ${
                   exp.isCurrent
                     ? "bg-azure-radiance-500 border-azure-radiance-500"
-                    : "border-gray-300"
+                    : "border-gray-300 dark:border-gray-700"
                 }`}
               >
                 {exp.isCurrent && (
                   <Text className="text-white text-sm font-medium">✓</Text>
                 )}
               </TouchableOpacity>
-              <Text className="text-gray-600">My current position</Text>
+              <Text className="text-gray-600 dark:text-gray-300 font-medium">
+                My current position
+              </Text>
             </View>
           </View>
         </View>

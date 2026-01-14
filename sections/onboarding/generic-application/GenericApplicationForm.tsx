@@ -4,7 +4,6 @@ import {
   useUpdateCvDetailsMutation,
 } from "@/api/services/userApi";
 import Button from "@/components/ui/Button";
-import useOnboarding from "@/hooks/useOnboarding";
 import { updateIsOnboarded } from "@/store/reducers/userSlice";
 import { useRouter } from "expo-router";
 import { Formik } from "formik";
@@ -71,9 +70,8 @@ function GenericApplicationForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [getCurrentUser] = useLazyMeQuery();
-  const { handleUserProfile } = useOnboarding();
-  const { data: cvDetails, isLoading: isLoadingCvDetails } =
-    useGetCvDetailsQuery();
+
+  const { data: cvDetails } = useGetCvDetailsQuery();
   const [updateCvDetails, { isLoading: isUpdatingCvDetails }] =
     useUpdateCvDetailsMutation();
 
@@ -134,7 +132,7 @@ function GenericApplicationForm() {
         Alert.alert("Error", errorMessage);
       }
     },
-    [updateCvDetails, handleUserProfile, router]
+    [updateCvDetails, dispatch, getCurrentUser, router]
   );
 
   return (

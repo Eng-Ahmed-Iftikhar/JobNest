@@ -148,7 +148,7 @@ function DatePicker({
       <TouchableOpacity
         onPress={() => editable && setShowModal(true)}
         className={`border rounded-lg px-4 py-3 ${
-          isError ? "border-red-500" : "border-gray-300"
+          isError ? "border-red-500" : "border-gray-300 dark:border-gray-700"
         } ${
           !editable
             ? "bg-gray-100 dark:bg-gray-700"
@@ -234,7 +234,7 @@ function DatePicker({
                   <FlatList
                     data={months}
                     keyExtractor={(item) => item.value.toString()}
-                    className="border border-gray-300 dark:border-gray-600 rounded-lg max-h-48"
+                    className="border border-gray-300 dark:border-gray-700 rounded-lg max-h-48"
                     renderItem={({ item }) => {
                       const disabled = isMonthDisabled(item.value);
                       return (
@@ -243,7 +243,7 @@ function DatePicker({
                             !disabled && setSelectedMonth(item.value)
                           }
                           disabled={disabled}
-                          className={`p-3 border-b border-gray-200 dark:border-gray-600 ${
+                          className={`p-3 border-b border-gray-200 dark:border-gray-700 ${
                             selectedMonth === item.value
                               ? "bg-azure-radiance-100"
                               : disabled

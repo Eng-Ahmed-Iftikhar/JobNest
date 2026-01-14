@@ -80,7 +80,7 @@ function Select({
       <TouchableOpacity
         onPress={handleOpen}
         disabled={disabled}
-        className={`border h-12 border-gray-300 dark:border-gray-600 rounded-lg px-3 flex-row items-center justify-between ${
+        className={`border h-12 border-gray-300 dark:border-gray-700 rounded-lg px-3 flex-row items-center justify-between ${
           disabled ? "bg-gray-100 dark:bg-gray-800" : "bg-white dark:bg-black"
         }`}
       >

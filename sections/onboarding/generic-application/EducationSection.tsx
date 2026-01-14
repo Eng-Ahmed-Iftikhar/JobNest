@@ -76,7 +76,10 @@ function EducationSection({
       <Text className="text-xl font-bold dark:bg-black mb-4">Education</Text>
 
       {values.map((edu, index) => (
-        <View key={index} className="mb-6 pb-6 border-b border-gray-200">
+        <View
+          key={index}
+          className="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700"
+        >
           <View className="flex-row justify-between items-center mb-4">
             {values.length > 1 && (
               <TouchableOpacity onPress={() => handleRemoveEducation(index)}>
@@ -183,7 +186,9 @@ function EducationSection({
                   <Text className="text-white text-sm font-medium">✓</Text>
                 )}
               </TouchableOpacity>
-              <Text className="text-gray-600">Education in progress</Text>
+              <Text className="text-gray-600 dark:text-gray-300 font-medium">
+                Education in progress
+              </Text>
             </View>
           </View>
         </View>
@@ -194,7 +199,7 @@ function EducationSection({
         className="flex-row items-center gap-2 py-3"
       >
         <Text className="text-azure-radiance-500 text-lg">+</Text>
-        <Text className="text-azure-radiance-500 font-medium">
+        <Text className="text-azure-radiance-500 font-medium ">
           Add education
         </Text>
       </TouchableOpacity>

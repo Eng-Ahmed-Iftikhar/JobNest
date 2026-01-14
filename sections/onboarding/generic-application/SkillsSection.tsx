@@ -126,7 +126,7 @@ function SkillsSection({ values, setFieldValue, formik }: SkillsSectionProps) {
                     onPress={() => handleSelectSkill(skill.id)}
                     className="bg-gray-200 px-3 py-2 rounded-full"
                   >
-                    <Text className="text-gray-700 text-sm font-medium font-medium">
+                    <Text className="text-gray-700 text-sm font-medium ">
                       {skill.name}
                     </Text>
                   </TouchableOpacity>
@@ -149,12 +149,10 @@ function SkillsSection({ values, setFieldValue, formik }: SkillsSectionProps) {
                   onPress={() => handleRemoveSkill(skillId)}
                   className="bg-azure-radiance-500 px-3 py-2 rounded-full flex-row items-center gap-2"
                 >
-                  <Text className="text-white text-sm font-medium font-medium">
+                  <Text className="text-white text-sm font-medium">
                     {getSkillName(skillId)}
                   </Text>
-                  <Text className="text-white text-sm font-medium font-bold">
-                    ×
-                  </Text>
+                  <Text className="text-white text-sm font-medium ">×</Text>
                 </TouchableOpacity>
               ))}
             </View>

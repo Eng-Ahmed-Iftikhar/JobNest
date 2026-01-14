@@ -1,5 +1,7 @@
 import { authApi } from "@/api/services/authApi";
 import { chatApi } from "@/api/services/chatApi";
+import { connectionApi } from "@/api/services/connectionApi";
+import { connectionRequestsApi } from "@/api/services/connectionRequestsApi";
 import { createListenerMiddleware } from "@reduxjs/toolkit";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
@@ -23,6 +25,14 @@ userNotificationMiddleware.startListening({
     }
     await listenerApi
       .dispatch(chatApi.endpoints.getAllUnreadMessage.initiate())
+      .unwrap();
+    await listenerApi
+      .dispatch(connectionApi.endpoints.getMeConnectionsCount.initiate())
+      .unwrap();
+    await listenerApi
+      .dispatch(
+        connectionRequestsApi.endpoints.getMeConnectionRequestsCount.initiate()
+      )
       .unwrap();
   },
 });

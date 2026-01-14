@@ -1,16 +1,23 @@
 import { useLogoutMutation } from "@/api/services/authApi";
-import Logo from "@/assets/images/icon.png";
+import Logo from "@/assets/images/Logo.png";
 import AppLoader from "@/components/AppLoader";
 import ConfirmationModal from "@/components/ConfirmationModal";
 import useOnboarding from "@/hooks/useOnboarding";
 import StepIndicator from "@/sections/onboarding/StepIndicator";
+import { Ionicons } from "@expo/vector-icons";
 import { Stack } from "expo-router";
 import React, { Suspense, useCallback, useMemo, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import Icon from "react-native-vector-icons/AntDesign";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 
 function OnboardingLayout() {
   const [logoutApi, { isLoading: isLoggingOut }] = useLogoutMutation();
+  const colorScheme = useColorScheme();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const {
     currentStep = "",
@@ -58,16 +65,22 @@ function OnboardingLayout() {
         <View className="w-6 h-6">
           {isShowBackIcon && (
             <TouchableOpacity onPress={handleClickBack}>
-              <Icon name="arrowleft" size={16} color="black" />
+              <Ionicons
+                name="arrow-back"
+                size={16}
+                color={colorScheme === "dark" ? "white" : "black"}
+              />
             </TouchableOpacity>
           )}
         </View>
 
-        <Image source={Logo} className="h-[40px] w-[76px]" />
+        <Image source={Logo} className="h-[50px] w-[50px]" />
         <TouchableOpacity onPress={handleLogout} disabled={isLoggingOut}>
           <Text
             className={`text-sm font-medium  ${
-              isLoggingOut ? "text-gray-400" : "text-azure-radiance-500"
+              isLoggingOut
+                ? "text-gray-400 dark:text-gray-600"
+                : "text-azure-radiance-500"
             }`}
           >
             {isLoggingOut ? "Logging out..." : "Logout"}
@@ -76,9 +89,11 @@ function OnboardingLayout() {
       </View>
       <StepIndicator total={onboardingSteps.length} current={currentIdx} />
       <View className="w-[300px]  mx-auto  mt-3 ">
-        <Text className=" font-semibold text-2xl text-center">{title}</Text>
+        <Text className=" font-semibold text-2xl text-black dark:text-white text-center">
+          {title}
+        </Text>
 
-        <Text className="text-sm font-medium text-gray-500 text-center mt-2 ">
+        <Text className="text-sm font-medium text-gray-500 dark:text-gray-200 text-center mt-2 ">
           {description}
         </Text>
       </View>

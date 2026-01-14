@@ -65,10 +65,7 @@ function VerifyEmailForm() {
             )
           );
 
-          // Navigate after a short delay to show toast
-          setTimeout(() => {
-            router.replace("/(dashboard)/");
-          }, 1500);
+          router.replace("/(dashboard)");
         }
       } catch (error: any) {
         // Handle server-side errors

@@ -15,12 +15,13 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { encryptTransform } from "redux-persist-transform-encrypt";
 import { Persistor } from "redux-persist/es/types";
 import { apiMiddlewares } from "../api/services";
-import { userNotificationMiddleware } from "./middleware/userNotificationMiddleware";
 import { socketMiddleware } from "./middleware/socketMiddleware";
+import { userNotificationMiddleware } from "./middleware/userNotificationMiddleware";
 
 import { chatListenerMiddleware } from "./middleware/chatMiddleware";
 
 // ==============================|| REDUX PERSIST For Next.js SSR ||============================== //
+import AppLoader from "@/components/AppLoader";
 import { PersistGate } from "redux-persist/integration/react";
 
 // ==============================|| REDUX TOOLKIT - MAIN STORE ||============================== //
@@ -72,7 +73,7 @@ export type AppDispatch = typeof store.dispatch;
 const ReduxPersisted = ({ children }: ReduxPersistedProps) => {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<AppLoader />} persistor={persistor}>
         {children}
       </PersistGate>
     </Provider>
