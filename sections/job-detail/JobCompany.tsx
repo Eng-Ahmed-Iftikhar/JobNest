@@ -33,6 +33,7 @@ function JobCompany({ profile }: Props) {
   const location = profile.location;
   const companyName = company.name || "Company Name";
   const profilePictureUrl = profile.pictureUrl || null;
+
   const handleFollowCompany = useCallback(async () => {
     if (isFollowing || isUnfollowing) return;
     try {
@@ -63,7 +64,7 @@ function JobCompany({ profile }: Props) {
   useEffect(() => {
     if (!company || !user) return;
     setIsFollowed(
-      company.followers?.some((f) => f.id === user.id) ? true : false
+      company.followers?.some((f) => f.id === user.id) ? true : false,
     );
   }, [company, user]);
 

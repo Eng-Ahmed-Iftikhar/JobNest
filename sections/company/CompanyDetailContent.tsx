@@ -13,7 +13,7 @@ import { selectConnections } from "@/store/reducers/connectionSlice";
 import { showSuccessNotification } from "@/store/reducers/notificationSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
   Animated,
   Image,
@@ -31,7 +31,8 @@ type TabKey = "overview" | "jobs" | "posts";
 
 export default function CompanyDetailContent() {
   const router = useRouter();
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const searchParams = useLocalSearchParams<{ id?: string }>();
+  const id = searchParams.id as string | undefined;
   const colorScheme = useColorScheme();
   const [activeTab, setActiveTab] = useState<TabKey>("overview");
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -75,7 +76,7 @@ export default function CompanyDetailContent() {
 
   const companyPosts = useMemo(() => (company as any)?.posts || [], [company]);
 
-  const handleFollowToggle = async () => {
+  const handleFollowToggle = useCallback(async () => {
     if (!id || isFollowing || isUnfollowing) return;
     try {
       if (isFollowed) {
@@ -88,7 +89,15 @@ export default function CompanyDetailContent() {
     } catch (e) {
       console.warn("Failed to toggle follow company", e);
     }
-  };
+  }, [
+    id,
+    isFollowed,
+    isFollowing,
+    isUnfollowing,
+    followCompany,
+    unfollowCompany,
+    dispatch,
+  ]);
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -98,7 +107,7 @@ export default function CompanyDetailContent() {
         const offsetY = event.nativeEvent.contentOffset.y;
         setIsTabsSticky(offsetY > 280);
       },
-    }
+    },
   );
 
   if (isCompanyFetching) {

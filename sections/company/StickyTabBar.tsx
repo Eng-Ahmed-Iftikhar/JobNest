@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 
 type Props = {
@@ -9,19 +9,26 @@ type Props = {
 
 function StickyTabBar({ isSticky, activeTab, onTabChange }: Props) {
   const animatedRef = React.useRef<Animated.Value>(
-    new Animated.Value(0)
+    new Animated.Value(0),
   ).current;
 
-  const containerClassNames =
-    `bg-white flex-row dark:bg-black dark:border-gray-700 dark:border-b ` +
-    (isSticky
-      ? "absolute h-12 top-0 left-0 right-0 z-10"
-      : "relative border-b");
+  const containerClassNames = useMemo(
+    () =>
+      `bg-white flex-row dark:bg-black dark:border-gray-700 dark:border-b ` +
+      (isSticky
+        ? "absolute h-12 top-0 left-0 right-0 z-10"
+        : "relative border-b border-gray-200 dark:border-gray-700"),
+    [isSticky],
+  );
 
-  const translateY = animatedRef.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, isSticky ? -60 : 0], // Adjust the -60 value based on the height of the tab bar
-  });
+  const translateY = useMemo(
+    () =>
+      animatedRef.interpolate({
+        inputRange: [0, 1],
+        outputRange: [isSticky ? -60 : 0, 0], // Adjust the -60 value based on the height of the tab bar
+      }),
+    [animatedRef, isSticky],
+  );
 
   useEffect(() => {
     Animated.timing(animatedRef, {

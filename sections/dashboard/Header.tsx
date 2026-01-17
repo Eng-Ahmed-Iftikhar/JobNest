@@ -4,7 +4,7 @@ import Badge from "@/components/ui/Badge";
 import SearchInput from "@/components/ui/SearchInput";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useSearch } from "@/hooks/useSearch";
-import NotificationsContent from "@/sections/notifications/NotificationsContent";
+
 import { selectUser, selectUserProfile } from "@/store/reducers/userSlice";
 import { useRouter } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
@@ -28,7 +28,6 @@ function DashboardHeader() {
   const { searchQuery } = useSearch();
   const [logoutApi, { isLoading: isLoggingOut }] = useLogoutMutation();
   const [open, setOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   const fullName = useMemo(() => {
     const first = userProfile?.firstName;
@@ -45,6 +44,7 @@ function DashboardHeader() {
       await logoutApi().unwrap();
       setOpen(false);
     } catch (error) {
+      console.warn("Failed to logout", error);
       setOpen(false);
     }
   }, [logoutApi]);
@@ -56,7 +56,11 @@ function DashboardHeader() {
 
   const handleSettings = useCallback(() => {
     setOpen(false);
-    router.push("/(dashboard)");
+    router.push("/(dashboard)/(tabs)/profile/settings");
+  }, [router]);
+
+  const handleNotificationClick = useCallback(() => {
+    router.push("/(dashboard)/notification");
   }, [router]);
 
   return (
@@ -64,7 +68,7 @@ function DashboardHeader() {
       <View className="flex-row items-center justify-between">
         <TouchableOpacity
           activeOpacity={1}
-          onPress={() => router.push("/(dashboard)/search")}
+          onPress={() => router.push("/search")}
           style={{ flex: 1, marginRight: 12 }}
         >
           <SearchInput
@@ -80,10 +84,12 @@ function DashboardHeader() {
           <TouchableOpacity
             activeOpacity={0.8}
             className=" relative"
-            onPress={() => setNotificationsOpen(true)}
+            onPress={handleNotificationClick}
           >
             <Icon name="notifications-outline" size={22} color="#6B7280" />
-            <Badge count={5} size="small" />
+            <View className="absolute top-0 left-3">
+              <Badge count={5} size="small" />
+            </View>
           </TouchableOpacity>
 
           <Avatar
@@ -177,19 +183,6 @@ function DashboardHeader() {
             </View>
           </View>
         </Pressable>
-      </Modal>
-
-      <Modal
-        visible={notificationsOpen}
-        transparent
-        animationType="fade"
-        onRequestClose={() => setNotificationsOpen(false)}
-      >
-        <View className="flex-1 bg-black/50">
-          <View className="flex-1 bg-gray-50 dark:bg-black pt-16 rounded-t-3xl">
-            <NotificationsContent onClose={() => setNotificationsOpen(false)} />
-          </View>
-        </View>
       </Modal>
     </View>
   );
