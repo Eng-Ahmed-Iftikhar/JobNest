@@ -16,26 +16,25 @@ import {
   addConnection,
   updateConnectionCount,
 } from "@/store/reducers/connectionSlice";
+import { updateUnreadCount } from "@/store/reducers/notificationSlice";
 import { selectUser } from "@/store/reducers/userSlice";
 import { Chat, ChatMessage } from "@/types/chat";
 import { Connection } from "@/types/connection";
 import { ConnectionRequest } from "@/types/connection-request";
-import { CHAT_SOCKET_EVENT, CONNECTION_SOCKET_EVENT } from "@/types/socket";
-import { initSocket } from "@/utils/socket";
+import {
+  CHAT_SOCKET_EVENT,
+  CONNECTION_SOCKET_EVENT,
+  NOTIFICATION_SOCKET_EVENT,
+} from "@/types/socket";
+import Constants from "expo-constants";
 import moment from "moment";
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { Socket } from "socket.io-client";
+import React, { createContext, useCallback, useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 interface SocketContextType {
   socket: Socket | null;
-  isConnected: boolean;
 }
+const BASE_URL = Constants.expoConfig?.extra?.BASE_URL;
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
@@ -47,7 +46,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const chats = useAppSelector(selectChats);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [getChatById] = useLazyGetChatQuery();
-  const [isConnected, setIsConnected] = useState(false);
+
   const dispatch = useAppDispatch();
 
   const handleNewChatMessage = useCallback(
@@ -149,56 +148,67 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [dispatch, user?.id],
   );
+  const handleNotifcationCountUpdate = useCallback(
+    ({ count }: { count: number }) => {
+      dispatch(updateUnreadCount(count));
+    },
+    [dispatch],
+  );
+  const handleSocketConnect = useCallback(() => {
+    console.log("Socket connected:", socket?.id);
+  }, [socket]);
+
+  const handleSocketDisconnect = useCallback(() => {
+    console.log("Socket disconnected");
+  }, []);
 
   useEffect(() => {
-    if (!access_token) return; // Don't initialize socket if no access token
-    // Initialize socket connection
-    const newSocket = initSocket(access_token); // You can pass any necessary options here
+    if (!socket) return; // Don't initialize socket if no access token
+    if (!socket.connected) {
+      socket.connect();
+    }
+    socket.on("connect", handleSocketConnect);
+    socket.on("disconnect", handleSocketDisconnect);
 
-    // Connection listener
-    newSocket.on("connect", () => {
-      setIsConnected(true);
-    });
-
-    // Disconnect listener
-    newSocket.on("disconnect", () => {
-      setIsConnected(false);
-    });
-
-    newSocket.on(CHAT_SOCKET_EVENT.NEW_MESSAGE, handleNewChatMessage);
-    newSocket.on(CHAT_SOCKET_EVENT.MESSAGE_RECEIVED, handleChatMessageReceived);
-    newSocket.on(CHAT_SOCKET_EVENT.MESSAGE_SEEN, handleMessageSeen);
-    newSocket.on(
+    socket.on(CHAT_SOCKET_EVENT.NEW_MESSAGE, handleNewChatMessage);
+    socket.on(CHAT_SOCKET_EVENT.MESSAGE_RECEIVED, handleChatMessageReceived);
+    socket.on(CHAT_SOCKET_EVENT.MESSAGE_SEEN, handleMessageSeen);
+    socket.on(
       CONNECTION_SOCKET_EVENT.NEW_CONNECTION,
       handleNewConnectionRequest,
     );
-    newSocket.on(
+    socket.on(
       CONNECTION_SOCKET_EVENT.CONNECTION_ACCEPTED,
       handleConnectionAccepted,
     );
-
-    setSocket(newSocket);
+    socket.on(
+      NOTIFICATION_SOCKET_EVENT.UNREAD_COUNT_UPDATE,
+      handleNotifcationCountUpdate,
+    );
 
     // Cleanup on unmount
     return () => {
-      newSocket.off("connect");
-      newSocket.off("disconnect");
-      newSocket.off(CHAT_SOCKET_EVENT.NEW_MESSAGE, handleNewChatMessage);
-
-      newSocket.off(
-        CHAT_SOCKET_EVENT.MESSAGE_RECEIVED,
-        handleChatMessageReceived,
-      );
-      newSocket.off(CHAT_SOCKET_EVENT.MESSAGE_SEEN, handleMessageSeen);
-      newSocket.off(
+      if (socket.connected) {
+        socket.disconnect();
+        socket.on("disconnect", handleSocketDisconnect);
+      } else {
+        socket.on("connect", handleSocketConnect);
+      }
+      socket.off(CHAT_SOCKET_EVENT.NEW_MESSAGE, handleNewChatMessage);
+      socket.off(CHAT_SOCKET_EVENT.MESSAGE_RECEIVED, handleChatMessageReceived);
+      socket.off(CHAT_SOCKET_EVENT.MESSAGE_SEEN, handleMessageSeen);
+      socket.off(
         CONNECTION_SOCKET_EVENT.NEW_CONNECTION,
         handleNewConnectionRequest,
       );
-      newSocket.off(
+      socket.off(
         CONNECTION_SOCKET_EVENT.CONNECTION_ACCEPTED,
         handleConnectionAccepted,
       );
-      newSocket.disconnect();
+      socket.off(
+        NOTIFICATION_SOCKET_EVENT.UNREAD_COUNT_UPDATE,
+        handleNotifcationCountUpdate,
+      );
     };
   }, [
     access_token,
@@ -207,19 +217,38 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     handleMessageSeen,
     handleNewConnectionRequest,
     handleConnectionAccepted,
+    handleNotifcationCountUpdate,
+    socket,
+    handleSocketConnect,
+    handleSocketDisconnect,
   ]);
 
+  useEffect(() => {
+    if (socket) return; // Socket already initialized
+    // If no BASE_URL, warn and don't attempt to connect
+    if (!BASE_URL) {
+      console.warn(
+        "SocketProvider: BASE_URL is not defined (expo config extra.BASE_URL)",
+      );
+      return;
+    }
+
+    const newSocket = io(BASE_URL, {
+      autoConnect: true,
+      auth: { token: access_token },
+      forceNew: true,
+      reconnection: true,
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      // do not force websocket-only here so polling fallback can be used in environments
+    });
+
+    setSocket(newSocket);
+  }, [access_token, socket]);
+
   return (
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider value={{ socket }}>
       {children}
     </SocketContext.Provider>
   );
-};
-
-export const useSocket = (): SocketContextType => {
-  const context = useContext(SocketContext);
-  if (!context) {
-    throw new Error("useSocket must be used within SocketProvider");
-  }
-  return context;
 };

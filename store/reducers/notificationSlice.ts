@@ -59,6 +59,9 @@ const notificationSlice = createSlice({
         };
       }
     },
+    updateUnreadCount: (state, action: PayloadAction<number>) => {
+      state.unreadCount = action.payload;
+    },
   },
   extraReducers: (builder) => {
     // You can add extra reducers here if needed
@@ -79,8 +82,12 @@ const notificationSlice = createSlice({
   },
 });
 
-export const { addNotification, removeNotification, updateNotification } =
-  notificationSlice.actions;
+export const {
+  addNotification,
+  removeNotification,
+  updateNotification,
+  updateUnreadCount,
+} = notificationSlice.actions;
 
 export const selectNotifications = (state: RootState) =>
   state.notification.notifications;
