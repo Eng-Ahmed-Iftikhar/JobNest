@@ -177,6 +177,7 @@ export const {
   useUpdateMessageStatusMutation,
   useGetAllUnreadMessageQuery,
   useGetChatQuery,
+  useLazyGetChatQuery,
   useEditChatGroupMutation,
   useGetChatMessageDatesQuery,
   useBlockChatMutation,

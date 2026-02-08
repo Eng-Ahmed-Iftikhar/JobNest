@@ -1,6 +1,7 @@
+import AlertProvider from "@/components/AlertProvider";
+import AppNotificationProvider from "@/components/AppNotificationProvider";
 import AuthGuard from "@/components/AuthGuard";
 import GestureRoot from "@/components/GestureRoot";
-import NotificationProvider from "@/components/NotificationProvider";
 import RootLayout from "@/layouts/RootLayout";
 import { ReduxPersisted } from "@/store";
 import {
@@ -22,7 +23,8 @@ export default function Layout() {
           <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
           <GestureRoot>
             <RootLayout />
-            <NotificationProvider />
+            <AlertProvider />
+            <AppNotificationProvider />
           </GestureRoot>
         </AuthGuard>
       </ReduxPersisted>

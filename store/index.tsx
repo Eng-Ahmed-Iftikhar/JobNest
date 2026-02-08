@@ -15,8 +15,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { encryptTransform } from "redux-persist-transform-encrypt";
 import { Persistor } from "redux-persist/es/types";
 import { apiMiddlewares } from "../api/services";
-import { socketMiddleware } from "./middleware/socketMiddleware";
-import { userNotificationMiddleware } from "./middleware/userNotificationMiddleware";
+import { alertMiddleware } from "./middleware/alertMiddleware";
 
 import { chatListenerMiddleware } from "./middleware/chatMiddleware";
 
@@ -51,9 +50,9 @@ const store = configureStore({
     return getDefaultMiddleware({
       serializableCheck: false,
     })
-      .prepend(userNotificationMiddleware.middleware)
+      .prepend(alertMiddleware.middleware)
       .prepend(chatListenerMiddleware.middleware)
-      .concat(...apiMiddlewares, socketMiddleware);
+      .concat(...apiMiddlewares);
   },
 });
 

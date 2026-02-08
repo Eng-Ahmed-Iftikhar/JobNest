@@ -6,12 +6,12 @@ import { createListenerMiddleware } from "@reduxjs/toolkit";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
 import { showErrorAlert, showSuccessAlert } from "../reducers/alertSlice";
-export const userNotificationMiddleware = createListenerMiddleware();
+export const alertMiddleware = createListenerMiddleware();
 
-const unReadNotifications: string[] = [];
+const unReadAlerts: string[] = [];
 
 // listen to me matchfilled to show welcome back notification
-userNotificationMiddleware.startListening({
+alertMiddleware.startListening({
   matcher: authApi.endpoints.me.matchFulfilled,
   effect: async (action, listenerApi) => {
     if (action.payload.profile.role !== "EMPLOYEE") {
@@ -33,7 +33,7 @@ userNotificationMiddleware.startListening({
 });
 
 // Listen to logout success
-userNotificationMiddleware.startListening({
+alertMiddleware.startListening({
   matcher: authApi.endpoints.logout.matchFulfilled,
   effect: async (action, listenerApi) => {
     listenerApi.dispatch(showSuccessAlert("Logged out successfully"));
@@ -41,7 +41,7 @@ userNotificationMiddleware.startListening({
 });
 
 // Listen to createChatMessage success
-userNotificationMiddleware.startListening({
+alertMiddleware.startListening({
   matcher: chatApi.endpoints.getAllUnreadMessage.matchFulfilled,
   effect: async (action, listenerApi) => {
     const unreadMessages = action.payload;
@@ -58,20 +58,18 @@ userNotificationMiddleware.startListening({
         },
         trigger: null,
       });
-      unReadNotifications.push(notificationId);
+      unReadAlerts.push(notificationId);
     }
   },
 });
 
-let userNotifResponseSubscription: Notifications.Subscription | null = null;
+let alertResponseSubscription: Notifications.Subscription | null = null;
 
-export const initUserNotificationResponseHandler = () => {
-  if (userNotifResponseSubscription) return;
-  userNotifResponseSubscription =
+export const initAlertResponseHandler = () => {
+  if (alertResponseSubscription) return;
+  alertResponseSubscription =
     Notifications.addNotificationResponseReceivedListener((response) => {
-      if (
-        unReadNotifications.includes(response.notification.request.identifier)
-      ) {
+      if (unReadAlerts.includes(response.notification.request.identifier)) {
         try {
           router.push("/messages");
         } finally {
@@ -83,7 +81,7 @@ export const initUserNotificationResponseHandler = () => {
     });
 };
 
-export const disposeUserNotificationResponseHandler = () => {
-  userNotifResponseSubscription?.remove();
-  userNotifResponseSubscription = null;
+export const disposeAlertResponseHandler = () => {
+  alertResponseSubscription?.remove();
+  alertResponseSubscription = null;
 };

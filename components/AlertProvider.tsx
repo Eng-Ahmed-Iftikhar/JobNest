@@ -3,13 +3,10 @@ import SuccessToast from "@/components/SuccessToast";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import {
-  disposeSocketNotificationResponseHandler,
-  initSocketNotificationResponseHandler,
-} from "@/store/middleware/socketMiddleware";
-import {
-  disposeUserNotificationResponseHandler,
-  initUserNotificationResponseHandler,
-} from "@/store/middleware/userNotificationMiddleware";
+  disposeAlertResponseHandler,
+  initAlertResponseHandler,
+} from "@/store/middleware/alertMiddleware";
+
 import {
   AlertType,
   removeAlert,
@@ -25,11 +22,9 @@ export default function NotificationProvider() {
 
   // Register alert response listeners once
   useEffect(() => {
-    initUserNotificationResponseHandler();
-    initSocketNotificationResponseHandler();
+    initAlertResponseHandler();
     return () => {
-      disposeUserNotificationResponseHandler();
-      disposeSocketNotificationResponseHandler();
+      disposeAlertResponseHandler();
     };
   }, []);
 
