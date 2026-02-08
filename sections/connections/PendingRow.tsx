@@ -10,11 +10,8 @@ import LocationText from "@/components/LocationText";
 import Avatar from "@/components/ui/Avatar";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { increaseConnectionsCount } from "@/store/reducers/connectionSlice";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
 import { selectUser } from "@/store/reducers/userSlice";
 import { ConnectionRequest } from "@/types/connection-request";
 import { Location } from "@/types/user";
@@ -53,20 +50,20 @@ export function PendingRow({ item }: { item: ConnectionRequest }) {
     try {
       await acceptConnectionRequest(item.id);
       dispatch(increaseConnectionsCount());
-      dispatch(showSuccessNotification("Connection request accepted"));
+      dispatch(showSuccessAlert("Connection request accepted"));
     } catch (error) {
       console.log(error);
-      dispatch(showErrorNotification("Failed to accept connection request"));
+      dispatch(showErrorAlert("Failed to accept connection request"));
     }
   }, [acceptConnectionRequest, dispatch, item]);
 
   const handleReject = useCallback(async () => {
     try {
       await rejectConnectionRequest(item.id);
-      dispatch(showSuccessNotification("Connection request rejected"));
+      dispatch(showSuccessAlert("Connection request rejected"));
     } catch (error) {
       console.log(error);
-      dispatch(showErrorNotification("Failed to reject connection request"));
+      dispatch(showErrorAlert("Failed to reject connection request"));
     }
   }, [rejectConnectionRequest, item, dispatch]);
 

@@ -1,4 +1,7 @@
-import { Notification as NotificationType } from "@/types/notification";
+import {
+  NOTIFICATION_TYPE,
+  Notification as NotificationType,
+} from "@/types/notification";
 import React from "react";
 import ConnectionNotification from "./ConnectionNotification";
 import InterviewNotification from "./InterviewNotification";
@@ -9,9 +12,9 @@ type Props = {
 
 function Notification({ notification }: Props) {
   switch (notification.type) {
-    case "interview":
+    case NOTIFICATION_TYPE.INTERVIEW:
       return <InterviewNotification notification={notification} />;
-    case "connection":
+    case NOTIFICATION_TYPE.CONNECTION:
       return <ConnectionNotification notification={notification} />;
     default:
       return null;

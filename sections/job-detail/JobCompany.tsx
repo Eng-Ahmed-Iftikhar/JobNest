@@ -5,10 +5,7 @@ import {
 import LocationText from "@/components/LocationText";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { selectUser } from "@/store/reducers/userSlice";
 import { CompanyProfile } from "@/types/company";
 import { Ionicons } from "@expo/vector-icons";
@@ -40,14 +37,14 @@ function JobCompany({ profile }: Props) {
       if (isFollowed) {
         await unfollowCompany({ companyId: String(company.id) }).unwrap();
         setIsFollowed(false);
-        dispatch(showSuccessNotification(`Unfollowed ${companyName}.`));
+        dispatch(showSuccessAlert(`Unfollowed ${companyName}.`));
       } else {
         await followCompany({ companyId: String(company.id) }).unwrap();
         setIsFollowed(true);
-        dispatch(showSuccessNotification(`Following ${companyName}.`));
+        dispatch(showSuccessAlert(`Following ${companyName}.`));
       }
     } catch (e) {
-      dispatch(showErrorNotification(`Failed to toggle follow company.`));
+      dispatch(showErrorAlert(`Failed to toggle follow company.`));
       console.warn("Failed to toggle follow company", e);
     }
   }, [

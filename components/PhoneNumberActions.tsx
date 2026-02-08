@@ -1,6 +1,6 @@
+import Button from "@/components/ui/Button";
 import React from "react";
 import { View } from "react-native";
-import Button from "@/components/ui/Button";
 
 interface PhoneNumberActionsProps {
   showVerification: boolean;
@@ -41,7 +41,11 @@ function PhoneNumberActions({
         onPress={showVerification ? onVerify : onNext}
         className={` mt-8 ${showVerification ? "flex-1" : "w-full"}`}
       >
-        {showVerification ? (isVerifying ? "Verifying..." : "Verify") : "Next"}
+        {showVerification
+          ? isVerifying
+            ? "Verifying..."
+            : "Verify"
+          : "Continue"}
       </Button>
     </View>
   );

@@ -1,5 +1,5 @@
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { showSuccessNotification } from "@/store/reducers/notificationSlice";
+import { showSuccessAlert } from "@/store/reducers/alertSlice";
 import { Company } from "@/types/company";
 import * as Clipboard from "expo-clipboard";
 import React, { useCallback, useState } from "react";
@@ -36,7 +36,7 @@ export default function JobCardMenuIcon({
     await Clipboard.setStringAsync(jobUrl);
     setShowShareMenu(false);
     setShowOptionsMenu(false);
-    dispatch(showSuccessNotification("Link copied to clipboard!"));
+    dispatch(showSuccessAlert("Link copied to clipboard!"));
   }, [jobUrl, dispatch]);
 
   const handleSaveJob = useCallback(() => {
@@ -47,23 +47,23 @@ export default function JobCardMenuIcon({
     (platform: string) => {
       let url = "";
       const text = encodeURIComponent(
-        `Check out this job: ${jobTitle} at ${jobCompany?.name}`
+        `Check out this job: ${jobTitle} at ${jobCompany?.name}`,
       );
 
       switch (platform) {
         case "facebook":
           url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            jobUrl
+            jobUrl,
           )}`;
           break;
         case "twitter":
           url = `https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(
-            jobUrl
+            jobUrl,
           )}`;
           break;
         case "email":
           url = `mailto:?subject=${encodeURIComponent(
-            `Job Opportunity: ${jobTitle}`
+            `Job Opportunity: ${jobTitle}`,
           )}&body=${text}%0A${encodeURIComponent(jobUrl)}`;
           break;
       }
@@ -72,7 +72,7 @@ export default function JobCardMenuIcon({
       setShowShareMenu(false);
       setShowOptionsMenu(false);
     },
-    [jobUrl, jobTitle, jobCompany]
+    [jobUrl, jobTitle, jobCompany],
   );
 
   const toggleOptionsMenu = useCallback(() => {

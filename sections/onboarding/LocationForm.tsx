@@ -43,7 +43,7 @@ function LocationForm() {
         // Handle error - you might want to show a toast
       }
     },
-    [handleUserProfile, handleChangeCurrentStep, updateLocation]
+    [handleUserProfile, handleChangeCurrentStep, updateLocation],
   );
 
   // Memoize country options
@@ -58,7 +58,7 @@ function LocationForm() {
   const getStateOptions = useCallback((countryName: string) => {
     if (!countryName) return [];
     const selectedCountry = Country.getAllCountries().find(
-      (c) => c.name === countryName
+      (c) => c.name === countryName,
     );
     if (!selectedCountry) return [];
 
@@ -73,24 +73,24 @@ function LocationForm() {
     (countryName: string, stateName: string) => {
       if (!countryName || !stateName) return [];
       const selectedCountry = Country.getAllCountries().find(
-        (c) => c.name === countryName
+        (c) => c.name === countryName,
       );
       if (!selectedCountry) return [];
 
       const selectedState = State.getStatesOfCountry(
-        selectedCountry.isoCode
+        selectedCountry.isoCode,
       ).find((s) => s.name === stateName);
       if (!selectedState) return [];
 
       return City.getCitiesOfState(
         selectedCountry.isoCode,
-        selectedState.isoCode
+        selectedState.isoCode,
       ).map((city) => ({
         label: city.name,
         value: city.name,
       }));
     },
-    []
+    [],
   );
 
   return (
@@ -185,7 +185,9 @@ function LocationForm() {
                 onPress={(e) => handleSubmit(e as any)}
                 className="mt-8"
               >
-                Next
+                {isSubmitting || isUpdatingLocation
+                  ? "Processing..."
+                  : "Continue"}
               </Button>
             </View>
           );

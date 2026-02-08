@@ -6,9 +6,9 @@ import ContactSuggestItem from "@/sections/new-message/ContactSuggestItem";
 import NewMessageHeader from "@/sections/new-message/NewMessageHeader";
 import SelectUsers from "@/sections/new-message/SelectUsers";
 import SendActions from "@/sections/new-message/SendActions";
+import { showErrorAlert } from "@/store/reducers/alertSlice";
 import { addMessage, selectChats } from "@/store/reducers/chatSlice";
 import { selectConnections } from "@/store/reducers/connectionSlice";
-import { showErrorNotification } from "@/store/reducers/notificationSlice";
 import { selectUser } from "@/store/reducers/userSlice";
 import { CreateChatRequest } from "@/types/api/chat";
 import {
@@ -47,7 +47,7 @@ function NewMessageScreen() {
         : item.connectionRequest?.sender;
       if (!contactUser) return;
       const isAlreadySelected = selectedUsers.some(
-        (user) => user.id === contactUser.profile.userId
+        (user) => user.id === contactUser.profile.userId,
       );
       if (!isAlreadySelected) {
         setSelectedUsers((prevUsers) => [
@@ -61,12 +61,12 @@ function NewMessageScreen() {
         ]);
       }
     },
-    [selectedUsers, user]
+    [selectedUsers, user],
   );
 
   const handleRemoveUser = (userId: string) => {
     setSelectedUsers((prevUsers) =>
-      prevUsers.filter((user) => user.id !== userId)
+      prevUsers.filter((user) => user.id !== userId),
     );
   };
 
@@ -86,7 +86,7 @@ function NewMessageScreen() {
       const chat = chats.find(
         (c) =>
           c.users.find((chatUser) => chatUser.userId === selectedUsers[0].id) &&
-          c.type === CHAT_TYPE.PRIVATE
+          c.type === CHAT_TYPE.PRIVATE,
       );
 
       newChat = chat as Chat;
@@ -131,12 +131,10 @@ function NewMessageScreen() {
       } catch (error) {
         console.log(error);
 
-        dispatch(
-          showErrorNotification("Failed to create chat. Please try again.")
-        );
+        dispatch(showErrorAlert("Failed to create chat. Please try again."));
       }
     },
-    [handleExistingChat, handleCreateChat, dispatch, router, user]
+    [handleExistingChat, handleCreateChat, dispatch, router, user],
   );
 
   const handleSelectImage = useCallback(
@@ -172,12 +170,10 @@ function NewMessageScreen() {
         dispatch(addMessage(newMessage));
       } catch (error) {
         console.log(error);
-        dispatch(
-          showErrorNotification("Failed to create chat. Please try again.")
-        );
+        dispatch(showErrorAlert("Failed to create chat. Please try again."));
       }
     },
-    [handleExistingChat, handleCreateChat, dispatch, user, router]
+    [handleExistingChat, handleCreateChat, dispatch, user, router],
   );
 
   const handleSelectFile = useCallback(
@@ -217,12 +213,10 @@ function NewMessageScreen() {
         dispatch(addMessage(newMessage));
       } catch (error) {
         console.log(error);
-        dispatch(
-          showErrorNotification("Failed to create chat. Please try again.")
-        );
+        dispatch(showErrorAlert("Failed to create chat. Please try again."));
       }
     },
-    [handleExistingChat, handleCreateChat, dispatch, router, user]
+    [handleExistingChat, handleCreateChat, dispatch, router, user],
   );
   const dataPage = dataResponse?.page || 1;
   const dataTotal = dataResponse?.total || 0;

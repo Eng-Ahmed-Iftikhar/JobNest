@@ -4,6 +4,7 @@ import {
   ChangePasswordResponse,
   CreatePhoneNumberRequest,
   CreatePhoneNumberResponse,
+  GetUserByIdResponse,
   ReauthenticateRequest,
   ReauthenticateResponse,
   UpdateCvDetailsRequest,
@@ -141,6 +142,12 @@ export const userApi = createApi({
         body,
       }),
     }),
+    getUserById: builder.query<GetUserByIdResponse, { userId: string }>({
+      query: ({ userId }) => ({
+        url: `${API_ROUTES.users.userById.replace(":userId", userId)}`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -156,4 +163,5 @@ export const {
   useReauthenticateMutation,
   useChangePasswordMutation,
   useGetUsersQuery,
+  useGetUserByIdQuery,
 } = userApi;

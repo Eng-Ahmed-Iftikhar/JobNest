@@ -13,10 +13,7 @@ import useChat from "@/hooks/useChat";
 import ChatUserHeader from "@/sections/chat-user-profile/ChatUserHeader";
 import MuteOptionModal from "@/sections/chat-user-profile/MuteOptionModal";
 import SettingMenuModal from "@/sections/chat-user-profile/SettingMenuModal";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { selectUser } from "@/store/reducers/userSlice";
 import { useLocalSearchParams } from "expo-router";
 import moment from "moment";
@@ -48,13 +45,13 @@ function ChatUserProfile() {
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [userAction, setUserAction] = useState<"block" | "unmute">("block");
   const blockedUser = chat?.blocks?.find(
-    (block) => block.chatUserId === chatUser?.id && !block.deletedAt
+    (block) => block.chatUserId === chatUser?.id && !block.deletedAt,
   );
 
   const mutedEntry = chatMutes.find(
     (mute) =>
       mute.chatUserId === chatUser?.id &&
-      moment(mute.mutedTill).isAfter(moment())
+      moment(mute.mutedTill).isAfter(moment()),
   );
 
   const isMuted = Boolean(mutedEntry);
@@ -76,15 +73,15 @@ function ChatUserProfile() {
       setMenuVisible(false);
       setShowConfirmModal(false);
       dispatch(
-        showSuccessNotification(
+        showSuccessAlert(
           blockedUser
             ? "User unblocked successfully"
-            : "User blocked successfully"
-        )
+            : "User blocked successfully",
+        ),
       );
     } catch (error) {
       console.log(error);
-      dispatch(showErrorNotification("An error occurred. Please try again."));
+      dispatch(showErrorAlert("An error occurred. Please try again."));
     }
   }, [chat, blockedUser, dispatch, unblockChat, blockChat, chatUser?.userId]);
 
@@ -107,16 +104,16 @@ function ChatUserProfile() {
         setShowMuteModal(false);
         setMenuVisible(false);
         dispatch(
-          showSuccessNotification(
-            isMuted ? "User unmuted successfully" : "User muted successfully"
-          )
+          showSuccessAlert(
+            isMuted ? "User unmuted successfully" : "User muted successfully",
+          ),
         );
       } catch (error) {
         console.log(error);
-        dispatch(showErrorNotification("An error occurred. Please try again."));
+        dispatch(showErrorAlert("An error occurred. Please try again."));
       }
     },
-    [chat, chatUser, dispatch, isMuted, muteUser, mutedEntry?.id, unMuteUser]
+    [chat, chatUser, dispatch, isMuted, muteUser, mutedEntry?.id, unMuteUser],
   );
 
   return (
@@ -147,7 +144,7 @@ function ChatUserProfile() {
           setConfirmationMessage(
             blockedUser
               ? "Are you sure you want to unblock this user?"
-              : "Are you sure you want to block this user? You will not receive messages from them."
+              : "Are you sure you want to block this user? You will not receive messages from them.",
           );
           setUserAction("block");
           setShowConfirmModal(true);
@@ -157,7 +154,7 @@ function ChatUserProfile() {
           setConfirmationMessage(
             isMuted
               ? "Are you sure you want to unmute this user?"
-              : "Are you sure you want to mute this user?"
+              : "Are you sure you want to mute this user?",
           );
           setUserAction("unmute");
           if (isMuted) {
@@ -186,8 +183,8 @@ function ChatUserProfile() {
               ? "lock-open-outline"
               : "lock-closed-outline"
             : isMuted
-            ? "volume-high-outline"
-            : "volume-mute-outline"
+              ? "volume-high-outline"
+              : "volume-mute-outline"
         }
         onConfirm={userAction === "block" ? handleBlockUser : handleMuteUser}
       />

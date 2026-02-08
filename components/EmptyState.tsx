@@ -25,23 +25,28 @@ export default function EmptyState({
         <Icon name={iconName} size={48} color="#9CA3AF" />
       </View>
 
-      <Text className="dark:bg-black dark:text-gray-100 text-xl font-bold text-center mb-3">
-        {title}
-      </Text>
+      {title && (
+        <Text className="dark:bg-black dark:text-gray-100 text-xl font-bold text-center mb-3">
+          {title}
+        </Text>
+      )}
 
-      <Text className="text-gray-500 dark:text-gray-300 text-base text-center mb-8 px-4">
-        {description}
-      </Text>
-
+      {description && (
+        <Text className="text-gray-500 dark:text-gray-300 text-base text-center mb-8 px-4">
+          {description}
+        </Text>
+      )}
       {buttonText && onButtonPress && (
         <TouchableOpacity
           className="bg-azure-radiance-500 flex-row items-center px-6 py-3 rounded-lg"
           onPress={onButtonPress}
         >
           <Icon name={buttonIcon} size={20} color="white" />
-          <Text className="text-white dark:text-gray-100 text-base font-semibold ml-2">
-            {buttonText}
-          </Text>
+          {buttonText && (
+            <Text className="text-white dark:text-gray-100 text-base font-semibold ml-2">
+              {buttonText}
+            </Text>
+          )}
         </TouchableOpacity>
       )}
     </View>

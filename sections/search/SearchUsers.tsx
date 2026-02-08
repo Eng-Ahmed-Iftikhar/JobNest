@@ -30,7 +30,7 @@ function SearchUsers() {
         <Text className="text-sm flex-1 font-medium text-gray-500 dark:text-gray-400 mb-3">
           People
         </Text>
-        {employeesCount && (
+        {employeesCount > 0 && (
           <TouchableOpacity
             className="flex-row items-center gap-1"
             onPress={navigateToResults}
@@ -57,7 +57,7 @@ function SearchUsers() {
         contentContainerStyle={{
           paddingVertical: 12,
           // Remove width: "100%" to allow horizontal scroll
-          backgroundColor: colorScheme === "dark" ? "black" : "white",
+          backgroundColor: colorScheme === "dark" ? "black" : "#f9fafb",
         }}
         // ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
         ListEmptyComponent={

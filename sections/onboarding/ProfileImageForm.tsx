@@ -3,7 +3,7 @@ import { useUpdateProfilePictureMutation } from "@/api/services/userApi";
 import Button from "@/components/ui/Button";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import useOnboarding from "@/hooks/useOnboarding";
-import { showErrorNotification } from "@/store/reducers/notificationSlice";
+import { showErrorAlert } from "@/store/reducers/alertSlice";
 import { OnboardingSteps } from "@/types/onboarding";
 import * as ImagePicker from "expo-image-picker";
 import { Formik } from "formik";
@@ -52,7 +52,7 @@ function ProfileImageForm() {
         if (status !== "granted") {
           Alert.alert(
             "Permission needed",
-            "Please grant camera roll permissions to select an image."
+            "Please grant camera roll permissions to select an image.",
           );
           return;
         }
@@ -71,7 +71,7 @@ function ProfileImageForm() {
           if (image.fileSize && image.fileSize > 2 * 1024 * 1024) {
             Alert.alert(
               "Image too large",
-              "Please select an image smaller than 2MB"
+              "Please select an image smaller than 2MB",
             );
             return;
           }
@@ -90,7 +90,7 @@ function ProfileImageForm() {
         Alert.alert("Error", "Failed to pick image");
       }
     },
-    []
+    [],
   );
 
   const handleCameraCapture = useCallback(
@@ -101,7 +101,7 @@ function ProfileImageForm() {
         if (status !== "granted") {
           Alert.alert(
             "Permission needed",
-            "Please grant camera permissions to take a photo."
+            "Please grant camera permissions to take a photo.",
           );
           return;
         }
@@ -119,7 +119,7 @@ function ProfileImageForm() {
           if (image.fileSize && image.fileSize > 2 * 1024 * 1024) {
             Alert.alert(
               "Image too large",
-              "Please select an image smaller than 2MB"
+              "Please select an image smaller than 2MB",
             );
             return;
           }
@@ -138,7 +138,7 @@ function ProfileImageForm() {
         Alert.alert("Error", "Failed to capture image");
       }
     },
-    []
+    [],
   );
 
   const handleImageSourceChoice = useCallback(
@@ -155,7 +155,7 @@ function ProfileImageForm() {
             } else if (buttonIndex === 2) {
               handleImagePick(setFieldValue);
             }
-          }
+          },
         );
       } else {
         Alert.alert(
@@ -175,11 +175,11 @@ function ProfileImageForm() {
               onPress: () => handleImagePick(setFieldValue),
             },
           ],
-          { cancelable: true }
+          { cancelable: true },
         );
       }
     },
-    [handleCameraCapture, handleImagePick]
+    [handleCameraCapture, handleImagePick],
   );
 
   const handleSubmit = useCallback(
@@ -194,18 +194,14 @@ function ProfileImageForm() {
 
       if (!values.pictureUrl) {
         dispatch(
-          showErrorNotification(
-            "Please select a profile image or skip this step."
-          )
+          showErrorAlert("Please select a profile image or skip this step."),
         );
         return;
       }
 
       if (!selectedImage) {
         dispatch(
-          showErrorNotification(
-            "Please select a profile image or skip this step."
-          )
+          showErrorAlert("Please select a profile image or skip this step."),
         );
         return;
       }
@@ -273,7 +269,7 @@ function ProfileImageForm() {
           errorMessage = error.error;
         }
 
-        dispatch(showErrorNotification(errorMessage));
+        dispatch(showErrorAlert(errorMessage));
       }
     },
     [
@@ -283,7 +279,7 @@ function ProfileImageForm() {
       dispatch,
       uploadFile,
       updateProfilePicture,
-    ]
+    ],
   );
 
   const handleSkip = useCallback(() => {
@@ -319,7 +315,7 @@ function ProfileImageForm() {
                   <Icon
                     name="user"
                     size={48}
-                    color={colorScheme === "dark" ? "white" : "black"}
+                    color={colorScheme === "dark" ? "dark" : "white"}
                   />
                 )}
               </TouchableOpacity>

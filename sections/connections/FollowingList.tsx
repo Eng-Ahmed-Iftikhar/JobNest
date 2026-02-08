@@ -43,6 +43,7 @@ export function FollowingList() {
   return (
     <FlatList
       data={followedCompanies}
+      className="flex-1 bg-white dark:bg-gray-900 px-4"
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => <FollowRow item={item} />}
       contentContainerStyle={{ paddingBottom: 24 }}

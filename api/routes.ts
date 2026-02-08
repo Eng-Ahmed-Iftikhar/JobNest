@@ -51,9 +51,16 @@ const API_ROUTES = {
   users: {
     suggested: "/users/suggested",
     all: "/users",
+    userById: "/users/:userId",
   },
   notificationSettings: {
     me: "/notification-settings/me",
+  },
+  notification: {
+    me: "/notifications/me",
+    unreadCount: "/notifications/me/unread-count",
+    markAsRead: "/notifications/:id/mark-as-read",
+    markAllAsRead: "/notifications/me/mark-all-as-read",
   },
   skills: {
     all: "/skills/all",

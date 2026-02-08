@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useLocationSuggestions } from "@/hooks/useLocationSuggestions";
-import { showErrorNotification } from "@/store/reducers/notificationSlice";
+import { showErrorAlert } from "@/store/reducers/alertSlice";
 import { selectNativeEvent } from "@/store/reducers/uiSlice";
 import { Ionicons } from "@expo/vector-icons";
 import * as Location from "expo-location";
@@ -40,10 +40,11 @@ export default function LocationInput({
   const dispatch = useAppDispatch();
   const { suggestions, isFetching } = useLocationSuggestions(
     input,
-    locationSelected
+    locationSelected,
   );
 
   const inputRef = useRef<View>(null);
+  const dropdownRef = useRef<View>(null);
 
   const handleTextChange = useCallback((text: string) => {
     setInput(text);
@@ -52,18 +53,20 @@ export default function LocationInput({
 
   const handleSelectLocation = useCallback(
     (location: string) => {
+      console.log({ location });
+
       onChangeText(location);
       setLocationSelected(true);
       Keyboard.dismiss();
     },
-    [onChangeText]
+    [onChangeText],
   );
 
   const handleUseCurrentLocation = useCallback(async () => {
     setFetchCurrentLocation(true);
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      dispatch(showErrorNotification("User not able to access location"));
+      dispatch(showErrorAlert("User not able to access location"));
       return;
     }
     let currentLocation = await Location.getCurrentPositionAsync({
@@ -98,25 +101,47 @@ export default function LocationInput({
       // Only proceed if touchX and touchY are numbers (i.e., from a touch event)
       if (typeof touchX !== "number" || typeof touchY !== "number") return;
 
-      const isOutside =
+      const isOutsideInput =
         touchX < pageX ||
         touchX > pageX + width ||
         touchY < pageY ||
         touchY > pageY + height;
 
-      if (isOutside) {
+      if (!isOutsideInput) return; // Inside input, don't close
+
+      // If dropdown is shown, check if touch is inside dropdown
+      if (dropdownRef.current) {
+        dropdownRef.current.measure(
+          (_dx, _dy, dWidth, dHeight, dPageX, dPageY) => {
+            const isOutsideDropdown =
+              touchX < dPageX ||
+              touchX > dPageX + dWidth ||
+              touchY < dPageY ||
+              touchY > dPageY + dHeight;
+
+            if (isOutsideDropdown) {
+              setLocationSelected(true);
+              console.log("Clicked outside input and dropdown");
+            }
+          },
+        );
+      } else {
         setLocationSelected(true);
-        console.log("Clicked outside inputContainerRef");
+        console.log("Clicked outside input, no dropdown");
       }
     });
   }, [locationSelected, nativeEvent]);
 
+  useEffect(() => {
+    if (!value) return;
+    if (value !== input) {
+      setInput(value);
+    }
+  }, [input, value]);
+
   return (
-    <View className="relative">
-      <View
-        ref={inputRef}
-        className="flex-row items-center bg-white dark:bg-gray-800 rounded-full border  border-gray-200 dark:border-gray-700 px-3 h-12"
-      >
+    <View ref={inputRef} className="relative">
+      <View className="flex-row items-center bg-white dark:bg-gray-800 rounded-full border  border-gray-200 dark:border-gray-700 px-3 h-12">
         <Ionicons
           name="location-outline"
           size={20}
@@ -132,13 +157,22 @@ export default function LocationInput({
           underlineColorAndroid="transparent"
         />
         {input && (
-          <Pressable onPress={() => handleTextChange("")} className="p-1">
+          <Pressable
+            onPress={() => {
+              handleTextChange("");
+              onChangeText("");
+            }}
+            className="p-1"
+          >
             <Ionicons name="close-circle" size={18} color="#9CA3AF" />
           </Pressable>
         )}
       </View>
       {locationSelected ? null : (
-        <View className="absolute top-full left-0 right-0 bg-white dark:bg-black border border-b-0 overflow-hidden border-gray-200 dark:border-gray-700 rounded-lg mt-1 shadow-lg z-50">
+        <View
+          ref={dropdownRef}
+          className="absolute top-full left-0 right-0 bg-white dark:bg-black border border-b-0 overflow-hidden border-gray-200 dark:border-gray-700 rounded-lg mt-1 shadow-lg z-50"
+        >
           <Pressable
             onPress={handleUseCurrentLocation}
             className="flex-row items-center px-4 py-3 border-b border-gray-100 dark:border-gray-700  "
@@ -194,8 +228,8 @@ export default function LocationInput({
                     {isFetching
                       ? "Fetching your results..."
                       : input
-                      ? `Not results found for "${input}"`
-                      : "Type city, state or country"}
+                        ? `Not results found for "${input}"`
+                        : "Type city, state or country"}
                   </Text>
                 </View>
               </Pressable>

@@ -5,10 +5,7 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useDeleteChatGroupMutation } from "@/api/services/chatApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import useChat from "@/hooks/useChat";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import GroupMemberList from "./GroupMemberList";
 import GroupMenu from "./GroupMenu";
@@ -34,12 +31,12 @@ const ChatGroupDetails: React.FC<ChatGroupDetailsProps> = () => {
   const handleDeleteGroup = async () => {
     try {
       await deleteChatGroup(chatId).unwrap();
-      dispatch(showSuccessNotification("Group deleted successfully."));
+      dispatch(showSuccessAlert("Group deleted successfully."));
 
       router.back();
     } catch (error) {
       console.error("Failed to delete group:", error);
-      dispatch(showErrorNotification("Failed to delete group."));
+      dispatch(showErrorAlert("Failed to delete group."));
     }
   };
 

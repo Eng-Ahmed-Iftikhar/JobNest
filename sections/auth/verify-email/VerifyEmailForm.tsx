@@ -5,10 +5,7 @@ import {
 import CircularCountdown from "@/components/CircularCountdown";
 import Button from "@/components/ui/Button";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { setEmailVerified } from "@/store/reducers/userSlice";
 import { useRouter } from "expo-router";
 import { Formik } from "formik";
@@ -43,7 +40,7 @@ function VerifyEmailForm() {
       const errorMessage = Array.isArray(error?.data?.message)
         ? error.data.message.join(", ")
         : error?.data?.message || "Failed to send verification code";
-      dispatch(showErrorNotification(errorMessage));
+      dispatch(showErrorAlert(errorMessage));
     }
   }, [dispatch, sendEmailVerification]);
 
@@ -60,9 +57,7 @@ function VerifyEmailForm() {
 
           // Show success toast
           dispatch(
-            showSuccessNotification(
-              response.message || "Email verified successfully"
-            )
+            showSuccessAlert(response.message || "Email verified successfully"),
           );
 
           router.replace("/(dashboard)");
@@ -84,7 +79,7 @@ function VerifyEmailForm() {
         setFieldError("verificationCode", errorMessage);
       }
     },
-    [verifyEmailCode, router, dispatch]
+    [verifyEmailCode, router, dispatch],
   );
 
   return (
@@ -158,8 +153,8 @@ function VerifyEmailForm() {
                 {isSending
                   ? "Sending..."
                   : isSendAgain
-                  ? "Code is sent"
-                  : "Send code again"}
+                    ? "Code is sent"
+                    : "Send code again"}
               </Text>
               {isSendAgain && (
                 <CircularCountdown

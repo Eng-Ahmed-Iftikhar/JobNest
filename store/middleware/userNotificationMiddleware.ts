@@ -5,10 +5,7 @@ import { connectionRequestsApi } from "@/api/services/connectionRequestsApi";
 import { createListenerMiddleware } from "@reduxjs/toolkit";
 import * as Notifications from "expo-notifications";
 import { router } from "expo-router";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "../reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "../reducers/alertSlice";
 export const userNotificationMiddleware = createListenerMiddleware();
 
 const unReadNotifications: string[] = [];
@@ -18,9 +15,7 @@ userNotificationMiddleware.startListening({
   matcher: authApi.endpoints.me.matchFulfilled,
   effect: async (action, listenerApi) => {
     if (action.payload.profile.role !== "EMPLOYEE") {
-      listenerApi.dispatch(
-        showErrorNotification("Access denied: Unauthorized role")
-      );
+      listenerApi.dispatch(showErrorAlert("Access denied: Unauthorized role"));
       return;
     }
     await listenerApi
@@ -31,7 +26,7 @@ userNotificationMiddleware.startListening({
       .unwrap();
     await listenerApi
       .dispatch(
-        connectionRequestsApi.endpoints.getMeConnectionRequestsCount.initiate()
+        connectionRequestsApi.endpoints.getMeConnectionRequestsCount.initiate(),
       )
       .unwrap();
   },
@@ -41,7 +36,7 @@ userNotificationMiddleware.startListening({
 userNotificationMiddleware.startListening({
   matcher: authApi.endpoints.logout.matchFulfilled,
   effect: async (action, listenerApi) => {
-    listenerApi.dispatch(showSuccessNotification("Logged out successfully"));
+    listenerApi.dispatch(showSuccessAlert("Logged out successfully"));
   },
 });
 
@@ -81,7 +76,7 @@ export const initUserNotificationResponseHandler = () => {
           router.push("/messages");
         } finally {
           Notifications.dismissNotificationAsync(
-            response.notification.request.identifier
+            response.notification.request.identifier,
           );
         }
       }

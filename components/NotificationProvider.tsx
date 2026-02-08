@@ -11,19 +11,19 @@ import {
   initUserNotificationResponseHandler,
 } from "@/store/middleware/userNotificationMiddleware";
 import {
-  NotificationType,
-  removeNotification,
-  selectNotifications,
-} from "@/store/reducers/notificationSlice";
+  AlertType,
+  removeAlert,
+  selectAlerts,
+} from "@/store/reducers/alertSlice";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 
 export default function NotificationProvider() {
-  const notifications = useAppSelector(selectNotifications);
+  const alerts = useAppSelector(selectAlerts);
   const dispatch = useAppDispatch();
-  console.log("Notifications:", notifications);
+  console.log("Alerts:", alerts);
 
-  // Register notification response listeners once
+  // Register alert response listeners once
   useEffect(() => {
     initUserNotificationResponseHandler();
     initSocketNotificationResponseHandler();
@@ -33,15 +33,15 @@ export default function NotificationProvider() {
     };
   }, []);
 
-  // Auto-remove notifications after their duration
+  // Auto-remove alerts after their duration
   useEffect(() => {
-    if (notifications.length === 0) return;
+    if (alerts.length === 0) return;
 
-    const timers = notifications.map((notification) => {
-      if (notification.duration) {
+    const timers = alerts.map((alert) => {
+      if (alert.duration) {
         return setTimeout(() => {
-          dispatch(removeNotification(notification.id));
-        }, notification.duration);
+          dispatch(removeAlert(alert.id));
+        }, alert.duration);
       }
       return null;
     });
@@ -52,29 +52,29 @@ export default function NotificationProvider() {
         if (timer) clearTimeout(timer);
       });
     };
-  }, [notifications, dispatch]);
+  }, [alerts, dispatch]);
 
   return (
     <View className="absolute flex-1  bottom-0 top-0 left-0 right-0 z-50 pointer-events-none">
-      {notifications.map((notification) => {
-        if (notification.type === NotificationType.ERROR) {
+      {alerts.map((alert) => {
+        if (alert.type === AlertType.ERROR) {
           return (
             <ErrorToast
-              key={notification.id}
+              key={alert.id}
               visible={true}
-              message={notification.message}
-              onClose={() => dispatch(removeNotification(notification.id))}
+              message={alert.message}
+              onClose={() => dispatch(removeAlert(alert.id))}
             />
           );
         }
 
-        if (notification.type === NotificationType.SUCCESS) {
+        if (alert.type === AlertType.SUCCESS) {
           return (
             <SuccessToast
-              key={notification.id}
+              key={alert.id}
               visible={true}
-              message={notification.message}
-              onClose={() => dispatch(removeNotification(notification.id))}
+              message={alert.message}
+              onClose={() => dispatch(removeAlert(alert.id))}
             />
           );
         }

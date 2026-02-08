@@ -1,14 +1,14 @@
-import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   BaseQueryFn,
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
+import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Constants from "expo-constants";
 import { router } from "expo-router";
 
-import { RootState } from "@/store/reducers";
 import API_ROUTES from "@/api/routes";
+import { RootState } from "@/store/reducers";
 
 const BASE_URL = Constants.expoConfig?.extra?.BASE_URL;
 
@@ -97,7 +97,7 @@ const baseQueryWithReAuth: BaseQueryFn<
             body: { access_token: currentAccessToken },
           },
           api,
-          extraOptions
+          extraOptions,
         );
 
         if (refreshResult.data) {
@@ -119,14 +119,14 @@ const baseQueryWithReAuth: BaseQueryFn<
     } else if (result.error.status === "FETCH_ERROR") {
       // Network error - no internet connection
       api.dispatch({
-        type: "notification/showErrorNotification",
+        type: "notification/showErrorAlert",
         payload:
           result.error.error || "Network error. Please check your connection.",
       });
     } else if (result.error.status === "PARSING_ERROR") {
       // Response parsing error
       api.dispatch({
-        type: "notification/showErrorNotification",
+        type: "notification/showErrorAlert",
         payload: "Failed to parse response. Please try again.",
       });
     } else if (
@@ -136,7 +136,7 @@ const baseQueryWithReAuth: BaseQueryFn<
     ) {
       // Server error
       api.dispatch({
-        type: "notification/showErrorNotification",
+        type: "notification/showErrorAlert",
         payload: "Server error. Please try again later.",
       });
     }

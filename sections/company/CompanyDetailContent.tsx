@@ -8,9 +8,9 @@ import EmptyState from "@/components/EmptyState";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 
+import { showSuccessAlert } from "@/store/reducers/alertSlice";
 import { selectCompanyFollowers } from "@/store/reducers/companySlice";
 import { selectConnections } from "@/store/reducers/connectionSlice";
-import { showSuccessNotification } from "@/store/reducers/notificationSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useCallback, useMemo, useRef, useState } from "react";
@@ -81,10 +81,10 @@ export default function CompanyDetailContent() {
     try {
       if (isFollowed) {
         await unfollowCompany({ companyId: String(id) }).unwrap();
-        dispatch(showSuccessNotification("Unfollowed company."));
+        dispatch(showSuccessAlert("Unfollowed company."));
       } else {
         await followCompany({ companyId: String(id) }).unwrap();
-        dispatch(showSuccessNotification("Following company."));
+        dispatch(showSuccessAlert("Following company."));
       }
     } catch (e) {
       console.warn("Failed to toggle follow company", e);

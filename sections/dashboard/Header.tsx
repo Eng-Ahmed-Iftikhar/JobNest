@@ -4,6 +4,7 @@ import Badge from "@/components/ui/Badge";
 import SearchInput from "@/components/ui/SearchInput";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useSearch } from "@/hooks/useSearch";
+import { selectUnreadNotificationCount } from "@/store/reducers/notificationSlice";
 
 import { selectUser, selectUserProfile } from "@/store/reducers/userSlice";
 import { useRouter } from "expo-router";
@@ -23,6 +24,7 @@ function DashboardHeader() {
   const router = useRouter();
   const user = useAppSelector(selectUser);
   const userProfile = useAppSelector(selectUserProfile);
+  const notificationCounts = useAppSelector(selectUnreadNotificationCount);
   const colorScheme = useColorScheme();
 
   const { searchQuery } = useSearch();
@@ -88,7 +90,7 @@ function DashboardHeader() {
           >
             <Icon name="notifications-outline" size={22} color="#6B7280" />
             <View className="absolute top-0 left-3">
-              <Badge count={5} size="small" />
+              <Badge count={notificationCounts} size="small" />
             </View>
           </TouchableOpacity>
 

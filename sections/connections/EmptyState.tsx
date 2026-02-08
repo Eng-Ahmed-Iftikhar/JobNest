@@ -16,7 +16,7 @@ export function EmptyState({
   onAction: () => void;
 }) {
   return (
-    <View className="flex-1 items-center justify-center p-6">
+    <View className="flex-1 items-center justify-center bg-white dark:bg-gray-900 p-6">
       <View className="w-12 h-12 rounded-full bg-gray-100  dark:bg-gray-800 items-center justify-center mb-3">
         <Ionicons name={icon} size={26} color="#9ca3af" />
       </View>

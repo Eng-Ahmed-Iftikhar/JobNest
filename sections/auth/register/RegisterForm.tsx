@@ -43,7 +43,7 @@ function RegisterForm() {
         email: string;
         password: string;
       },
-      { setFieldError }: any
+      { setFieldError }: any,
     ) => {
       try {
         const { firstName, lastName, email, password } = values;
@@ -80,7 +80,7 @@ function RegisterForm() {
         }
       }
     },
-    [registerUser]
+    [registerUser],
   );
 
   return (
@@ -181,6 +181,7 @@ function RegisterForm() {
 
             <Button
               loading={isSubmitting}
+              disabled={isSubmitting}
               onPress={(e) => handleSubmit(e as any)}
               className="mt-6"
             >

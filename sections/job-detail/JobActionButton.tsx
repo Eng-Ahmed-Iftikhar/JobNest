@@ -7,10 +7,7 @@ import {
 } from "@/api/services/jobsApi";
 import ApplyJobSheet from "@/components/ApplyJobSheet";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { SuggestedJobResponseItem } from "@/types/api/job";
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
@@ -46,22 +43,18 @@ function JobActionButton({ job }: Props) {
       if (!job?.id || isApplying) return;
       try {
         await applyJob({ jobId: String(job.id), coverLetter }).unwrap();
-        dispatch(
-          showSuccessNotification("Application submitted successfully.")
-        );
+        dispatch(showSuccessAlert("Application submitted successfully."));
         setIsApplied(true);
         setInterviewScheduled(true);
         setApplySheetVisible(false);
       } catch (e) {
         dispatch(
-          showErrorNotification(
-            "Failed to submit job application. Please try again."
-          )
+          showErrorAlert("Failed to submit job application. Please try again."),
         );
         console.warn("Failed to apply for job", e);
       }
     },
-    [job, isApplying, applyJob, dispatch]
+    [job, isApplying, applyJob, dispatch],
   );
 
   const handleRetractApplication = useCallback(() => {
@@ -78,11 +71,11 @@ function JobActionButton({ job }: Props) {
     try {
       if (isBookmarked) {
         await unsaveJob({ jobId: String(job.id) }).unwrap();
-        dispatch(showSuccessNotification("Job removed from saved jobs."));
+        dispatch(showSuccessAlert("Job removed from saved jobs."));
         setIsBookmarked(false);
       } else {
         await saveJob({ jobId: String(job.id) }).unwrap();
-        dispatch(showSuccessNotification("Job added to saved jobs."));
+        dispatch(showSuccessAlert("Job added to saved jobs."));
         setIsBookmarked(true);
       }
     } catch (e) {

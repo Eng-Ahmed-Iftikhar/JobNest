@@ -31,7 +31,7 @@ function SearchCompanies() {
         <Text className="text-sm flex-1 font-medium text-gray-500 dark:text-gray-400 mb-3">
           Companies
         </Text>
-        {companiesCount && (
+        {companiesCount > 0 && (
           <TouchableOpacity
             className="flex-row items-center gap-1"
             onPress={navigateToResults}

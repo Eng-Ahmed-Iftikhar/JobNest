@@ -18,21 +18,19 @@ export default function SearchUserCard({ user }: SearchUserCardProps) {
     });
   }, [router, user]);
 
+  const userName = `${user.firstName} ${user.lastName}`.trim() || "User";
   return (
     <TouchableOpacity
       onPress={handlePress}
-      className=" items-center border bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-700 mx-2 rounded-xl p-2 w-32"
+      className=" items-center border bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 mx-2 rounded-xl p-2 w-32"
     >
-      <Avatar
-        imageUrl={user.pictureUrl}
-        size={40}
-        name={`${user.firstName} ${user.lastName}`}
-      />
+      <Avatar imageUrl={user.pictureUrl} size={40} name={userName} />
+
       <Text
         className="text-sm font-semibold text-gray-900 dark:text-gray-100 mt-3 text-center"
         numberOfLines={2}
       >
-        {user.firstName} {user.lastName}
+        {userName}
       </Text>
     </TouchableOpacity>
   );

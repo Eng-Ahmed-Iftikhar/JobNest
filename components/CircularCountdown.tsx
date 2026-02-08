@@ -39,7 +39,7 @@ const CircularCountdown = ({
     secondsLeft >= 60
       ? `${Math.floor(secondsLeft / 60)}:${String(secondsLeft % 60).padStart(
           2,
-          "0"
+          "0",
         )}`
       : `${secondsLeft}s`;
 
@@ -68,12 +68,14 @@ const CircularCountdown = ({
           origin={`${size / 2}, ${size / 2}`}
         />
       </Svg>
-      <Text
-        style={{ fontSize: size * 0.25 }} // relative font size (25% of size)
-        className={" font-semibold text-azure-radiance-500 absolute"}
-      >
-        {displayTime}
-      </Text>
+      {displayTime && (
+        <Text
+          style={{ fontSize: size * 0.25 }} // relative font size (25% of size)
+          className={" font-semibold text-azure-radiance-500 absolute"}
+        >
+          {displayTime}
+        </Text>
+      )}
     </View>
   );
 };

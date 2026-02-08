@@ -43,7 +43,7 @@ function GeneralInfoForm() {
         // Handle error - you might want to show a toast
       }
     },
-    [handleUserProfile, handleChangeCurrentStep, updateGeneralInfo]
+    [handleUserProfile, handleChangeCurrentStep, updateGeneralInfo],
   );
 
   return (
@@ -99,7 +99,9 @@ function GeneralInfoForm() {
               onPress={(e) => handleSubmit(e as any)}
               className="mt-8"
             >
-              Next
+              {isSubmitting || isUpdatingGeneralInfo
+                ? "Processing..."
+                : "Continue"}
             </Button>
           </View>
         </KeyboardAvoidingView>

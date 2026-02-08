@@ -1,5 +1,6 @@
 import { Notification } from "@/types/notification";
 import { Ionicons } from "@expo/vector-icons";
+import moment from "moment";
 import { Image, Pressable, Text, useColorScheme, View } from "react-native";
 
 function InterviewNotification({
@@ -18,13 +19,10 @@ function InterviewNotification({
           <View className="w-2 h-2 rounded-full bg-transparent mt-3" />
         )}
 
-        <View
-          className="w-11 h-11 rounded-full items-center justify-center flex-shrink-0"
-          style={{ backgroundColor: notification.companyColor }}
-        >
-          {notification.companyImage ? (
+        <View className="w-11 h-11 rounded-full items-center justify-center flex-shrink-0">
+          {notification.imageUrl ? (
             <Image
-              source={{ uri: notification.companyImage }}
+              source={{ uri: notification.imageUrl }}
               className="w-11 h-11 rounded-full"
             />
           ) : (
@@ -39,10 +37,13 @@ function InterviewNotification({
         <View className="flex-1">
           <Text className="text-base font-semibold text-gray-900 dark:text-gray-100">
             Job interview scheduled with{" "}
-            <Text className="font-bold">{notification.companyName}</Text>
+            <Text className="font-bold">
+              {notification.user.profile.firstName}{" "}
+              {notification.user.profile.lastName}
+            </Text>
           </Text>
           <Text className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1">
-            {notification.date}
+            {moment(notification.createdAt).format("MMM D, YYYY")}
           </Text>
 
           <Pressable className="flex-row items-center gap-2 mt-3 px-3 py-2 rounded-lg border border-azure-radiance-500 bg-azure-radiance-50 w-32 ">

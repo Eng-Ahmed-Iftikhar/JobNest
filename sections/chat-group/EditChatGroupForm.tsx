@@ -5,10 +5,7 @@ import Input from "@/components/ui/Input";
 import TextArea from "@/components/ui/TextArea";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import useChat from "@/hooks/useChat";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { getMimeTypeImage } from "@/utils/files";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -96,10 +93,10 @@ export default function EditChatGroupForm() {
             : {}),
         },
       }).unwrap();
-      dispatch(showSuccessNotification("Group updated successfully"));
+      dispatch(showSuccessAlert("Group updated successfully"));
       router.back();
     } catch (error) {
-      dispatch(showErrorNotification("Failed to update group"));
+      dispatch(showErrorAlert("Failed to update group"));
     }
   };
 
@@ -108,9 +105,7 @@ export default function EditChatGroupForm() {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        dispatch(
-          showErrorNotification("Permission to access gallery is required")
-        );
+        dispatch(showErrorAlert("Permission to access gallery is required"));
         return;
       }
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -120,12 +115,12 @@ export default function EditChatGroupForm() {
         quality: 0.8,
       });
       if (result.canceled || !result.assets || result.assets.length === 0) {
-        dispatch(showErrorNotification("Image selection was canceled"));
+        dispatch(showErrorAlert("Image selection was canceled"));
         return;
       }
       const image = result.assets[0];
       if (image.fileSize && image.fileSize > 2 * 1024 * 1024) {
-        dispatch(showErrorNotification("Image size should be less than 2MB"));
+        dispatch(showErrorAlert("Image size should be less than 2MB"));
         return;
       }
       setSelectedImage(image);
@@ -134,9 +129,7 @@ export default function EditChatGroupForm() {
     const takePhoto = async () => {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
-        dispatch(
-          showErrorNotification("Permission to access camera is required")
-        );
+        dispatch(showErrorAlert("Permission to access camera is required"));
         return;
       }
       const result = await ImagePicker.launchCameraAsync({
@@ -145,12 +138,12 @@ export default function EditChatGroupForm() {
         quality: 0.8,
       });
       if (result.canceled || !result.assets || result.assets.length === 0) {
-        dispatch(showErrorNotification("Image selection was canceled"));
+        dispatch(showErrorAlert("Image selection was canceled"));
         return;
       }
       const image = result.assets[0];
       if (image.fileSize && image.fileSize > 2 * 1024 * 1024) {
-        dispatch(showErrorNotification("Image size should be less than 2MB"));
+        dispatch(showErrorAlert("Image size should be less than 2MB"));
         return;
       }
       setSelectedImage(image);
@@ -168,7 +161,7 @@ export default function EditChatGroupForm() {
           } else if (buttonIndex === 2) {
             pickFromGallery();
           }
-        }
+        },
       );
     } else {
       Alert.alert(
@@ -188,7 +181,7 @@ export default function EditChatGroupForm() {
             onPress: pickFromGallery,
           },
         ],
-        { cancelable: true }
+        { cancelable: true },
       );
     }
   };

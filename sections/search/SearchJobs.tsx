@@ -32,7 +32,7 @@ function SearchJobs() {
         <Text className="text-sm font-medium  text-gray-500 dark:text-gray-400 mb-3">
           Jobs
         </Text>
-        {jobsCount && (
+        {jobsCount > 0 && (
           <TouchableOpacity
             className="flex-row items-center gap-1 "
             onPress={navigateToResults}
@@ -66,7 +66,7 @@ function SearchJobs() {
               style={{ marginBottom: 12 }}
             />
             <Text className="text-base text-gray-500 dark:text-gray-400 text-center">
-              No jobs found for "{searchText}"
+              No jobs found for &quot;{searchText}&quot;
             </Text>
           </View>
         }

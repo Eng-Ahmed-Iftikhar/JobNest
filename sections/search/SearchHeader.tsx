@@ -26,7 +26,7 @@ export default function SearchHeader() {
     (text: string) => {
       setSearchText(text);
     },
-    [setSearchText]
+    [setSearchText],
   );
 
   const handleSearchSubmit = useCallback(() => {

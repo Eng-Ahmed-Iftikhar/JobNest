@@ -1,4 +1,4 @@
-import { Connection } from "../connection";
+import { Profile, UserEmail } from "../user";
 
 // User list response types
 export interface UserListEmail {
@@ -9,6 +9,17 @@ export interface UserListEmail {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+}
+
+export interface GetUserByIdResponse {
+  id: string;
+  emailId: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+  profile: Profile;
+  email: UserEmail;
 }
 
 export interface UserListProfile {

@@ -2,17 +2,18 @@ import { Middleware, Reducer } from "@reduxjs/toolkit";
 
 // project imports
 import { authApi } from "./authApi";
-import { userApi } from "./userApi";
-import { fileApi } from "./fileApi";
-import { skillApi } from "./skillApi";
-import { notificationSettingsApi } from "./notificationSettingsApi";
-import { jobsApi } from "./jobsApi";
-import { companyApi } from "./companyApi";
-import { searchApi } from "./searchApi";
-import { locationApi } from "./locationApi";
-import { connectionRequestsApi } from "./connectionRequestsApi";
 import { chatApi } from "./chatApi";
+import { companyApi } from "./companyApi";
 import { connectionApi } from "./connectionApi";
+import { connectionRequestsApi } from "./connectionRequestsApi";
+import { fileApi } from "./fileApi";
+import { jobsApi } from "./jobsApi";
+import { locationApi } from "./locationApi";
+import { notificationApi } from "./notificationApi";
+import { notificationSettingsApi } from "./notificationSettingsApi";
+import { searchApi } from "./searchApi";
+import { skillApi } from "./skillApi";
+import { userApi } from "./userApi";
 
 export const apiMiddlewares: Middleware[] = [
   authApi.middleware,
@@ -27,6 +28,7 @@ export const apiMiddlewares: Middleware[] = [
   connectionRequestsApi.middleware,
   chatApi.middleware,
   connectionApi.middleware,
+  notificationApi.middleware,
 ];
 
 export const apiReducers: Record<string, Reducer> = {
@@ -42,4 +44,5 @@ export const apiReducers: Record<string, Reducer> = {
   [connectionRequestsApi.reducerPath]: connectionRequestsApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [connectionApi.reducerPath]: connectionApi.reducer,
+  [notificationApi.reducerPath]: notificationApi.reducer,
 };

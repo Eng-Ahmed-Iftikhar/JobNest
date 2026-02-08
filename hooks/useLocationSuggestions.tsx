@@ -3,10 +3,9 @@ import { useDebounce } from "./useDebounce";
 
 export function useLocationSuggestions(
   query: string,
-  locationSelected: boolean
+  locationSelected: boolean,
 ) {
   const debouncedQuery = useDebounce(query, 1000);
-  console.log({ debouncedQuery });
 
   const { data, isFetching } = useSearchLocationsQuery(debouncedQuery, {
     skip: debouncedQuery.length === 0 || locationSelected,

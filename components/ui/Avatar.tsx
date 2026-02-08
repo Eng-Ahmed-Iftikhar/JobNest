@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 interface AvatarProps {
   name?: string;
@@ -23,12 +23,14 @@ function Avatar({ name, imageUrl, size = 36, onPress }: AvatarProps) {
     <Image source={{ uri: imageUrl }} style={dimensionStyle} />
   ) : (
     <View
-      className="bg-emerald-500 items-center justify-center"
+      className="bg-gray-200 dark:bg-gray-700 items-center justify-center"
       style={dimensionStyle}
     >
-      <Text className="text-white font-semibold">
-        {initials.substring(0, 2)}
-      </Text>
+      {initials.length > 0 && (
+        <Text className="text-gray-800 dark:text-white font-semibold">
+          {initials.substring(0, 2)}
+        </Text>
+      )}
     </View>
   );
 

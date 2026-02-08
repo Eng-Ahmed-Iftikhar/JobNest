@@ -1,88 +1,75 @@
+import { notificationApi } from "@/api/services/notificationApi";
+import { Notification } from "@/types/notification";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from ".";
 
-export enum NotificationType {
-  SUCCESS = "success",
-  ERROR = "error",
-  WARNING = "warning",
-  INFO = "info",
-}
-
-interface Notification {
-  id: string;
-  type: NotificationType;
-  message: string;
-  duration?: number;
-}
-
+// Define the initial state for the UI slice
 interface NotificationState {
   notifications: Notification[];
+  unreadCount?: number;
 }
 
 const initialState: NotificationState = {
   notifications: [],
+  unreadCount: 0,
 };
 
 const notificationSlice = createSlice({
   name: "notification",
   initialState,
   reducers: {
-    showSuccessNotification: (state, action: PayloadAction<string>) => {
-      const id = Date.now().toString();
-      state.notifications.push({
-        id,
-        type: NotificationType.SUCCESS,
-        message: action.payload,
-        duration: 3000,
-      });
-    },
-    showErrorNotification: (state, action: PayloadAction<string>) => {
-      const id = Date.now().toString();
-      state.notifications.push({
-        id,
-        type: NotificationType.ERROR,
-        message: action.payload,
-        duration: 4000,
-      });
-    },
-    showWarningNotification: (state, action: PayloadAction<string>) => {
-      const id = Date.now().toString();
-      state.notifications.push({
-        id,
-        type: NotificationType.WARNING,
-        message: action.payload,
-        duration: 3000,
-      });
-    },
-    showInfoNotification: (state, action: PayloadAction<string>) => {
-      const id = Date.now().toString();
-      state.notifications.push({
-        id,
-        type: NotificationType.INFO,
-        message: action.payload,
-        duration: 3000,
-      });
+    addNotification: (state, action: PayloadAction<Notification>) => {
+      state.notifications.push(action.payload);
     },
     removeNotification: (state, action: PayloadAction<string>) => {
       state.notifications = state.notifications.filter(
-        (n) => n.id !== action.payload
+        (notification) => notification.id !== action.payload,
       );
     },
-    clearAllNotifications: (state) => {
-      state.notifications = [];
+    updateNotification: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        notification: Partial<Notification>;
+      }>,
+    ) => {
+      const { id, notification } = action.payload;
+      const index = state.notifications.findIndex(
+        (notification) => notification.id === id,
+      );
+      if (index !== -1) {
+        state.notifications[index] = {
+          ...state.notifications[index],
+          ...notification,
+        };
+      }
     },
+  },
+  extraReducers: (builder) => {
+    // You can add extra reducers here if needed
+    builder.addMatcher(
+      notificationApi.endpoints.getNotifications.matchFulfilled,
+      (state, action) => {
+        const payload = action.payload;
+        const page = payload.page;
+        state.unreadCount = payload.unreadCount;
+        if (page && page === 1) {
+          state.notifications = payload.data;
+
+          return;
+        }
+        state.notifications = [...state.notifications, ...payload.data];
+      },
+    );
   },
 });
 
-export const {
-  showSuccessNotification,
-  showErrorNotification,
-  showWarningNotification,
-  showInfoNotification,
-  removeNotification,
-  clearAllNotifications,
-} = notificationSlice.actions;
+export const { addNotification, removeNotification, updateNotification } =
+  notificationSlice.actions;
 
-export const selectNotifications = (state: {
-  notification: NotificationState;
-}) => state.notification.notifications;
+export const selectNotifications = (state: RootState) =>
+  state.notification.notifications;
+export const selectUnreadNotificationCount = (state: RootState) =>
+  state.notification.unreadCount;
+
 export default notificationSlice.reducer;

@@ -1,7 +1,7 @@
 import {
   useGetNotificationSettingsQuery,
   useUpdateNotificationSettingsMutation,
-} from "@/api/services/notificationSettingsApi";
+} from "@/api/services/notificationApi";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -61,7 +61,7 @@ export default function SettingsContent() {
         email: false,
       },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -119,14 +119,14 @@ export default function SettingsContent() {
       interviewReminderEmail:
         items.find((n) => n.id === "interviewReminder")?.email ?? false,
     }),
-    []
+    [],
   );
 
   const toggleNotification = useCallback(
     async (id: NotificationId, type: "system" | "email") => {
       const previous = notifications;
       const updated = notifications.map((notif) =>
-        notif.id === id ? { ...notif, [type]: !notif[type] } : notif
+        notif.id === id ? { ...notif, [type]: !notif[type] } : notif,
       );
 
       setNotifications(updated);
@@ -137,7 +137,7 @@ export default function SettingsContent() {
         console.log("Failed to update notification settings", error);
       }
     },
-    [notifications, toPayload, updateSettings]
+    [notifications, toPayload, updateSettings],
   );
 
   const onRefresh = useCallback(async () => {

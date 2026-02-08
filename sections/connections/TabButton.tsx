@@ -25,8 +25,8 @@ function TabButton({
           {label}
         </Text>
         {typeof count === "number" && count > 0 && (
-          <View className="px-2 py-0.5 bg-azure-radiance-50 dark:bg-azure-radiance-500 rounded-full border border-azure-radiance-100 dark:border-azure-radiance-500">
-            <Text className="text-sm font-semibold text-azure-radiance-600 dark:text-white">
+          <View className="h-5 w-5 items-center justify-center bg-azure-radiance-50 dark:bg-azure-radiance-500 rounded-full border border-azure-radiance-100 dark:border-azure-radiance-500">
+            <Text className="text-xs font-semibold text-azure-radiance-600 dark:text-white">
               {count}
             </Text>
           </View>

@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from "react";
-import { View, Text, Pressable, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import React, { useCallback, useEffect } from "react";
+import { Animated, Pressable, Text, View } from "react-native";
 
 interface SuccessToastProps {
   visible: boolean;
@@ -66,7 +66,7 @@ export default function SuccessToast({
         opacity,
         transform: [{ translateY }],
       }}
-      className="absolute bottom-8 left-4 right-4 z-50"
+      className="absolute top-8 left-4 right-4 z-50"
     >
       <View className="bg-azure-radiance-500 rounded-xl px-4 py-3 flex-row items-center justify-between shadow-lg">
         <Text className="text-white font-semibold text-base flex-1">

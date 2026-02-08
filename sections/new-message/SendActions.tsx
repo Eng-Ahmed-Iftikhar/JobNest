@@ -1,6 +1,6 @@
 import TextArea from "@/components/ui/TextArea";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { showErrorNotification } from "@/store/reducers/notificationSlice";
+import { showErrorAlert } from "@/store/reducers/alertSlice";
 import { getMimeType } from "@/utils/files";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
@@ -54,9 +54,9 @@ function SendActions({
       copyToCacheDirectory: true,
     });
     if (result.canceled)
-      return dispatch(showErrorNotification("File selection was canceled."));
+      return dispatch(showErrorAlert("File selection was canceled."));
     if (result.assets.length === 0)
-      return dispatch(showErrorNotification("No file selected."));
+      return dispatch(showErrorAlert("No file selected."));
 
     const file = result.assets[0];
 
@@ -72,7 +72,7 @@ function SendActions({
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       return dispatch(
-        showErrorNotification("Permission to access media library is required!")
+        showErrorAlert("Permission to access media library is required!"),
       );
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -82,9 +82,9 @@ function SendActions({
       quality: 0.8,
     });
     if (result.canceled)
-      return dispatch(showErrorNotification("Image selection was canceled."));
+      return dispatch(showErrorAlert("Image selection was canceled."));
     if (!result.assets.length)
-      return dispatch(showErrorNotification("No image selected."));
+      return dispatch(showErrorAlert("No image selected."));
     const image = result.assets[0];
 
     const imageObj = {

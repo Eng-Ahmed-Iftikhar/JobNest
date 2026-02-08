@@ -4,10 +4,7 @@ import Avatar from "@/components/ui/Avatar";
 import Badge from "@/components/ui/Badge";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import useChat from "@/hooks/useChat";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { Chat } from "@/types/chat";
 import { useRouter } from "expo-router";
 import moment from "moment";
@@ -30,7 +27,7 @@ function ConversationRow({ item }: { item: Chat }) {
   const chatMessages =
     chat?.messagesWithDates?.flatMap((section) => section.data) || [];
   const sortedMessages = [...chatMessages].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   );
   const lastMessage = sortedMessages[sortedMessages.length - 1];
 
@@ -45,10 +42,10 @@ function ConversationRow({ item }: { item: Chat }) {
     if (!item?.id) return;
     try {
       await deleteChat(item.id).unwrap();
-      dispatch(showSuccessNotification("Chat deleted successfully"));
+      dispatch(showSuccessAlert("Chat deleted successfully"));
     } catch (error) {
       console.error("Failed to delete chat:", error);
-      dispatch(showErrorNotification("Failed to delete chat"));
+      dispatch(showErrorAlert("Failed to delete chat"));
     }
   }, [deleteChat, dispatch, item.id]);
 

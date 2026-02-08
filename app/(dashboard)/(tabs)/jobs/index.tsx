@@ -66,7 +66,7 @@ export default function SuggestedJobsScreen() {
             description="Start your search and find a job you've been looking for!"
             buttonText="Search jobs"
             buttonIcon="search"
-            onButtonPress={() => router.push("/(dashboard)/search")}
+            onButtonPress={() => router.push("/search")}
           />
         }
       />

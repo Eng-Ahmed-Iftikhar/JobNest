@@ -5,7 +5,7 @@ import { Text, useColorScheme, View } from "react-native";
 function EmptyNotification() {
   const colorScheme = useColorScheme();
   return (
-    <View className="flex-1 items-center justify-center px-6">
+    <View className="flex-1 items-center justify-center px-6 mt-20">
       <View className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-800 items-center justify-center mb-4">
         <Ionicons
           name="notifications-off-outline"

@@ -8,10 +8,7 @@ import {
 } from "@/api/services/userApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { selectUser, selectUserProfile } from "@/store/reducers/userSlice";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -206,7 +203,7 @@ export default function EditProfileContent() {
       const parsedFromString = new Date(value);
       if (!Number.isNaN(parsedFromString.getTime())) {
         return `${parsedFromString.getFullYear()}-${String(
-          parsedFromString.getMonth() + 1
+          parsedFromString.getMonth() + 1,
         ).padStart(2, "0")}`;
       }
 
@@ -220,7 +217,7 @@ export default function EditProfileContent() {
 
     return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(
       2,
-      "0"
+      "0",
     )}`;
   }, []);
 
@@ -285,7 +282,7 @@ export default function EditProfileContent() {
   const handleSubmit = useCallback(
     async (
       values: EditProfileFormValues,
-      { setSubmitting }: FormikHelpers<EditProfileFormValues>
+      { setSubmitting }: FormikHelpers<EditProfileFormValues>,
     ) => {
       try {
         setIsSubmitting(true);
@@ -349,12 +346,10 @@ export default function EditProfileContent() {
           resumeUrl: values.cvFile as string,
         }).unwrap();
         refetchCvDetails();
-        dispatch(showSuccessNotification("Profile updated successfully"));
+        dispatch(showSuccessAlert("Profile updated successfully"));
       } catch (error) {
         console.error("Failed to update profile:", error);
-        dispatch(
-          showErrorNotification("Failed to update profile. Please try again.")
-        );
+        dispatch(showErrorAlert("Failed to update profile. Please try again."));
       } finally {
         setIsSubmitting(false);
         setSubmitting(false);
@@ -369,7 +364,7 @@ export default function EditProfileContent() {
       updatePhoneNumber,
       updateProfilePicture,
       userProfile,
-    ]
+    ],
   );
 
   if (isCvDetailsLoading) {
@@ -438,7 +433,7 @@ export default function EditProfileContent() {
 
         const hasChanges = !deepEqual(
           normalize(formik.values),
-          normalize(formik.initialValues)
+          normalize(formik.initialValues),
         );
 
         return (

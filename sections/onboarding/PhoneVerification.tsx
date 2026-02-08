@@ -6,10 +6,7 @@ import CircularCountdown from "@/components/CircularCountdown";
 import Button from "@/components/ui/Button";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import useOnboarding from "@/hooks/useOnboarding";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { OnboardingSteps } from "@/types/onboarding";
 import { PhoneNumber } from "@/types/user";
 import React, { useCallback, useState } from "react";
@@ -35,13 +32,13 @@ function PhoneVerificationScreen() {
       setError("");
       await sendPhoneVerification().unwrap();
       setCanResend(false);
-      dispatch(showSuccessNotification("Verification code sent"));
+      dispatch(showSuccessAlert("Verification code sent"));
     } catch (err: any) {
       const msg = Array.isArray(err?.data?.message)
         ? err.data.message[0]
         : err?.data?.message || "Failed to resend verification code";
 
-      dispatch(showErrorNotification(msg));
+      dispatch(showErrorAlert(msg));
     }
   }, [dispatch, sendPhoneVerification]);
 
@@ -61,7 +58,7 @@ function PhoneVerificationScreen() {
           isVerified: true,
         },
       });
-      dispatch(showSuccessNotification("Phone verified successfully!"));
+      dispatch(showSuccessAlert("Phone verified successfully!"));
 
       // Navigate to next step after a short delay
       setTimeout(() => {
@@ -73,7 +70,7 @@ function PhoneVerificationScreen() {
         : err?.data?.message || "Verification failed. Please try again.";
       setError(msg);
 
-      dispatch(showErrorNotification(msg));
+      dispatch(showErrorAlert(msg));
     }
   }, [
     code,
@@ -123,7 +120,7 @@ function PhoneVerificationScreen() {
             loading={isVerifying}
             className="mb-4"
           >
-            {isVerifying ? "Verifying..." : "Verify Phone"}
+            {isVerifying ? "Verifying..." : "Verify"}
           </Button>
         </View>
 

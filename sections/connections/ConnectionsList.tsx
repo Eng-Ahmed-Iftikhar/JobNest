@@ -2,8 +2,8 @@ import { useLazyGetMeConnectionsQuery } from "@/api/services/connectionApi";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectConnections } from "@/store/reducers/connectionSlice";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useCallback, useEffect, useMemo } from "react";
-import { FlatList, RefreshControl } from "react-native";
+import React, { useCallback, useEffect } from "react";
+import { FlatList } from "react-native";
 import { ConnectionRow } from "./ConnectionRow";
 import { EmptyState } from "./EmptyState";
 
@@ -46,15 +46,14 @@ function Connections() {
   return (
     <FlatList
       data={connections}
-      className="flex-1"
+      className="flex-1 bg-white dark:bg-gray-900"
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => <ConnectionRow item={item} />}
       contentContainerStyle={{ paddingBottom: 24 }}
       showsVerticalScrollIndicator={false}
       onEndReached={handleReachEnd}
-      refreshControl={
-        <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
-      }
+      refreshing={isRefreshing}
+      onRefresh={handleRefresh}
       ListEmptyComponent={
         <EmptyState
           icon="person"

@@ -1,10 +1,10 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import API_ROUTES from "@/api/routes";
-import { baseQueryWithReAuth } from "./baseApi";
 import {
   NotificationSettingsResponse,
   UpdateNotificationSettingsRequest,
 } from "@/types/api/notification-settings";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReAuth } from "./baseApi";
 
 export const notificationSettingsApi = createApi({
   reducerPath: "notificationSettingsApi",

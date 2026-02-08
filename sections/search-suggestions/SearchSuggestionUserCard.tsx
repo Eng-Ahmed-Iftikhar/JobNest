@@ -6,11 +6,8 @@ import LocationText from "@/components/LocationText";
 import Avatar from "@/components/ui/Avatar";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import { selectConnections } from "@/store/reducers/connectionSlice";
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
 import { selectUser } from "@/store/reducers/userSlice";
 import { UserListItem } from "@/types/api/user";
 import { Ionicons } from "@expo/vector-icons";
@@ -33,7 +30,7 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
   const isConnected = userConnections.find(
     (connection) =>
       connection.connectionRequest?.senderId === item.id ||
-      connection.connectionRequest?.receiverId === item.id
+      connection.connectionRequest?.receiverId === item.id,
   );
 
   const receiverIsUser = user?.id === item.connectionRequest?.receiverId;
@@ -43,21 +40,21 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
     if (receiverIsUser && item.connectionRequest) {
       try {
         await acceptConnectionRequest(item.connectionRequest.id).unwrap();
-        dispatch(showSuccessNotification("Connection request accepted"));
+        dispatch(showSuccessAlert("Connection request accepted"));
         return;
       } catch (error) {
         console.log(error);
-        dispatch(showErrorNotification("Failed to accept connection request"));
+        dispatch(showErrorAlert("Failed to accept connection request"));
         return;
       }
     }
     try {
       await createConnectionRequest({ receiverId: item.id }).unwrap();
       setRequestSent(true);
-      dispatch(showSuccessNotification("Connection request sent successfully"));
+      dispatch(showSuccessAlert("Connection request sent successfully"));
     } catch (error) {
       console.log(error);
-      dispatch(showErrorNotification("Failed to send connection request"));
+      dispatch(showErrorAlert("Failed to send connection request"));
     }
   }, [
     acceptConnectionRequest,
@@ -121,10 +118,10 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
                 isConnected
                   ? "chatbubble"
                   : receiverIsUser
-                  ? "checkmark"
-                  : requestSent
-                  ? "time"
-                  : "person-add"
+                    ? "checkmark"
+                    : requestSent
+                      ? "time"
+                      : "person-add"
               }
               size={12}
               color="#3B82F6"
@@ -133,10 +130,10 @@ function SearchSuggestionUserCard({ item }: { item: UserListItem }) {
               {isConnected
                 ? "Message"
                 : receiverIsUser
-                ? "Accept"
-                : requestSent
-                ? "Pending"
-                : "Connect"}
+                  ? "Accept"
+                  : requestSent
+                    ? "Pending"
+                    : "Connect"}
             </Text>
           </>
         )}

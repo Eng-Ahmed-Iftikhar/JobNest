@@ -2,13 +2,13 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { selectUserProfile } from "@/store/reducers/userSlice";
 
 import {
-  OnboardingSteps,
   OnboardingContextType,
-  StepHeaderType,
   OnboardingProfile,
+  OnboardingSteps,
+  StepHeaderType,
 } from "@/types/onboarding";
 import { determineCurrentStep, getPreviousStep } from "@/utils";
-import { useRouter, usePathname } from "expo-router";
+import { usePathname, useRouter } from "expo-router";
 import React, { createContext, useCallback, useEffect, useState } from "react";
 
 export const onboardingContext = createContext<OnboardingContextType>({
@@ -27,11 +27,11 @@ const Provider = onboardingContext.Provider;
 
 function OnboardingProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<OnboardingProfile | null>(
-    null
+    null,
   );
   const profile = useAppSelector(selectUserProfile);
   const [currentStep, setCurrentStep] = useState<string>(
-    OnboardingSteps.GENERAL_INFO
+    OnboardingSteps.GENERAL_INFO,
   );
   const [stepHeader, setStepHeader] = useState<StepHeaderType>({
     title:
@@ -75,7 +75,7 @@ function OnboardingProvider({ children }: { children: React.ReactNode }) {
     (profile: OnboardingProfile): string => {
       return determineCurrentStep(profile);
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -147,7 +147,7 @@ function OnboardingProvider({ children }: { children: React.ReactNode }) {
       case OnboardingSteps.PHONE_VERIFICATION:
         handleChangeStepHeader({
           title: "Phone verification",
-          description: "Your phone number has been verified successfully!",
+          description: "Please enter the verification code sent to your phone.",
         });
         // Redirect to phone verification page
         navigateIfNeeded("/(onboarding)/phone-verification");
@@ -184,7 +184,7 @@ function OnboardingProvider({ children }: { children: React.ReactNode }) {
       default:
         break;
     }
-  }, [currentStep, handleChangeStepHeader, router]);
+  }, [currentStep, handleChangeStepHeader, pathname, router]);
 
   return (
     <Provider

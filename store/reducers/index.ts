@@ -1,23 +1,23 @@
 // third-party
-import { combineReducers } from "redux";
 import { apiReducers } from "@/api/services";
+import { combineReducers } from "redux";
+import alertReducer from "./alertSlice";
 import authReducer from "./authSlice";
-import userReducer from "./userSlice";
-import notificationReducer from "./notificationSlice";
-import jobReducer from "./jobSlice";
-import uiSlice from "./uiSlice";
 import chatSlice from "./chatSlice";
-import socketSlice from "./socketSlice";
-import connectionSlice from "./connectionSlice";
-import connectionRequestSlice from "./connectionRequestSlice";
 import companySlice from "./companySlice";
-
+import connectionRequestSlice from "./connectionRequestSlice";
+import connectionSlice from "./connectionSlice";
+import jobReducer from "./jobSlice";
+import notificationSlice from "./notificationSlice";
+import socketSlice from "./socketSlice";
+import uiSlice from "./uiSlice";
+import userReducer from "./userSlice";
 // ==============================|| COMBINE REDUCERS ||============================== //
 
 const reducers = combineReducers({
   auth: authReducer,
   user: userReducer,
-  notification: notificationReducer,
+  alert: alertReducer,
   job: jobReducer,
   ui: uiSlice,
   chats: chatSlice,
@@ -25,6 +25,7 @@ const reducers = combineReducers({
   connection: connectionSlice,
   connectionRequest: connectionRequestSlice,
   company: companySlice,
+  notification: notificationSlice,
   ...apiReducers,
 });
 

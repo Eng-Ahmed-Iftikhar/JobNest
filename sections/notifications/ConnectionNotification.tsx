@@ -1,96 +1,156 @@
+import {
+  useAcceptConnectionRequestMutation,
+  useRejectConnectionRequestMutation,
+} from "@/api/services/connectionRequestsApi";
+import Button from "@/components/ui/Button";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
+import { updateNotification } from "@/store/reducers/notificationSlice";
 import { Notification as NotificationType } from "@/types/notification";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { useCallback } from "react";
+import { Image, Text, View } from "react-native";
 
 function ConnectionNotification({
   notification,
 }: {
   notification: NotificationType;
 }) {
-  const [status, setStatus] = useState<"pending" | "accepted" | "ignored">(
-    "pending",
-  );
+  const [acceptConnection, { isLoading: isAccepting }] =
+    useAcceptConnectionRequestMutation();
+  const [rejectConnection, { isLoading: isRejecting }] =
+    useRejectConnectionRequestMutation();
+  const dispatch = useAppDispatch();
 
-  if (status === "accepted") {
-    return (
-      <View className="px-4 py-4 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700">
-        <View className="flex-row items-center gap-3">
-          {!notification.read && (
-            <View className="w-2 h-2 rounded-full bg-red-500" />
-          )}
-          {!notification.read && (
-            <View className="w-2 h-2 rounded-full bg-transparent" />
-          )}
+  const handleAcceptConnection = useCallback(async () => {
+    try {
+      await acceptConnection(
+        notification.metaData?.connectionRequestId! as string,
+      ).unwrap();
+      dispatch(
+        updateNotification({
+          id: notification.id,
+          notification: {
+            text: "Connection request accepted",
+            read: true,
+            metaData: {
+              ...notification.metaData,
+              status: "ACCEPTED",
+              texts: [
+                ...(notification.metaData?.texts || []),
+                notification.text,
+              ],
+            },
+          },
+        }),
+      );
+      dispatch(showSuccessAlert("Connection request accepted successfully"));
+    } catch (error) {
+      dispatch(showErrorAlert("Failed to accept connection request"));
+      console.warn("Failed to accept connection request", error);
+    }
+  }, [acceptConnection, dispatch, notification]);
 
-          <View
-            className="w-11 h-11 rounded-full items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: notification.userColor }}
-          >
-            <Ionicons
-              name={notification.userIcon || "person"}
-              size={20}
-              color="white"
-            />
-          </View>
-
-          <Text className="text-sm font-medium text-gray-600 dark:text-gray-400 ">
-            Connection request accepted
-          </Text>
-        </View>
-      </View>
-    );
-  }
-
-  if (status === "ignored") {
-    return null;
-  }
+  const handleIgnoreConnection = useCallback(async () => {
+    try {
+      await rejectConnection(
+        notification.metaData?.connectionRequestId! as string,
+      ).unwrap();
+      dispatch(
+        updateNotification({
+          id: notification.id,
+          notification: {
+            text: "Connection request rejected",
+            read: true,
+            metaData: {
+              ...notification.metaData,
+              status: "REJECTED",
+              texts: [
+                ...(notification.metaData?.texts || []),
+                notification.text,
+              ],
+            },
+          },
+        }),
+      );
+      dispatch(showSuccessAlert("Connection request rejected successfully"));
+    } catch (error) {
+      dispatch(showErrorAlert("Failed to reject connection request"));
+      console.warn("Failed to reject connection request", error);
+    }
+  }, [dispatch, notification, rejectConnection]);
 
   return (
     <View className="px-4 py-4 bg-white dark:bg-black border-b border-gray-100 dark:border-gray-700  ">
-      <View className="flex-row items-start gap-3">
+      <View className="flex-row items-center  justify-center gap-3 ">
         {!notification.read && (
-          <View className="w-2 h-2 rounded-full bg-red-500 mt-1" />
-        )}
-        {!notification.read && (
-          <View className="w-2 h-2 rounded-full bg-transparent mt-1" />
+          <View className="w-2 h-2 rounded-full bg-red-500 " />
         )}
 
-        <View
-          className="w-11 h-11 rounded-full items-center justify-center flex-shrink-0"
-          style={{ backgroundColor: notification.userColor }}
-        >
-          <Ionicons
-            name={notification.userIcon || "person"}
-            size={20}
-            color="white"
-          />
-        </View>
+        <View className="flex-row items-start gap-3 ">
+          {notification.imageUrl ? (
+            <Image
+              source={{ uri: notification.imageUrl }}
+              className="w-11 h-11 rounded-full"
+            />
+          ) : (
+            <Ionicons name={"person"} size={20} color="black" />
+          )}
 
-        <View className="flex-1">
-          <Text className="text-base font-semibold text-gray-900 dark:text-gray-100">
-            <Text className="font-bold">{notification.userName}</Text> wants to
-            connect
-          </Text>
-
-          <View className="flex-row items-center gap-2 mt-3">
-            <Pressable
-              onPress={() => setStatus("accepted")}
-              className="flex-row items-center px-4 py-2 rounded-lg bg-azure-radiance-500 gap-1"
-            >
-              <Ionicons name="checkmark" size={16} color="white" />
-              <Text className="text-sm font-medium  text-white">Accept</Text>
-            </Pressable>
-
-            <Pressable
-              onPress={() => setStatus("ignored")}
-              className="flex-row items-center px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 gap-1"
-            >
-              <Ionicons name="close" size={16} color="#6B7280" />
-              <Text className="text-sm font-medium  text-gray-700 dark:text-gray-400">
-                Ignore
-              </Text>
-            </Pressable>
+          <View className="flex-1">
+            <Text className="text-base font-semibold text-gray-900 dark:text-gray-100">
+              {notification.metaData.status === "ACCEPTED" ? (
+                <Text>
+                  Your accepted the connection request from{" "}
+                  <Text className="font-bold">
+                    {notification.metaData?.sender?.profile.firstName}{" "}
+                    {notification.metaData?.sender?.profile.lastName}
+                  </Text>
+                </Text>
+              ) : notification.metaData.status === "REJECTED" ? (
+                <Text>
+                  You rejected the connection request from{" "}
+                  <Text className="font-bold">
+                    {notification.metaData?.sender?.profile.firstName}{" "}
+                    {notification.metaData?.sender?.profile.lastName}
+                  </Text>
+                </Text>
+              ) : (
+                <Text>
+                  <Text>
+                    {notification.metaData?.sender?.profile.firstName}{" "}
+                    {notification.metaData?.sender?.profile.lastName}{" "}
+                  </Text>{" "}
+                  has sent you a connection request.
+                </Text>
+              )}
+            </Text>
+            {notification.metaData?.status !== "ACCEPTED" &&
+              notification.metaData.status !== "REJECTED" && (
+                <View className="flex-row items-center gap-2 mt-3">
+                  <View className="w-32">
+                    <Button
+                      onPress={handleAcceptConnection}
+                      loading={isAccepting}
+                      disabled={isAccepting || isRejecting}
+                      className="p-2 "
+                    >
+                      <Text className="text-base">Accept</Text>
+                    </Button>
+                  </View>
+                  <View className="w-32">
+                    <Button
+                      variant="outline"
+                      onPress={handleIgnoreConnection}
+                      loading={isRejecting}
+                      disabled={isAccepting || isRejecting}
+                      className="p-2 "
+                    >
+                      <Text className="text-base">Ignore</Text>
+                    </Button>
+                  </View>
+                </View>
+              )}
           </View>
         </View>
       </View>

@@ -4,10 +4,7 @@ import {
 } from "@/api/services/jobsApi";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 
-import {
-  showErrorNotification,
-  showSuccessNotification,
-} from "@/store/reducers/notificationSlice";
+import { showErrorAlert, showSuccessAlert } from "@/store/reducers/alertSlice";
 import React, { useCallback } from "react";
 import { Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -34,10 +31,10 @@ export default function OptionsDropdown({
     try {
       if (isSaved) {
         await unSaveJob({ jobId }).unwrap();
-        dispatch(showSuccessNotification("Job removed from saved jobs!"));
+        dispatch(showSuccessAlert("Job removed from saved jobs!"));
       } else {
         await saveJob({ jobId }).unwrap();
-        dispatch(showSuccessNotification("Job saved successfully!"));
+        dispatch(showSuccessAlert("Job saved successfully!"));
       }
 
       onSave();
@@ -45,7 +42,7 @@ export default function OptionsDropdown({
       const msg = Array.isArray(e?.data?.message)
         ? e.data.message[0]
         : e?.data?.message || "Failed to save job";
-      dispatch(showErrorNotification(msg));
+      dispatch(showErrorAlert(msg));
     }
   }, [isSaved, unSaveJob, jobId, saveJob, dispatch, onSave]);
 

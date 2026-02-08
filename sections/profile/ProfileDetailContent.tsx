@@ -1,6 +1,9 @@
+import { useGetUserByIdQuery } from "@/api/services/userApi";
+import LocationText from "@/components/LocationText";
 import ConnectionsList from "@/sections/profile/ConnectionsList";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import moment from "moment";
 import React, { useState } from "react";
 import {
   Pressable,
@@ -31,6 +34,7 @@ export default function ProfileDetailContent({
   userId,
 }: ProfileDetailContentProps) {
   const router = useRouter();
+  const { data } = useGetUserByIdQuery({ userId: userId! });
   const [isConnected, setIsConnected] = useState(mockProfile.isConnected);
   const [showConnectionsList, setShowConnectionsList] = useState(false);
 
@@ -62,10 +66,7 @@ export default function ProfileDetailContent({
         <View className="px-4 pt-4">
           {/* Profile Picture */}
           <View className="items-center mb-4">
-            <View
-              className="w-20 h-20 rounded-full items-center justify-center"
-              style={{ backgroundColor: mockProfile.color }}
-            >
+            <View className="w-20 h-20 rounded-full items-center justify-center">
               <Ionicons name="person" size={40} color="white" />
             </View>
           </View>
@@ -73,13 +74,11 @@ export default function ProfileDetailContent({
           {/* Name and Info */}
           <View className="items-center mb-2">
             <Text className="text-2xl font-bold dark:bg-black mb-1">
-              {mockProfile.name}
+              {data?.profile.firstName} {data?.profile.lastName}
             </Text>
-            <Text className="text-base text-gray-600 mb-1">
-              {mockProfile.location}
-            </Text>
+            <LocationText location={data?.profile?.location} />
             <Text className="text-sm font-medium text-gray-500 mb-3">
-              {mockProfile.joinedDate}
+              {moment(data?.profile.createdAt).format("MMM D, YYYY")}
             </Text>
 
             {/* Connections */}
@@ -140,7 +139,7 @@ export default function ProfileDetailContent({
           <View>
             <Text className="text-lg font-bold dark:bg-black mb-3">About</Text>
             <Text className="text-base text-gray-700 leading-6">
-              {mockProfile.about}
+              {data?.profile.bio}
             </Text>
           </View>
         </View>
